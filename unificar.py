@@ -122,8 +122,17 @@ def salario(texto):
 
 # ------------------------------------------------------------ fuentes
 
+def descripciones():
+    f = BASE / "data" / "empleos.json"
+    try:
+        return {o["clave"]: o.get("descripcion", "") for o in json.loads(f.read_text(encoding="utf-8"))}
+    except (OSError, ValueError):
+        return {}
+
+
 def desde_empleos(filas, consultada):
     out = []
+    desc = descripciones()
     for o in filas:
         tags = temas(o.get("encaje"))
         rol, resto = (tags[0], tags[1:]) if tags else ("", [])
@@ -153,7 +162,7 @@ def desde_empleos(filas, consultada):
             "salario": {"texto": o.get("salario") or None}, "importe": None,
             "fechas": {"publicada": o.get("fecha") or o.get("visto"), "plazo": None, "consultada": o.get("visto") or consultada},
             "fuentes": [{"nombre": o.get("fuente", ""), "url": o.get("url", ""), "consultada": o.get("visto") or consultada}],
-            "datos": datos, "etiquetas": tags,
+            "datos": datos, "etiquetas": tags, "descripcion": desc.get(o["clave"], ""),
             "criterios": {
                 "encaje": crit(enc, ([f"puesto: {rol}"] if rol else []) + [f"tema: {x}" for x in resto]),
                 "necesidad": crit(1.0, ["vacante publicada"]),
