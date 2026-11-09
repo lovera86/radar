@@ -1,0 +1,2120 @@
+[
+ {
+  "id": "20232947",
+  "expediente": "2026/I/095_P-1611.02.A.05",
+  "estado": "RES",
+  "titulo": "Contratación del servicio de asistencia técnica para el control fotogramétrico y batimétrico en las playas según DIA y para la generación de modelos para el control de los diques del Puerto Exterior e Interior de A Coruña. Campañas 2026-2027.",
+  "tipo": "2",
+  "cpv": [
+   "71351923",
+   "71354200"
+  ],
+  "region_nuts": "ES111",
+  "region": "A Coruña",
+  "organo": "Presidencia de la Autoridad Portuaria de A Coruña",
+  "importe": 114777.0,
+  "adjudicatario": "TOPCAD INGENIERIA SLU",
+  "nif": "B27245091",
+  "ciudad_empresa": "RIBADEO",
+  "fecha_adjudicacion": "2026-10-06",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=ZAP8biBnABC2gkLQ8TeYKA%3D%3D",
+  "actualizado": "2026-11-05T14:23:34.957+01:00",
+  "clave": "2026/I/095_P-1611.02.A.05|B27245091",
+  "puntuacion": 100,
+  "motivos": [
+   "fotogrametr",
+   "batimetr",
+   "CPV 71351923,71354200",
+   "A Coruña"
+  ]
+ },
+ {
+  "id": "20112939",
+  "expediente": "CMAYOR/2026/39Y25/0015",
+  "estado": "RES",
+  "titulo": "Servicio de gestión integral de la museografía y transporte de la exposición temporal \"Magdalena. Ni santa ni pecadora\" en el Museo de Bellas Artes de Valencia",
+  "tipo": "2",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES523",
+  "region": "Valencia/València",
+  "organo": "Conselleria de Educación, Cultura y Universidades",
+  "importe": 44368.22,
+  "adjudicatario": "ART I CLAR, S.L.",
+  "nif": "B98198906",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "2026-09-29",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=YM8Egm8NGqakU02jNGj1Fw%3D%3D",
+  "actualizado": "2026-11-02T09:00:00.000+01:00",
+  "clave": "CMAYOR/2026/39Y25/0015|B98198906",
+  "puntuacion": 85,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion",
+   "CPV 92521100"
+  ]
+ },
+ {
+  "id": "20077949",
+  "expediente": "2026-C07",
+  "estado": "RES",
+  "titulo": "Vuelo fotogramétrico digital a color con recubrimiento estereoscópico en el ámbito de la Comunidad Autónoma de Canarias.",
+  "tipo": "2",
+  "cpv": [
+   "71355100",
+   "71354200",
+   "71354100",
+   "72313000"
+  ],
+  "region_nuts": "ES70",
+  "region": "Canarias",
+  "organo": "Cartográfica de Canarias S.A.",
+  "importe": 380624.98,
+  "adjudicatario": "REGIONAL GEODATA AIR, S.A.",
+  "nif": "A38669735",
+  "ciudad_empresa": "Santa Cruz de Tenerife",
+  "fecha_adjudicacion": "2026-10-02",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=gP2DHVlgppX5Rey58Yagpg%3D%3D",
+  "actualizado": "2026-10-28T09:59:12.415+01:00",
+  "clave": "2026-C07|A38669735",
+  "puntuacion": 75,
+  "motivos": [
+   "fotogrametr",
+   "CPV 71355100,71354200,71354100"
+  ]
+ },
+ {
+  "id": "20153195",
+  "expediente": "26-P2-12",
+  "estado": "ADJ",
+  "titulo": "Ejecución proyecto «Musealización del espacio geológico-arquitectónico primer tramo galería suroeste. Adaptación espacio para exposiciones en Galerías Punta Begoña»",
+  "tipo": "3",
+  "cpv": [
+   "45212350"
+  ],
+  "region_nuts": "ES213",
+  "region": "",
+  "organo": "Fundación Punta Begoña-Patronato",
+  "importe": 100000.0,
+  "adjudicatario": "ZORROZUA Y ASOCIADOS S L",
+  "nif": "B95073839",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratacion.euskadi.eus/webkpe00-kpeperfi/es/contenidos/anuncio_contratacion/expjaso733372/es_doc/index.html",
+  "actualizado": "2026-10-21T21:11:42.664+02:00",
+  "clave": "26-P2-12|B95073839",
+  "puntuacion": 74,
+  "motivos": [
+   "musealiz",
+   "exposicion",
+   "exposiciones",
+   "ES21"
+  ]
+ },
+ {
+  "id": "20571135",
+  "expediente": "4327-341",
+  "estado": "RES",
+  "titulo": "O desenvolvemento da exposición temporal \"Jules Verne 200\"",
+  "tipo": "8",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES114",
+  "region": "Pontevedra",
+  "organo": "Junta de Gobierno del Ayuntamiento de Vigo",
+  "importe": 1699493.37,
+  "adjudicatario": "LAYERS OF REALITY, SL",
+  "nif": "****9809*",
+  "ciudad_empresa": "Barcelona",
+  "fecha_adjudicacion": "2026-09-25",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=nMqvyG9bYFeLAncw3qdZkA%3D%3D",
+  "actualizado": "2026-10-27T13:56:49.875+01:00",
+  "clave": "4327-341|****9809*",
+  "puntuacion": 72,
+  "motivos": [
+   "exposicion",
+   "CPV 92521100",
+   "Pontevedra"
+  ]
+ },
+ {
+  "id": "14555172",
+  "expediente": "08/2024.0-INF.1041",
+  "estado": "RES",
+  "titulo": "BIM GIS 2.0 y Desarrollo de aplicativos plataforma gemelo digital APC.",
+  "tipo": "2",
+  "cpv": [
+   "71356200"
+  ],
+  "region_nuts": "ES620",
+  "region": "Murcia",
+  "organo": "Autoridad Portuaria de Cartagena",
+  "importe": 1695820.0,
+  "adjudicatario": "teknes innovacion",
+  "nif": "B95544508",
+  "ciudad_empresa": "Asua-Erandio (Bizkaia)",
+  "fecha_adjudicacion": "2024-08-29",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=NviOHgnAU20aF6cS8TCh%2FA%3D%3D",
+  "actualizado": "2026-10-20T09:00:00.000+02:00",
+  "clave": "08/2024.0-INF.1041|B95544508",
+  "puntuacion": 70,
+  "motivos": [
+   "gemelo digital",
+   "bim"
+  ]
+ },
+ {
+  "id": "20276157",
+  "expediente": "MSA260093",
+  "estado": "ADJ",
+  "titulo": "Servicio de transporte de bienes culturales y museografía para la exposición temporal \"Alas para la guerra. Aratis y la Celtiberia\", en el Museo de León",
+  "tipo": "2",
+  "cpv": [
+   "60000000"
+  ],
+  "region_nuts": "ES413",
+  "region": "León",
+  "organo": "Dirección General de Patrimonio Cultural y Bellas Artes",
+  "importe": 43480.0,
+  "adjudicatario": "Dobelart Logistica S.L.",
+  "nif": "B86661873",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "2026-10-29",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Knq8utI3M%2FtPpzdqOdhuWg%3D%3D",
+  "actualizado": "2026-10-30T09:48:44.487+01:00",
+  "clave": "MSA260093|B86661873",
+  "puntuacion": 65,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion",
+   "León"
+  ]
+ },
+ {
+  "id": "20480867",
+  "expediente": "CYC/2026/82",
+  "estado": "RES",
+  "titulo": "Redacción del Proyecto, Dirección de obra y Coordinación de Seguridad y Salud para las obras de construcción de pista de atletismo",
+  "tipo": "2",
+  "cpv": [
+   "71222000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Junta de Gobierno del Ayuntamiento de Corvera de Asturias",
+  "importe": 28710.0,
+  "adjudicatario": "ALFESTAL SL",
+  "nif": "B85847168",
+  "ciudad_empresa": "MADRID",
+  "fecha_adjudicacion": "2026-10-08",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=jBPIW8l%2FO9OP%2Bo96UAV7cQ%3D%3D",
+  "actualizado": "2026-10-16T09:59:39.029+02:00",
+  "clave": "CYC/2026/82|B85847168",
+  "puntuacion": 65,
+  "motivos": [
+   "direccion de obra",
+   "redaccion del proyecto",
+   "coordinacion",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "19154750",
+  "expediente": "202600000020",
+  "estado": "RES",
+  "titulo": "Servicio de montaje, mantenimiento y desmontaje museográfico de la exposición temporal “MARTA MINUJÍN. LA MENESUNDA”.",
+  "tipo": "2",
+  "cpv": [
+   "79956000"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Dirección del Museo Nacional Centro de Arte Reina Sofía",
+  "importe": 226576.6,
+  "adjudicatario": "INTERVENTO 2 S.L.",
+  "nif": "B80690910",
+  "ciudad_empresa": "madrid",
+  "fecha_adjudicacion": "2026-05-22",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=%2FYU8p8BY7%2Ft70UvEyYJSGw%3D%3D",
+  "actualizado": "2026-10-29T14:09:49.397+01:00",
+  "clave": "202600000020|B80690910",
+  "puntuacion": 60,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion"
+  ]
+ },
+ {
+  "id": "19645891",
+  "expediente": "N1.119.010/0411",
+  "estado": "ADJ",
+  "titulo": "Servicio de asistencia técnica para la dirección de obras del proyecto de adecuación de los equipos electromecánicos, el aliviadero y la casa de administración de la presa de \"Los Alfilorios\", así como acondicionamiento de las instalaciones en el arroyo de La Mortera, TT.MM. de Morcín y Ribera de Arriba (Asturias).",
+  "tipo": "2",
+  "cpv": [
+   "71310000"
+  ],
+  "region_nuts": "ES12",
+  "region": "Principado de Asturias",
+  "organo": "Presidencia de la Confederación Hidrográfica del Cantábrico",
+  "importe": 112005.46,
+  "adjudicatario": "Grusamar Ingeniería y Consulting, S.L.U.",
+  "nif": "B83341933",
+  "ciudad_empresa": "A CORUÑA",
+  "fecha_adjudicacion": "2026-10-23",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=4MRiRcrUl2DXOjazN1Dw9Q%3D%3D",
+  "actualizado": "2026-10-26T10:49:56.040+01:00",
+  "clave": "N1.119.010/0411|B83341933",
+  "puntuacion": 60,
+  "motivos": [
+   "asistencia tecnica",
+   "direccion de obra",
+   "Principado de Asturias"
+  ]
+ },
+ {
+  "id": "20743015",
+  "expediente": "31661/2026",
+  "estado": "ADJ",
+  "titulo": "Servicios de exposición en museo, comprensivo de la gestión y ejecución de todas las prestaciones necesarias para la realización de la exposición temporal \"Los Siglos del Greco en el Museo de Santa Cruz\", en el municipio de Estepona",
+  "tipo": "2",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES617",
+  "region": "Málaga",
+  "organo": "Alcaldía del Ayuntamiento de Estepona",
+  "importe": 399900.0,
+  "adjudicatario": "EULEN, S.A.",
+  "nif": "A28517308",
+  "ciudad_empresa": "MADRID",
+  "fecha_adjudicacion": "2026-10-20",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=VQ25N3Uz9rN%2FP7lJ7Fu0SA%3D%3D",
+  "actualizado": "2026-10-21T12:27:33.113+02:00",
+  "clave": "31661/2026|A28517308",
+  "puntuacion": 60,
+  "motivos": [
+   "museo",
+   "exposicion",
+   "CPV 92521100"
+  ]
+ },
+ {
+  "id": "20040707",
+  "expediente": "MSA260069",
+  "estado": "RES",
+  "titulo": "Servicio de producción, montaje y desmontaje de la exposición temporal \"Alas para la guerra. Aratis y la Celtiberia\" en el Museo de León",
+  "tipo": "2",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES413",
+  "region": "León",
+  "organo": "Dirección General de Patrimonio Cultural y Bellas Artes",
+  "importe": 54564.4,
+  "adjudicatario": "Ovejero Sequeiro, SL",
+  "nif": "B10407096",
+  "ciudad_empresa": "Moraleja",
+  "fecha_adjudicacion": "2026-10-15",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=arqMgO60YSa7JOCXkOhcDg%3D%3D",
+  "actualizado": "2026-10-21T08:05:24.777+02:00",
+  "clave": "MSA260069|B10407096",
+  "puntuacion": 60,
+  "motivos": [
+   "museo",
+   "exposicion",
+   "CPV 92521100",
+   "León"
+  ]
+ },
+ {
+  "id": "20800413",
+  "expediente": "202507-07",
+  "estado": "RES",
+  "titulo": "Servicio de carpintería, montaje y desmontaje museográfico de la exposiciónI Baschi alla Biennale en Artium Museoa 1976-2026.",
+  "tipo": "2",
+  "cpv": [
+   "39154000"
+  ],
+  "region_nuts": "ES211",
+  "region": "",
+  "organo": "Fundación Artium de Álava-Directora",
+  "importe": 35979.0,
+  "adjudicatario": "GIROA, S.A.",
+  "nif": "A20071429",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratacion.euskadi.eus/webkpe00-kpeperfi/es/contenidos/anuncio_contratacion/expjaso744271/es_doc/index.html",
+  "actualizado": "2026-10-28T13:11:55.645+01:00",
+  "clave": "202507-07|A20071429",
+  "puntuacion": 60,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion",
+   "ES21"
+  ]
+ },
+ {
+  "id": "15964819",
+  "expediente": "24/ANT/58381",
+  "estado": "RES",
+  "titulo": "Obra de Rehabilitación y Museografía de la Sala Cero del Museo de la Universidad de Sevilla en el edificio Bien\r\nde Interés Cultural de la Antigua Fábrica de Tabacos",
+  "tipo": "3",
+  "cpv": [
+   "45214400"
+  ],
+  "region_nuts": "ES618",
+  "region": "Sevilla",
+  "organo": "Rectorado de la Universidad de Sevilla",
+  "importe": 1582426.49,
+  "adjudicatario": "ESTUDIOS Y EJECUCIONES, S.A.",
+  "nif": "A41189853",
+  "ciudad_empresa": "MORÓN DE LA FRONTERA",
+  "fecha_adjudicacion": "2024-12-05",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Kg3KZxJBEw9t5r0ngvMetA%3D%3D",
+  "actualizado": "2026-11-04T09:43:15.836+01:00",
+  "clave": "24/ANT/58381|A41189853",
+  "puntuacion": 58,
+  "motivos": [
+   "museograf",
+   "museo"
+  ]
+ },
+ {
+  "id": "17620208",
+  "expediente": "LIC-10117",
+  "estado": "RES",
+  "titulo": "Contratación de los servicios de redacción de los Proyectos Básico y de Ejecución, así como la Dirección Facultativa y la Coordinación de la Seguridad y Salud de las obras y la museografía para la implantación del Museo Banco de España en el Edificio Tradicional del Complejo Cibeles.",
+  "tipo": "2",
+  "cpv": [
+   "71000000"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Banco de España",
+  "importe": 2250000.0,
+  "adjudicatario": "Herreros Proskene Urculo BdE",
+  "nif": "B87001806",
+  "ciudad_empresa": "MADRID",
+  "fecha_adjudicacion": "2025-09-29",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=J%2Bi1KZr19upWhbmkna2nXQ%3D%3D",
+  "actualizado": "2026-10-23T10:38:29.311+02:00",
+  "clave": "LIC-10117|B87001806",
+  "puntuacion": 58,
+  "motivos": [
+   "museograf",
+   "museo"
+  ]
+ },
+ {
+  "id": "20836262",
+  "expediente": "PN20260508 PROG1",
+  "estado": "RES",
+  "titulo": "Contratación Servicio de Recogida y Porte de Obra, montaje, desmontaje, embalaje y transporte de dispersión del conjunto de obra artística para la exposición 06/26 producida por el Centro Niemeyer",
+  "tipo": "2",
+  "cpv": [
+   "60000000",
+   "92520000",
+   "92500000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Dirección General de la Fundación Centro Cultural Internacional Oscar Niemeyer-Principado de Asturias",
+  "importe": 43075.0,
+  "adjudicatario": "World Pack-Art Services SL",
+  "nif": "B86364932",
+  "ciudad_empresa": "Loeches",
+  "fecha_adjudicacion": "2026-05-22",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=QP%2F%2BUkxjrNBPpzdqOdhuWg%3D%3D",
+  "actualizado": "2026-11-04T17:23:00.954+01:00",
+  "clave": "PN20260508 PROG1|B86364932",
+  "puntuacion": 57,
+  "motivos": [
+   "exposicion",
+   "CPV 60000000,92520000,92500000",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20337912",
+  "expediente": "11898-106",
+  "estado": "RES",
+  "titulo": "O subministro, transporte, instalación, vixilancia, mantemento e desmonte dun Belén Monumental, orientado a un público adulto e infantil durante a Campaña do Nadal 2026-2027, así como o control de accesos á exposición situada no edificio municipal da Casa das Artes en Vigo ou noutro lugar de similares características a definir polo servizo de Comercio.",
+  "tipo": "2",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES114",
+  "region": "Pontevedra",
+  "organo": "Junta de Gobierno del Ayuntamiento de Vigo",
+  "importe": 81693.7,
+  "adjudicatario": "AGRUPACIÓN BELENISTA LA MORANA",
+  "nif": "G49180904",
+  "ciudad_empresa": "ZAMORA",
+  "fecha_adjudicacion": "2026-10-16",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=wHZSBDc6Q%2FWHCIsjvJ3rhQ%3D%3D",
+  "actualizado": "2026-10-28T08:18:05.938+01:00",
+  "clave": "11898-106|G49180904",
+  "puntuacion": 57,
+  "motivos": [
+   "exposicion",
+   "CPV 92521100",
+   "Pontevedra"
+  ]
+ },
+ {
+  "id": "16408811",
+  "expediente": "JS240069",
+  "estado": "RES",
+  "titulo": "Servicio de producción, montaje y desmontaje de la exposición temporal \"Alas para la guerra. Aratis y la Celtiberia\", a celebrar en el Museo Arqueológico Nacional",
+  "tipo": "2",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Junta de Contratación del Ministerio de Cultura",
+  "importe": 109000.0,
+  "adjudicatario": "STUDIO ETÉREA",
+  "nif": "F90279639",
+  "ciudad_empresa": "SEVILLA",
+  "fecha_adjudicacion": "2025-03-21",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=VkW3G%2FHixH4mMOlAXxDEjw%3D%3D",
+  "actualizado": "2026-11-06T08:28:02.243+01:00",
+  "clave": "JS240069|F90279639",
+  "puntuacion": 55,
+  "motivos": [
+   "museo",
+   "exposicion",
+   "CPV 92521100"
+  ]
+ },
+ {
+  "id": "19286109",
+  "expediente": "J260007",
+  "estado": "RES",
+  "titulo": "Servicio de producción, montaje y desmontaje de la exposición temporal 'A la sombra de Vulcano. Bronce romano en Hispania' en el Museo Nacional de Arte Romano de Mérida",
+  "tipo": "2",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES431",
+  "region": "Badajoz",
+  "organo": "Junta de Contratación del Ministerio de Cultura",
+  "importe": 220992.83,
+  "adjudicatario": "SIT PROYECTOS, DISEÑO  Y CONSERVACIÓN SL",
+  "nif": "B81027724",
+  "ciudad_empresa": "Coslada",
+  "fecha_adjudicacion": "2026-09-03",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=gM8lhm%2B4rd3E6P%2FuLemXRw%3D%3D",
+  "actualizado": "2026-10-30T08:05:34.317+01:00",
+  "clave": "J260007|B81027724",
+  "puntuacion": 55,
+  "motivos": [
+   "museo",
+   "exposicion",
+   "CPV 92521100"
+  ]
+ },
+ {
+  "id": "20426706",
+  "expediente": "202600000210",
+  "estado": "RES",
+  "titulo": "Servicio de montaje, mantenimiento y desmontaje museográfico de la exposición temporal ANNE TRUITT",
+  "tipo": "2",
+  "cpv": [
+   "79956000"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Dirección del Museo Nacional Centro de Arte Reina Sofía",
+  "importe": 69269.74,
+  "adjudicatario": "INTERVENTO 2 S.L.",
+  "nif": "B80690910",
+  "ciudad_empresa": "madrid",
+  "fecha_adjudicacion": "2026-10-16",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=nLDy0EUbdGbL1rX3q%2FMAPA%3D%3D",
+  "actualizado": "2026-10-22T09:30:44.605+02:00",
+  "clave": "202600000210|B80690910",
+  "puntuacion": 55,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion"
+  ]
+ },
+ {
+  "id": "20658867",
+  "expediente": "SDA.01/24 CE.13-CAT.9",
+  "estado": "RES",
+  "titulo": "Contrato específico suministro del SDA.01/24: Suministro e instalación Dron espacios confinados con Lidar topográfico en el contexto de la ampliación proyecto Ambulancia-Laboratorio Caracterización Materiales Medio Ambiente, Agricultura y Patrimonio Histórico, cofinanciado FEDER en el Plan Estatal de Investigación Científica y Técnica y de Innovación 2021-2023 (EQC2024-008347-P) en UPO",
+  "tipo": "1",
+  "cpv": [
+   "33696500",
+   "38000000"
+  ],
+  "region_nuts": "ES618",
+  "region": "Sevilla",
+  "organo": "Rectorado de la Universidad Pablo de Olavide",
+  "importe": 114050.0,
+  "adjudicatario": "TECNITOP S.A.",
+  "nif": "A99003477",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "2026-10-05",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=kzQbLIxT5eGP%2Bo96UAV7cQ%3D%3D",
+  "actualizado": "2026-10-16T15:17:23.253+02:00",
+  "clave": "SDA.01/24 CE.13-CAT.9|A99003477",
+  "puntuacion": 55,
+  "motivos": [
+   "lidar",
+   "topograf",
+   "dron"
+  ]
+ },
+ {
+  "id": "20422671",
+  "expediente": "2026/096 (95/2026/CONT)",
+  "estado": "RES",
+  "titulo": "La prestació del servei de tècnic en la documentació museogràfica de les col·leccions del museu, principalment per desenvolupar projectes d'exposicions del Museu de Ciències Naturals de Granollers i del servei del Centre de Documentació del Montseny en l'àmbit de les ciències naturals: tasques de documentació, coordinació amb la Diputació de Barcelona per tasques d'aquest servei i atenció de consultes especialitzades del fons documental",
+  "tipo": "2",
+  "cpv": [
+   "92500000"
+  ],
+  "region_nuts": "ES511",
+  "region": "",
+  "organo": "Patronat del Museu de Granollers",
+  "importe": 24897.52,
+  "adjudicatario": "Belén Fernández-Villacañas Cuesta",
+  "nif": "52171650Z",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contractaciopublica.cat/ca/detall-publicacio/be9a1c2d-0c75-4b8b-85ca-f058b9a8b50e/300918740",
+  "actualizado": "2026-10-26T14:02:57.491+01:00",
+  "clave": "2026/096 (95/2026/CONT)|52171650Z",
+  "puntuacion": 55,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion"
+  ]
+ },
+ {
+  "id": "19953141",
+  "expediente": "PcPG/2026/828473",
+  "estado": "RES",
+  "titulo": "2042/2026 Licitación para contratar la obra de ampliación auditorio para nueva sala de exposiciones y anfiteatro(cofinanciado PADRE)",
+  "tipo": "3",
+  "cpv": [
+   "45262300"
+  ],
+  "region_nuts": "ES114",
+  "region": "",
+  "organo": "Concello de O Porriño",
+  "importe": 1056318.43,
+  "adjudicatario": "CONSTRUCCIONES CASTRO-FIGUEIRO SL",
+  "nif": "B36816189",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratosdegalicia.gal/licitacion?N=828473",
+  "actualizado": "2026-10-29T10:11:33.341+01:00",
+  "clave": "PcPG/2026/828473|B36816189",
+  "puntuacion": 54,
+  "motivos": [
+   "exposicion",
+   "exposiciones",
+   "ES11"
+  ]
+ },
+ {
+  "id": "20788318",
+  "expediente": "2026044200",
+  "estado": "ADJ",
+  "titulo": "Contrato específico SDA Transportes de obras Museo (Categoría I): Transporte y montaje de la colección permanente de arte románica en el edificio Sarmiento del Museo de Pontevedra",
+  "tipo": "2",
+  "cpv": [
+   "60100000",
+   "92521100",
+   "79950000",
+   "63500000",
+   "63524000",
+   "63700000",
+   "63100000",
+   "60400000"
+  ],
+  "region_nuts": "ES114",
+  "region": "Pontevedra",
+  "organo": "Presidencia de la Diputación Provincial de Pontevedra",
+  "importe": 29845.0,
+  "adjudicatario": "Daexga Servicios Integrales de Galicia S.L",
+  "nif": "****4059*",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "2026-10-23",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=mNl3q9ur80Hi0Kd8%2Brcp6w%3D%3D",
+  "actualizado": "2026-10-27T09:58:36.693+01:00",
+  "clave": "2026044200|****4059*",
+  "puntuacion": 53,
+  "motivos": [
+   "museo",
+   "CPV 60100000,92521100,79950000",
+   "Pontevedra"
+  ]
+ },
+ {
+  "id": "20767566",
+  "expediente": "1276/2026",
+  "estado": "RES",
+  "titulo": "Servicio de monitorización de instalaciones de la Autoridad Portuaria de Avilés mediante plataforma Clomos.",
+  "tipo": "2",
+  "cpv": [
+   "72212421"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Autoridad Portuaria de Avilés",
+  "importe": 30782.5,
+  "adjudicatario": "D&A INNOVATIVE SYSTEMS, S.L.",
+  "nif": "B95790317",
+  "ciudad_empresa": "ERANDIO",
+  "fecha_adjudicacion": "2026-10-23",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=JaUhKibQmkNSYrkJkLlFdw%3D%3D",
+  "actualizado": "2026-10-27T07:42:16.909+01:00",
+  "clave": "1276/2026|B95790317",
+  "puntuacion": 53,
+  "motivos": [
+   "plataforma",
+   "monitorizacion",
+   "CPV 72212421",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "13061476",
+  "expediente": "300/2023/00373",
+  "estado": "RES",
+  "titulo": "Servicio de atención e información al público en la red de museos municipales dependientes de la Dirección General de Bibliotecas, Archivos y Museos",
+  "tipo": "2",
+  "cpv": [
+   "92521000"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Área de Gobierno de Cultura, Turismo y Deporte",
+  "importe": 1292102.58,
+  "adjudicatario": "SPEZIAL OUTSOURCING, S.L",
+  "nif": "B16864837",
+  "ciudad_empresa": "Móstoles",
+  "fecha_adjudicacion": "2024-04-09",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=PrHWJhtULj4eIBJRHQiPkQ%3D%3D",
+  "actualizado": "2026-10-15T14:40:08.986+02:00",
+  "clave": "300/2023/00373|B16864837",
+  "puntuacion": 53,
+  "motivos": [
+   "museo",
+   "CPV 92521000"
+  ]
+ },
+ {
+  "id": "12751594",
+  "expediente": "2022000353",
+  "estado": "RES",
+  "titulo": "Servicios necesarios para la puesta en marcha del Sistema de Información de Laboratorio corporativo en el ámbito de salud del Principado de Asturias",
+  "tipo": "2",
+  "cpv": [
+   "72000000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Consejería de Salud",
+  "importe": 2159200.0,
+  "adjudicatario": "UTE INDRA SOLUCIONES TECNOLOGIAS DE LA INFOMACION S.L.U.-CLI",
+  "nif": "U56708779",
+  "ciudad_empresa": "ALCOBENDAS",
+  "fecha_adjudicacion": "2023-11-03",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=qdIA7EbFNqdPpzdqOdhuWg%3D%3D",
+  "actualizado": "2026-11-04T10:18:13.794+01:00",
+  "clave": "2022000353|U56708779",
+  "puntuacion": 50,
+  "motivos": [
+   "sistema de informacion",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20040745",
+  "expediente": "C.1714",
+  "estado": "RES",
+  "titulo": "El desarrollo, implantación e integración de un sistema de Gemelo Digital para el Parque Tecnológico Urbano de Rodes, situado en Alcoy, que permita representar de forma digital el funcionamiento del edificio mediante la integración de un modelo tridimensional, los sistemas de gestión del edificio, los datos procedentes de sensores y las plataformas de gestión actualmente operativas.",
+  "tipo": "2",
+  "cpv": [
+   "72200000",
+   "48000000",
+   "72222300",
+   "72000000"
+  ],
+  "region_nuts": "ES521",
+  "region": "Alicante/Alacant",
+  "organo": "Junta de Gobierno del Ayuntamiento de Alcoy",
+  "importe": 57303.15,
+  "adjudicatario": "TECHFRIENDLY S.L.",
+  "nif": "B95886206",
+  "ciudad_empresa": "Bilbao",
+  "fecha_adjudicacion": "2026-10-16",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=zqZ5cWcVzKYXhk1FZxEyvw%3D%3D",
+  "actualizado": "2026-10-28T09:42:46.323+01:00",
+  "clave": "C.1714|B95886206",
+  "puntuacion": 50,
+  "motivos": [
+   "gemelo digital",
+   "CPV 72200000,48000000,72222300"
+  ]
+ },
+ {
+  "id": "8930463",
+  "expediente": "04101/2021/201-SER",
+  "estado": "RES",
+  "titulo": "Servicio de musealización de la Alquería Félix situada en el Parque de Marxalenes",
+  "tipo": "2",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES523",
+  "region": "Valencia/València",
+  "organo": "Concejalía Delegada de Contratación del Ajuntament de València",
+  "importe": 14000.0,
+  "adjudicatario": "Trazacultura",
+  "nif": "B99217333",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "2022-03-10",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=jH6rEhX4lYN7h85%2Fpmmsfw%3D%3D",
+  "actualizado": "2026-10-21T14:05:06.626+02:00",
+  "clave": "04101/2021/201-SER|B99217333",
+  "puntuacion": 50,
+  "motivos": [
+   "musealiz",
+   "CPV 92521100"
+  ]
+ },
+ {
+  "id": "20276428",
+  "expediente": "MSA260094",
+  "estado": "ADJ",
+  "titulo": "Servicio de producción, montaje y desmontaje de la exposición temporal \"La ilusión de la simetría. Pedro Lasch\" en el Museo de América.",
+  "tipo": "2",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Dirección General de Patrimonio Cultural y Bellas Artes",
+  "importe": 33990.0,
+  "adjudicatario": "Galipat Servizos Culturais S.L.",
+  "nif": "B70381074",
+  "ciudad_empresa": "Campo Lameiro",
+  "fecha_adjudicacion": "2026-10-16",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Yn7dvHM5VDucTfjQf3USOg%3D%3D",
+  "actualizado": "2026-10-19T11:16:35.224+02:00",
+  "clave": "MSA260094|B70381074",
+  "puntuacion": 50,
+  "motivos": [
+   "museo",
+   "exposicion",
+   "CPV 92521100"
+  ]
+ },
+ {
+  "id": "20481297",
+  "expediente": "670/2026",
+  "estado": "RES",
+  "titulo": "Contrato privado con DISALDOR S.L, para la realización de la exposición La ciencia de los superhéroes. Cuando la física, la biología y la ingeniería se convierten en súper-poderes en el Museo de la Ciencia de Valladolid, del 14 de noviembre de 2026 al 13 de junio de 2027.",
+  "tipo": "8",
+  "cpv": [
+   "92310000",
+   "92521100"
+  ],
+  "region_nuts": "ES418",
+  "region": "Valladolid",
+  "organo": "Presidencia de la Fundación Municipal de Cultura",
+  "importe": 42500.0,
+  "adjudicatario": "DISALDOR S.L.",
+  "nif": "B47718713",
+  "ciudad_empresa": "SIMANCAS - (VALLADOLID)",
+  "fecha_adjudicacion": "2026-10-01",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=VdktEYdgC3R6nTs9LZ9RhQ%3D%3D",
+  "actualizado": "2026-10-16T09:31:45.562+02:00",
+  "clave": "670/2026|B47718713",
+  "puntuacion": 50,
+  "motivos": [
+   "museo",
+   "exposicion",
+   "CPV 92310000,92521100"
+  ]
+ },
+ {
+  "id": "16947877",
+  "expediente": "ADM1-2025-0870 (AHI-038/25-K06)",
+  "estado": "RES",
+  "titulo": "Actualización y mejora de la cartografía a escala 1:500 y su conversión a una base de datos geográfica BTU500 de varios núcleos de población",
+  "tipo": "2",
+  "cpv": [
+   "71354100"
+  ],
+  "region_nuts": "ES211",
+  "region": "",
+  "organo": "Diputación Foral de Álava-Diputado/a Foral deEquilibrio Territorial",
+  "importe": 54958.69,
+  "adjudicatario": "ESTUDIO CARTOGRÁFICO GEA, S.A.",
+  "nif": "A41781774",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratacion.euskadi.eus/webkpe00-kpeperfi/es/contenidos/anuncio_contratacion/expjaso598209/es_doc/index.html",
+  "actualizado": "2026-11-03T13:11:49.259+01:00",
+  "clave": "ADM1-2025-0870 (AHI-038/25-K06)|A41781774",
+  "puntuacion": 50,
+  "motivos": [
+   "cartograf",
+   "CPV 71354100",
+   "ES21"
+  ]
+ },
+ {
+  "id": "20289683",
+  "expediente": "2026.09",
+  "estado": "ADJ",
+  "titulo": "Servicios técnicos especializados de desarrollo de software, adaptación de gráficos y servicio de realidad aumentada/ realidad virtual, así como la operación sobre los mismos en producciones audiovisuales para elecciones y eventos similares",
+  "tipo": "2",
+  "cpv": [
+   "92220000"
+  ],
+  "region_nuts": "ES213",
+  "region": "",
+  "organo": "Grupo Euskal Irrati Telebista-Director/a General de EITB",
+  "importe": 222000.0,
+  "adjudicatario": "G93 TELECOMUNICACIONES, S.L.",
+  "nif": "B20148623",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratacion.euskadi.eus/webkpe00-kpeperfi/es/contenidos/anuncio_contratacion/expjaso736333/es_doc/index.html",
+  "actualizado": "2026-10-26T13:11:58.637+01:00",
+  "clave": "2026.09|B20148623",
+  "puntuacion": 50,
+  "motivos": [
+   "realidad virtual",
+   "realidad aumentada",
+   "ES21"
+  ]
+ },
+ {
+  "id": "20014854",
+  "expediente": "07/M/OB/2026",
+  "estado": "ADJ",
+  "titulo": "Adecuación museográfica del recinto arqueologico de Morería en Mérida",
+  "tipo": "3",
+  "cpv": [
+   "45212314"
+  ],
+  "region_nuts": "ES431",
+  "region": "Badajoz",
+  "organo": "Dirección del Consorcio Ciudad Monumental de Mérida",
+  "importe": 275000.0,
+  "adjudicatario": "AL-SENERA OBRAS Y SERVICIOS S.L.U.",
+  "nif": "B06610901",
+  "ciudad_empresa": "Mérida",
+  "fecha_adjudicacion": "2026-10-23",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=pr%2By6IXPDajLIx6q1oPaMg%3D%3D",
+  "actualizado": "2026-10-26T09:24:26.979+01:00",
+  "clave": "07/M/OB/2026|B06610901",
+  "puntuacion": 48,
+  "motivos": [
+   "museograf",
+   "museo"
+  ]
+ },
+ {
+  "id": "20122810",
+  "expediente": "102026/02/B",
+  "estado": "ADJ",
+  "titulo": "Contratación de un servicio de dinamización cultural, de diseño, producción, difusión y ejecución de visitas, y otras actividades didácticas, educativas y/o divulgativas, así como para la gestión y coordinación de eventos especiales para BILBAO BIZKAIA MUSEOAK",
+  "tipo": "2",
+  "cpv": [
+   "92521000"
+  ],
+  "region_nuts": "ES213",
+  "region": "",
+  "organo": "Bilbao Bizkaia Museoak, SL-Consejo de administración",
+  "importe": 106000.0,
+  "adjudicatario": "GALIPAT SERVIZOS CULTURAIS SL",
+  "nif": "B70381074",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratacion.euskadi.eus/webkpe00-kpeperfi/es/contenidos/anuncio_contratacion/expjaso724021/es_doc/index.html",
+  "actualizado": "2026-10-22T17:11:27.991+02:00",
+  "clave": "102026/02/B|B70381074",
+  "puntuacion": 48,
+  "motivos": [
+   "museo",
+   "CPV 92521000",
+   "ES21"
+  ]
+ },
+ {
+  "id": "20854529",
+  "expediente": "263/2026",
+  "estado": "ADJ",
+  "titulo": "Realización de la exposición temporal SIGENA MÁGICA ALJAFERÍA en el palacio de la Aljafería.",
+  "tipo": "8",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES243",
+  "region": "Zaragoza",
+  "organo": "Mesa de las Cortes de Aragón",
+  "importe": 263650.0,
+  "adjudicatario": "DREAMGITAL CREATIVE WORKS, S.L.",
+  "nif": "B65430480",
+  "ciudad_empresa": "Villanueva de Sigena",
+  "fecha_adjudicacion": "2026-11-04",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=mSQoM33tZzPCfVQHDepjGQ%3D%3D",
+  "actualizado": "2026-11-06T09:50:23.432+01:00",
+  "clave": "263/2026|B65430480",
+  "puntuacion": 47,
+  "motivos": [
+   "exposicion",
+   "CPV 92521100"
+  ]
+ },
+ {
+  "id": "20529630",
+  "expediente": "ICEC-2026-916",
+  "estado": "ADJ",
+  "titulo": "Serveis de muntatge, manteniment, desmuntatge i transport de les exposicions que es portaran a terme als diferents espais del centre d'arts Santa Mònica.",
+  "tipo": "2",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES511",
+  "region": "",
+  "organo": "Institut Català de les Empreses Culturals",
+  "importe": 163298.0,
+  "adjudicatario": "GROP ABACUS UTE",
+  "nif": "U05851738",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contractaciopublica.cat/ca/detall-publicacio/3b60a7b4-8732-4797-a841-d164d0d55cbf/300930692",
+  "actualizado": "2026-11-05T18:01:12.507+01:00",
+  "clave": "ICEC-2026-916|U05851738",
+  "puntuacion": 47,
+  "motivos": [
+   "exposicion",
+   "CPV 92521100"
+  ]
+ },
+ {
+  "id": "15956359",
+  "expediente": "1415/2024",
+  "estado": "ADJ",
+  "titulo": "Asistencia técnica en la redacción e implantación del plan estratégico 2026-2031",
+  "tipo": "2",
+  "cpv": [
+   "72224000"
+  ],
+  "region_nuts": "ES111",
+  "region": "A Coruña",
+  "organo": "Presidencia de la Autoridad Portuaria de Ferrol San Cibrao",
+  "importe": 156900.0,
+  "adjudicatario": "MCVALNERA-CO-Enable, UTE",
+  "nif": "311676",
+  "ciudad_empresa": "SANTANDER",
+  "fecha_adjudicacion": "2026-11-02",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=wfFtha8np916nTs9LZ9RhQ%3D%3D",
+  "actualizado": "2026-11-04T11:11:18.419+01:00",
+  "clave": "1415/2024|311676",
+  "puntuacion": 45,
+  "motivos": [
+   "CPV 72224000",
+   "A Coruña"
+  ]
+ },
+ {
+  "id": "18723808",
+  "expediente": "994/2025",
+  "estado": "RES",
+  "titulo": "La necesidad de llevar a cabo la obra de “RESTAURACIÓN Y MUSEALIZACIÓN DE LA SERRERÍA DE MÁRMOL DE LOS PARDO”, según Proyecto Básico y de Ejecución redactado por Pastor Vázquez Arquitectos S.L.P., y aprobado por Resolución de la Alcaldía nº 2025-0533 de fecha 16-12-2025.",
+  "tipo": "3",
+  "cpv": [
+   "45454100"
+  ],
+  "region_nuts": "ES611",
+  "region": "Almería",
+  "organo": "Alcaldía del Ayuntamiento de Macael",
+  "importe": 135917.72,
+  "adjudicatario": "MARTIZOS SOLUTIONS, SL",
+  "nif": "B16815243",
+  "ciudad_empresa": "ALBOX",
+  "fecha_adjudicacion": "2026-02-03",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=pF39k%2FEh41kZDGvgaZEVxQ%3D%3D",
+  "actualizado": "2026-11-03T09:54:26.327+01:00",
+  "clave": "994/2025|B16815243",
+  "puntuacion": 45,
+  "motivos": [
+   "musealiz"
+  ]
+ },
+ {
+  "id": "20077776",
+  "expediente": "CMAYOR/2026/CMPD0/0036",
+  "estado": "ADJ",
+  "titulo": "Servicio técnico especializado de levantamiento BIM geométrico/documental del Circuit Ricardo Tormo.",
+  "tipo": "2",
+  "cpv": [
+   "71354100",
+   "71250000",
+   "71355200"
+  ],
+  "region_nuts": "ES523",
+  "region": "Valencia/València",
+  "organo": "Dirección General del Circuito del Motor y Promoción Deportiva S.A.",
+  "importe": 28985.0,
+  "adjudicatario": "Quantia Ingeniería y Consultoría, S.L.",
+  "nif": "B56461288",
+  "ciudad_empresa": "Málaga",
+  "fecha_adjudicacion": "2026-11-02",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=PY723HiqvLb5Rey58Yagpg%3D%3D",
+  "actualizado": "2026-11-02T13:56:07.231+01:00",
+  "clave": "CMAYOR/2026/CMPD0/0036|B56461288",
+  "puntuacion": 45,
+  "motivos": [
+   "bim",
+   "CPV 71354100,71250000,71355200"
+  ]
+ },
+ {
+  "id": "20112681",
+  "expediente": "2026000629",
+  "estado": "ADJ",
+  "titulo": "Reparación del dique divisorio del puerto de Navia",
+  "tipo": "3",
+  "cpv": [
+   "45244000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Consejería de Movilidad, Medio Ambiente y Gestión de Emergencias del Principado de Asturias",
+  "importe": 516793.02,
+  "adjudicatario": "MARCOR XOVE SL",
+  "nif": "B27224740",
+  "ciudad_empresa": "VIVEIRO",
+  "fecha_adjudicacion": "2026-10-27",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=yPl14HbGVZ0IYE3ZiZ%2BxmQ%3D%3D",
+  "actualizado": "2026-10-27T09:36:18.044+01:00",
+  "clave": "2026000629|B27224740",
+  "puntuacion": 45,
+  "motivos": [
+   "puerto",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "18876811",
+  "expediente": "25PFOB105",
+  "estado": "RES",
+  "titulo": "Obras de Restauración Hidrológico-Forestal del incendio de Somiedo (Asturias).",
+  "tipo": "3",
+  "cpv": [
+   "45112330",
+   "45000000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Dirección General de Biodiversidad, Bosques y Desertificación",
+  "importe": 207170.69,
+  "adjudicatario": "Medioambiental Valledor S.L",
+  "nif": "B335444925",
+  "ciudad_empresa": "Cangas del Narcea (Asturias)",
+  "fecha_adjudicacion": "2025-11-17",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=BbBF2Hmq%2Fcz5Rey58Yagpg%3D%3D",
+  "actualizado": "2026-10-23T15:43:47.280+02:00",
+  "clave": "25PFOB105|B335444925",
+  "puntuacion": 45,
+  "motivos": [
+   "forestal",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20571323",
+  "expediente": "579/2026",
+  "estado": "RES",
+  "titulo": "Confección de cartografía digital del callejero municipal y elaboración y colocación  de placas de identificación",
+  "tipo": "1",
+  "cpv": [
+   "34992200",
+   "71354100"
+  ],
+  "region_nuts": "ES113",
+  "region": "Ourense",
+  "organo": "Alcaldía del Ayuntamiento de Vilamartín de Valdeorras",
+  "importe": 23140.49,
+  "adjudicatario": "CATOURE, S.L.",
+  "nif": "B32116188",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "2026-10-19",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=ZcSx8ndXw9tVq4S9zvaQpQ%3D%3D",
+  "actualizado": "2026-10-21T10:43:04.363+02:00",
+  "clave": "579/2026|B32116188",
+  "puntuacion": 45,
+  "motivos": [
+   "cartograf",
+   "CPV 34992200,71354100",
+   "Ourense"
+  ]
+ },
+ {
+  "id": "20743423",
+  "expediente": "129221L/2026",
+  "estado": "RES",
+  "titulo": "Contrato basado en el Acuerdo Marco para la prestación del servicio de asistencia técnica para la inspección tributaria y procedimiento sancionador por infracciones tributarias a través de la Central de Contratación de la FEMP",
+  "tipo": "2",
+  "cpv": [
+   "75130000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Junta de Gobierno del Ayuntamiento de Gijón",
+  "importe": 239583.47,
+  "adjudicatario": "COORDINADORA DE GESTIÓN DE INGRESOS, SA",
+  "nif": "A81982225",
+  "ciudad_empresa": "Sevilla",
+  "fecha_adjudicacion": "2026-10-13",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=N83rfodd0cs%2Bk2oCbDosIw%3D%3D",
+  "actualizado": "2026-10-21T09:01:52.513+02:00",
+  "clave": "129221L/2026|A81982225",
+  "puntuacion": 45,
+  "motivos": [
+   "asistencia tecnica",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20529572",
+  "expediente": "06-7-9.01-0066/2026",
+  "estado": "ADJ",
+  "titulo": "Elaboración de cartografía de movimientos del terreno en la Comunidad Autónoma de La Rioja",
+  "tipo": "2",
+  "cpv": [
+   "71354000",
+   "71351200"
+  ],
+  "region_nuts": "ES230",
+  "region": "",
+  "organo": "Subdirección General de Emergencias y Protección Civil, Dirección General de Justicia eInterior, Consejería de Salud y Políticas Sociales",
+  "importe": 73800.0,
+  "adjudicatario": "GEEA GEOLOGOS, S.L.",
+  "nif": "B31731250",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.larioja.org/contratacion-publica/es/licitaciones/consulta-expedientes?homepage=?p_colateral%3D06-7-9.01-0066%2F2026%26p_dia_ini%3D04%26p_mes_ini%3D11%26p_ano_ini%3D2026%26p_dia_fin%3D04%26p_mes_fin%3D11%26p_ano_fin%3D2026%26p_todas%3DN",
+  "actualizado": "2026-11-05T13:27:37.286+01:00",
+  "clave": "06-7-9.01-0066/2026|B31731250",
+  "puntuacion": 45,
+  "motivos": [
+   "cartograf",
+   "CPV 71354000,71351200"
+  ]
+ },
+ {
+  "id": "18868716",
+  "expediente": "CONTR 2025 0000299043",
+  "estado": "RES",
+  "titulo": "at rd.3/2023 ctriterios tec-san calidad agua contrl y consumo",
+  "tipo": "2",
+  "cpv": [
+   "71356400",
+   "71353100",
+   "71356300",
+   "71313000",
+   "71356200",
+   "71354400"
+  ],
+  "region_nuts": "ES61",
+  "region": "",
+  "organo": "Consejería de Agricultura, Pesca, Agua y Desarrollo Rural. Secretaría General de Agua (En Transición)",
+  "importe": 945914.72,
+  "adjudicatario": "INTECSA ENGINEERING GROUP, S.A.U",
+  "nif": "A28139111",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.juntadeandalucia.es/haciendayadministracionpublica/apl/pdc_sirec/perfiles-licitaciones/detalle-licitacion.jsf?idExpediente=908503",
+  "actualizado": "2026-11-03T10:42:01.069+01:00",
+  "clave": "CONTR 2025 0000299043|A28139111",
+  "puntuacion": 45,
+  "motivos": [
+   "CPV 71356400,71353100,71356300"
+  ]
+ },
+ {
+  "id": "19861699",
+  "expediente": "JS260032",
+  "estado": "RES",
+  "titulo": "Servicio de producción, montaje y desmontaje de la exposición temporal El Antiguo Egipto entre nosotros. 25 años del Proyecto Djehuty en Luxor, en el Arqueológico Nacional",
+  "tipo": "2",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Junta de Contratación del Ministerio de Cultura",
+  "importe": 84800.44,
+  "adjudicatario": "STUDIO ETÉREA",
+  "nif": "F90279639",
+  "ciudad_empresa": "SEVILLA",
+  "fecha_adjudicacion": "2026-10-23",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=GJO%2FwIukF6YXhk1FZxEyvw%3D%3D",
+  "actualizado": "2026-11-04T14:11:00.859+01:00",
+  "clave": "JS260032|F90279639",
+  "puntuacion": 42,
+  "motivos": [
+   "exposicion",
+   "CPV 92521100"
+  ]
+ },
+ {
+  "id": "20697736",
+  "expediente": "111/26/MUV",
+  "estado": "RES",
+  "titulo": "Exhibición temporal de la exposición \"Memphis (1981-1986)\".",
+  "tipo": "8",
+  "cpv": [
+   "92521100"
+  ],
+  "region_nuts": "ES523",
+  "region": "Valencia/València",
+  "organo": "Presidencia de la Diputación Provincial de Valencia",
+  "importe": 85000.0,
+  "adjudicatario": "Aire Bianco SL",
+  "nif": "B98616253",
+  "ciudad_empresa": "EL VERGER - ALICANTE",
+  "fecha_adjudicacion": "2026-10-13",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=01oVxtgjURUeC9GJQOEBkQ%3D%3D",
+  "actualizado": "2026-10-15T14:53:56.547+02:00",
+  "clave": "111/26/MUV|B98616253",
+  "puntuacion": 42,
+  "motivos": [
+   "exposicion",
+   "CPV 92521100"
+  ]
+ },
+ {
+  "id": "20068004",
+  "expediente": "LI35SM26",
+  "estado": "RES",
+  "titulo": "LI35SM26-Servicios didácticos",
+  "tipo": "2",
+  "cpv": [
+   "92521000"
+  ],
+  "region_nuts": "ES413",
+  "region": "León",
+  "organo": "Fundación Siglo para el Turismo y las Artes de Castilla y León",
+  "importe": 36500.0,
+  "adjudicatario": "EVENTO ORGANIZACION DE SERVICIOS PLENOS SL",
+  "nif": "B47353867",
+  "ciudad_empresa": "VALLADOLID",
+  "fecha_adjudicacion": "2026-10-02",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=U%2BG0KnK7imukU02jNGj1Fw%3D%3D",
+  "actualizado": "2026-11-03T08:24:55.846+01:00",
+  "clave": "LI35SM26|B47353867",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 92521000",
+   "León"
+  ]
+ },
+ {
+  "id": "19046049",
+  "expediente": "FPNCYL-12/2026",
+  "estado": "RES",
+  "titulo": "Ejecución del proyecto de mejora de la dotación expositiva de la Casa del Parque Hoces del Alto Ebro y Rudrón, (Burgos) financiado por el FONDO EUROPEO DE DESARROLLO REGIONAL.",
+  "tipo": "2",
+  "cpv": [
+   "92521100",
+   "39154000"
+  ],
+  "region_nuts": "ES412",
+  "region": "Burgos",
+  "organo": "Fundación del Patrimonio Natural de Castilla y León",
+  "importe": 469000.0,
+  "adjudicatario": "AMAZING UP INGENIERIA INTERACTIVA DEL OCIO SL",
+  "nif": "B98619281",
+  "ciudad_empresa": "VALENCIA",
+  "fecha_adjudicacion": "2026-05-15",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=yERo52vNefjgL1BHd3qjQA%3D%3D",
+  "actualizado": "2026-11-02T09:00:00.000+01:00",
+  "clave": "FPNCYL-12/2026|B98619281",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 92521100,39154000"
+  ]
+ },
+ {
+  "id": "19035161",
+  "expediente": "TSA0082645",
+  "estado": "RES",
+  "titulo": "Servicio de Consultoría y Asistencia como responsable de Seguridad en fase de explotación de los túneles de la red de carreteras del Principado de Asturias.",
+  "tipo": "2",
+  "cpv": [
+   "71311000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Empresa de Transformación Agraria S.A.,S.M.E., M.P., (TRAGSA)",
+  "importe": 166842.0,
+  "adjudicatario": "TEKIA INGENIEROS, S.A.",
+  "nif": "A81951717",
+  "ciudad_empresa": "Las Rozas",
+  "fecha_adjudicacion": "2026-08-26",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=QgcYuVXXg%2Fw%2Bk2oCbDosIw%3D%3D",
+  "actualizado": "2026-10-28T08:19:30.770+01:00",
+  "clave": "TSA0082645|A81951717",
+  "puntuacion": 40,
+  "motivos": [
+   "consultoria",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20742683",
+  "expediente": "3.26/27506.0050",
+  "estado": "RES",
+  "titulo": "Asistencia técnica para el control de calidad, cuantitativo y cualitativo de las obras del proyecto de supresión de paso a nivel p.k. 375/775 de la línea férrea Oviedo – llanes. T.m. de parres (Asturias)",
+  "tipo": "2",
+  "cpv": [
+   "71300000"
+  ],
+  "region_nuts": "ES120",
+  "region": "",
+  "organo": "ADIF - Presidencia",
+  "importe": 95068.78,
+  "adjudicatario": "Oficina Tecnica De Estudios Y Contr",
+  "nif": "A28270122",
+  "ciudad_empresa": "Alcobendas",
+  "fecha_adjudicacion": "2026-09-29",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=GVkNcvGFWINQFSeKCRun4Q%3D%3D",
+  "actualizado": "2026-10-21T21:05:18.393+02:00",
+  "clave": "3.26/27506.0050|A28270122",
+  "puntuacion": 40,
+  "motivos": [
+   "asistencia tecnica",
+   "ES12"
+  ]
+ },
+ {
+  "id": "20269590",
+  "expediente": "2026/AR21U/00001676E",
+  "estado": "ADJ",
+  "titulo": "AM para asistencia técnica especializada para el desarrollo y gobernanza de modelos de organización y gestión del talento en la Armada",
+  "tipo": "2",
+  "cpv": [
+   "72224000",
+   "79411000"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Intendencia de Madrid",
+  "importe": 2165000.0,
+  "adjudicatario": "McKinsey & Company S.L.U",
+  "nif": "B28447431",
+  "ciudad_empresa": "Madrid",
+  "fecha_adjudicacion": "2026-10-21",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=P5BOrND98AEzjChw4z%2FXvw%3D%3D",
+  "actualizado": "2026-10-21T08:59:07.744+02:00",
+  "clave": "2026/AR21U/00001676E|B28447431",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 72224000,79411000"
+  ]
+ },
+ {
+  "id": "19379975",
+  "expediente": "2026/D22200/006-302/00001",
+  "estado": "RES",
+  "titulo": "contratación de los servicios en materia de gestión catastral a los ayuntamientos de la provincia de Almería",
+  "tipo": "2",
+  "cpv": [
+   "71354300"
+  ],
+  "region_nuts": "ES611",
+  "region": "Almería",
+  "organo": "Junta de Gobierno de la Diputación Provincial de Almería",
+  "importe": 743801.65,
+  "adjudicatario": "ESTUDIOS Y DESARROLLO DE INGENIERÍA S.L.",
+  "nif": "B24389397",
+  "ciudad_empresa": "LEÓN",
+  "fecha_adjudicacion": "2026-09-21",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=pyzJbL2DtVaGCFcHcNGIlQ%3D%3D",
+  "actualizado": "2026-10-20T09:43:03.220+02:00",
+  "clave": "2026/D22200/006-302/00001|B24389397",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 71354300"
+  ]
+ },
+ {
+  "id": "19807002",
+  "expediente": "2026/032695",
+  "estado": "RES",
+  "titulo": "Contrato de servicios para la clasificación, digitalización y ortorrectificación de fotogramas históricos de CETFA en Castilla-La Mancha para su integración en la IDE y publicación mediante servicios OGC/IIIF.",
+  "tipo": "2",
+  "cpv": [
+   "71355100",
+   "71354000",
+   "71354100"
+  ],
+  "region_nuts": "ES42",
+  "region": "Castilla-La Mancha",
+  "organo": "Secretaría General de la Consejería de Fomento de la Junta de Comunidades de Castilla-La Mancha",
+  "importe": 475000.0,
+  "adjudicatario": "TRACASA INSTRUMENTAL, S.L.",
+  "nif": "B71280689",
+  "ciudad_empresa": "Valle de Egüés/Eguesibar",
+  "fecha_adjudicacion": "2026-09-04",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=9b9f1EuwNswwYTJJ03sHog%3D%3D",
+  "actualizado": "2026-10-19T09:00:00.000+02:00",
+  "clave": "2026/032695|B71280689",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 71355100,71354000,71354100"
+  ]
+ },
+ {
+  "id": "19957625",
+  "expediente": "CC2026/145",
+  "estado": "ADJ",
+  "titulo": "Servicios de explotación, validación de datos y mantenimiento preventivo de la red de monitorización de la calidad del aire y de las distintas instalaciones de control de calidad acústica de la zona de bajas emisiones",
+  "tipo": "2",
+  "cpv": [
+   "90731000",
+   "90731400"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Junta de Gobierno del Ayuntamiento de Oviedo",
+  "importe": 87025.62,
+  "adjudicatario": "ENVIRA SOSTENIBLE, S.A.",
+  "nif": "A33062407",
+  "ciudad_empresa": "Llanera",
+  "fecha_adjudicacion": "2026-10-15",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=aoYEu66Mlxx9Zh%2FyRJgM8w%3D%3D",
+  "actualizado": "2026-10-16T16:17:28.776+02:00",
+  "clave": "CC2026/145|A33062407",
+  "puntuacion": 40,
+  "motivos": [
+   "monitorizacion",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "10849824",
+  "expediente": "SP22-00419",
+  "estado": "RES",
+  "titulo": "Suministro de fabricación de mobiliario museográfico, enmarcados y gráfica, así como su montaje, mantenimiento y desmontaje, con motivo de la exposición \"Entre río y raíles\", que se exhibirá en la cuarta planta del espacio cultural Centrocentro",
+  "tipo": "1",
+  "cpv": [
+   "39154000"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Madrid Destino Cultura Turismo y Negocio, S.A.",
+  "importe": 28890.0,
+  "adjudicatario": "SANTIAGO SANTIAGO MOLINA",
+  "nif": "00682058Q",
+  "ciudad_empresa": "Torrejón de Ardoz",
+  "fecha_adjudicacion": "2022-08-26",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=S66ZhfjzkIdvYnTkQN0%2FZA%3D%3D",
+  "actualizado": "2026-10-16T12:51:06.286+02:00",
+  "clave": "SP22-00419|00682058Q",
+  "puntuacion": 40,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion"
+  ]
+ },
+ {
+  "id": "20499427",
+  "expediente": "208/2026",
+  "estado": "ADJ",
+  "titulo": "Contrato de servicios de asistencia técnica para la ejecución del proyecto LATEBIO. AGENDA 2030, LÍNEA 1 (2026-2027)",
+  "tipo": "2",
+  "cpv": [
+   "90713000",
+   "90712400",
+   "90712000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Santa Eulalia de Oscos",
+  "importe": 34000.0,
+  "adjudicatario": "xesteco consultoria sl",
+  "nif": "B01678606",
+  "ciudad_empresa": "A Pontenova",
+  "fecha_adjudicacion": "2026-10-15",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=5NhSaGF2LPo36J9Lctlsuw%3D%3D",
+  "actualizado": "2026-10-16T09:42:38.285+02:00",
+  "clave": "208/2026|B01678606",
+  "puntuacion": 40,
+  "motivos": [
+   "asistencia tecnica",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20353342",
+  "expediente": "PcPG/2026/828988",
+  "estado": "ADJ",
+  "titulo": "USC-2026-0021: 613A-26 Servicios especializados de apoyo para la creación, organización, gestión y dinamización del Campus BioCircular, así como el apoyo a la coordinación técnica, administrativa y financiera del proyecto BIO_TRANSFER_GNP, en el marco del Programa Interreg España-Portugal (POCTEP 2021-2027).",
+  "tipo": "2",
+  "cpv": [
+   "79421000",
+   "72212931",
+   "72224000"
+  ],
+  "region_nuts": "ES11",
+  "region": "",
+  "organo": "Universidade de Santiago de Compostela",
+  "importe": 43417.0,
+  "adjudicatario": "ESTRATEGIA Y ORGANIZACION, S.A.",
+  "nif": "A36196418",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratosdegalicia.gal/licitacion?N=828988",
+  "actualizado": "2026-11-06T14:11:15.207+01:00",
+  "clave": "PcPG/2026/828988|A36196418",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 79421000,72212931,72224000",
+   "ES11"
+  ]
+ },
+ {
+  "id": "7116924",
+  "expediente": "ECON/000179/2020",
+  "estado": "RES",
+  "titulo": "Servicios de mantenimiento y evolución del producto NEXUS ECCL y su plataforma asociada y de transformación, revisión y mejora de los procesos de gestión y de la calidad del servicio y producto NEXUS ECCL (2 LOTES)",
+  "tipo": "2",
+  "cpv": [
+   "72420000",
+   "72226000",
+   "72267000",
+   "72267100",
+   "72224000",
+   "72220000"
+  ],
+  "region_nuts": "ES300",
+  "region": "",
+  "organo": "Agencia para la Administración Digital de la Comunidad de Madrid",
+  "importe": 28342789.72,
+  "adjudicatario": "INETUM ESPAÑA, S.A.",
+  "nif": "A28855260",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contratos-publicos.comunidad.madrid/contrato-publico/servicios-mantenimiento-evolucion-producto-nexus-eccl-su-plataforma-asociada",
+  "actualizado": "2026-11-04T15:11:04.696+01:00",
+  "clave": "ECON/000179/2020|A28855260",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 72420000,72226000,72267000"
+  ]
+ },
+ {
+  "id": "19850496",
+  "expediente": "006_26001604",
+  "estado": "ADJ",
+  "titulo": "Servei de creació, adaptació i execució d’activitats pedagògiques sobre història i patrimoni de Barcelona que organitza el Museu d’Història de Barcelona",
+  "tipo": "2",
+  "cpv": [
+   "92521000"
+  ],
+  "region_nuts": "ES511",
+  "region": "",
+  "organo": "Institut de Cultura de Barcelona",
+  "importe": 383729.99,
+  "adjudicatario": "FRAGMENT, SERVEIS CULTURALS, S.L.",
+  "nif": "B61151098",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contractaciopublica.cat/ca/detall-publicacio/5dab2ab0-955e-4c72-9090-582888411458/300918936",
+  "actualizado": "2026-11-02T16:02:27.090+01:00",
+  "clave": "006_26001604|B61151098",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 92521000"
+  ]
+ },
+ {
+  "id": "20229479",
+  "expediente": "PcPG/2026/828816",
+  "estado": "RES",
+  "titulo": "ECE-2026-0036: Expdte:2026_018_SXT_DXCC. Servicio por lotes, para el apoyo a la ejecución de actividades del proyecto 0447_DIGITAL_EXPO_1_ y cofinanciado por el Fondo Europeo de Desarrollo Regional en un 75% en el marco del programa Interreg España-Portugal 2021-2027 (POCTEP)",
+  "tipo": "2",
+  "cpv": [
+   "72224000",
+   "79952000"
+  ],
+  "region_nuts": "ES11",
+  "region": "",
+  "organo": "Consellería de Emprego, Comercio e Emigración",
+  "importe": 33952.6,
+  "adjudicatario": "ESTRATEGIA Y ORGANIZACION, S.A.",
+  "nif": "A36196418",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratosdegalicia.gal/licitacion?N=828816",
+  "actualizado": "2026-10-14T12:11:13.850+02:00",
+  "clave": "PcPG/2026/828816|A36196418",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 72224000,79952000",
+   "ES11"
+  ]
+ },
+ {
+  "id": "20306660",
+  "expediente": "CONTR 2026 0000253485",
+  "estado": "RES",
+  "titulo": "suministro e instalacion de elementos museograficos exposicion juan de mesa",
+  "tipo": "1",
+  "cpv": [
+   "45255400"
+  ],
+  "region_nuts": "ES618",
+  "region": "",
+  "organo": "Consejería de Cultura y Deporte. Secretaría General Técnica (En Transición)",
+  "importe": 52680.0,
+  "adjudicatario": "DUPLA DISEÑO Y PRODUCCIONES SOCIEDAD LIMITADA",
+  "nif": "B13985924",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.juntadeandalucia.es/haciendayadministracionpublica/apl/pdc_sirec/perfiles-licitaciones/detalle-licitacion.jsf?idExpediente=983124",
+  "actualizado": "2026-10-13T09:42:02.787+02:00",
+  "clave": "CONTR 2026 0000253485|B13985924",
+  "puntuacion": 40,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion"
+  ]
+ },
+ {
+  "id": "6647836",
+  "expediente": "ECON/000173/2020",
+  "estado": "RES",
+  "titulo": "Servicios de desarrollo, renovación, mantenimiento y evolución de los sistemas de información en diferentes ámbitos de la Comunidad de Madrid (6 lotes)",
+  "tipo": "2",
+  "cpv": [
+   "72253200",
+   "72240000",
+   "72261000",
+   "72267000",
+   "72224000"
+  ],
+  "region_nuts": "ES300",
+  "region": "",
+  "organo": "Agencia para la Administración Digital de la Comunidad de Madrid",
+  "importe": 8571491.92,
+  "adjudicatario": "INFORMATICA EL CORTE INGLES, S.A. (actualmente INETUM ESPAÑA, S.A.)",
+  "nif": "A28855260",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contratos-publicos.comunidad.madrid/contrato-publico/servicios-desarrollo-renovacion-mantenimiento-evolucion-sistemas-informacion",
+  "actualizado": "2026-10-09T15:55:59.816+02:00",
+  "clave": "ECON/000173/2020|A28855260",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 72253200,72240000,72261000"
+  ]
+ },
+ {
+  "id": "20615545",
+  "expediente": "202507-06",
+  "estado": "RES",
+  "titulo": "Servicio de carpintería, montaje y desmontaje museográfico de la exposición del artista Jochen Lempert en Artium Museoa",
+  "tipo": "2",
+  "cpv": [
+   "39154000"
+  ],
+  "region_nuts": "ES211",
+  "region": "",
+  "organo": "Fundación Artium de Álava-Directora",
+  "importe": 4580.0,
+  "adjudicatario": "EL TALLER DEL OSO ZURDO, S.L.",
+  "nif": "B13929419",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratacion.euskadi.eus/webkpe00-kpeperfi/es/contenidos/anuncio_contratacion/expjaso740590/es_doc/index.html",
+  "actualizado": "2026-10-09T13:12:02.359+02:00",
+  "clave": "202507-06|B13929419",
+  "puntuacion": 40,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion",
+   "ES21"
+  ]
+ },
+ {
+  "id": "20666624",
+  "expediente": "P/OTR-023846/2026",
+  "estado": "ADJ",
+  "titulo": "El presente contrato tiene por objeto la participación institucional de la Comunidad de Madrid en la cumbre internacional «XFutures Summit 2026», que se celebrará en Madrid del 22 al 24 de octubre, como evento de referencia en el ámbito de la innovación tecnológica, la inteligencia artificial y la transformación digital. La iniciativa constituye la evolución del reconocido foro internacional Ecosystems 2030, celebrado en años anteriores en la ciudad de A Coruña, consolidado como uno de los principales encuentros globales en materia de tecnología e innovación",
+  "tipo": "999",
+  "cpv": [
+   "79342200"
+  ],
+  "region_nuts": "ES300",
+  "region": "",
+  "organo": "Consejería de Digitalización",
+  "importe": 123966.94,
+  "adjudicatario": "ECOSYSTEM 2030, INC",
+  "nif": "N0115093G",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contratos-publicos.comunidad.madrid/contrato-publico/patrocinio-publicitario-evento-xfutures-summit-2026",
+  "actualizado": "2026-10-08T13:26:05.976+02:00",
+  "clave": "P/OTR-023846/2026|N0115093G",
+  "puntuacion": 40,
+  "motivos": [
+   "inteligencia artificial",
+   "transformacion digital"
+  ]
+ },
+ {
+  "id": "12024239",
+  "expediente": "CONTR 2022 0000927317",
+  "estado": "RES",
+  "titulo": "mantenimiento y soporte giro y sirec",
+  "tipo": "2",
+  "cpv": [
+   "72224000",
+   "72267100",
+   "72262000"
+  ],
+  "region_nuts": "ES618",
+  "region": "",
+  "organo": "Agencia Digital de Andalucía",
+  "importe": 4819900.8,
+  "adjudicatario": "AYESA ADVANCED TECHNOLOGIES SA",
+  "nif": "A41132036",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.juntadeandalucia.es/haciendayadministracionpublica/apl/pdc_sirec/perfiles-licitaciones/detalle-licitacion.jsf?idExpediente=513402",
+  "actualizado": "2026-09-30T11:41:32.843+02:00",
+  "clave": "CONTR 2022 0000927317|A41132036",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 72224000,72267100,72262000"
+  ]
+ },
+ {
+  "id": "20827956",
+  "expediente": "CON/2025/107",
+  "estado": "RES",
+  "titulo": "Seguro de daños materiales al patrimonio municipal (Lote 1 de la FACC)",
+  "tipo": "2",
+  "cpv": [
+   "66515000",
+   "66510000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Llanes",
+  "importe": 31916.11,
+  "adjudicatario": "Helvetia Compañía Suiza, Sociedad Anónima de Seguros y Reaseguros",
+  "nif": "A41003864",
+  "ciudad_empresa": "SEVILLA",
+  "fecha_adjudicacion": "2025-11-14",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=0ULysH6tV%2F3mnwcj%2BxbdTg%3D%3D",
+  "actualizado": "2026-11-03T12:52:37.329+01:00",
+  "clave": "CON/2025/107|A41003864",
+  "puntuacion": 37,
+  "motivos": [
+   "patrimonio",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "18703697",
+  "expediente": "172255Z/2025",
+  "estado": "RES",
+  "titulo": "Servicio de formación y coordinación para el desarrollo de itinerarios y talleres formativos con enfoque de género para el programa Femenino y Plural, por procedimiento abierto, tramitación anticipada y varios criterios de adjudicación",
+  "tipo": "2",
+  "cpv": [
+   "80000000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Gijón",
+  "importe": 36440.0,
+  "adjudicatario": "ASTURSERVICIOS LA PRODUCTORA, S.A.",
+  "nif": "A33912445",
+  "ciudad_empresa": "Gijón",
+  "fecha_adjudicacion": "2026-04-08",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=7gvBRIBhHaz%2Fa9DgO%2BoYKQ%3D%3D",
+  "actualizado": "2026-11-03T10:32:57.674+01:00",
+  "clave": "172255Z/2025|A33912445",
+  "puntuacion": 35,
+  "motivos": [
+   "coordinacion",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20496678",
+  "expediente": "50824P",
+  "estado": "RES",
+  "titulo": "El objeto del presente Pliego es definir y precisar las condiciones técnicas que han de regir el contrato de prestación de servicios para la redacción de los instrumentos urbanísticos y ambientales del Catálogo Urbanístico municipal.",
+  "tipo": "2",
+  "cpv": [
+   "71410000",
+   "71356400"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Caso",
+  "importe": 39450.0,
+  "adjudicatario": "INNOVATERRA INGENIERIA, S.L.",
+  "nif": "B24975930",
+  "ciudad_empresa": "MADRID",
+  "fecha_adjudicacion": "2026-10-16",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=5AQW7dxzxh7zAq95uGTrDQ%3D%3D",
+  "actualizado": "2026-10-26T09:30:29.906+01:00",
+  "clave": "50824P|B24975930",
+  "puntuacion": 35,
+  "motivos": [
+   "ambiental",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "14057314",
+  "expediente": "CC2023/282",
+  "estado": "RES",
+  "titulo": "Contratación de un verificador EMAS acreditado por ENAC para el Ayuntamiento en Servicios Básicos (Antiguos Servicios Municipales de Medio Ambiente), Teatro Campoamor, Telecentro de Empleo de Los Prados, Centro de Formación de La Corredoria, Servicio de Planeamiento y Licencias",
+  "tipo": "2",
+  "cpv": [
+   "90714400"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Junta de Gobierno del Ayuntamiento de Oviedo",
+  "importe": 20900.0,
+  "adjudicatario": "BUREAU VERITAS IBERIA SL",
+  "nif": "B28205904",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "2024-03-07",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=yJ%2BGMTg7lr2FQ%2FlhRK79lA%3D%3D",
+  "actualizado": "2026-10-19T08:38:36.083+02:00",
+  "clave": "CC2023/282|B28205904",
+  "puntuacion": 35,
+  "motivos": [
+   "medio ambiente",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "16197188",
+  "expediente": "CO-032/24",
+  "estado": "RES",
+  "titulo": "Diseño y planificación de rutas de transporte público regular de viajeros por carretera a través de plataforma web",
+  "tipo": "2",
+  "cpv": [
+   "72200000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Dirección General del Consorcio de Transportes de Asturias",
+  "importe": 36379.2,
+  "adjudicatario": "VIA TECHNOLOGIES EUROPE BV",
+  "nif": "NL857764834B01",
+  "ciudad_empresa": "AMSTERDAM",
+  "fecha_adjudicacion": "2024-12-26",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=GOJa4IyOvV0UqXM96WStVA%3D%3D",
+  "actualizado": "2026-10-21T14:22:40.083+02:00",
+  "clave": "CO-032/24|NL857764834B01",
+  "puntuacion": 33,
+  "motivos": [
+   "plataforma",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20255609",
+  "expediente": "CYC/2026/83",
+  "estado": "RES",
+  "titulo": "Dirección de obra y Coordinación de Seguridad y Salud durante las obras de abastecimiento en Juncedo, La Reguera y Llandones, así como saneamiento de Camina-Barreo (Fase II)",
+  "tipo": "2",
+  "cpv": [
+   "71000000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Junta de Gobierno del Ayuntamiento de Corvera de Asturias",
+  "importe": 7040.0,
+  "adjudicatario": "SOLUCIONES NORTH LINE S.L.",
+  "nif": "B87375291",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "2026-10-08",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=sFFGqTQJTV8UqXM96WStVA%3D%3D",
+  "actualizado": "2026-10-26T09:12:27.314+01:00",
+  "clave": "CYC/2026/83|B87375291",
+  "puntuacion": 30,
+  "motivos": [
+   "direccion de obra",
+   "coordinacion",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "16492230",
+  "expediente": "CON/2024/74",
+  "estado": "RES",
+  "titulo": "contratación del servicio de consultoría y asistencia técnica para la gestión y optimización de la facturación energética  mediante procedimiento abierto simplificado sumario, tramitación ordinaria.",
+  "tipo": "2",
+  "cpv": [
+   "71314300",
+   "75130000",
+   "72200000",
+   "71314200",
+   "79500000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Nava",
+  "importe": 8000.0,
+  "adjudicatario": "OPEN ENERGY 2012,S.L.",
+  "nif": "B66022963",
+  "ciudad_empresa": "Barcelona",
+  "fecha_adjudicacion": "2025-02-04",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=KzUaQbFWbWdrSd8H4b2soA%3D%3D",
+  "actualizado": "2026-10-21T09:39:08.290+02:00",
+  "clave": "CON/2024/74|B66022963",
+  "puntuacion": 30,
+  "motivos": [
+   "asistencia tecnica",
+   "consultoria",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20262441",
+  "expediente": "SJ-ASE-CTR-MAY-2026-0058",
+  "estado": "RES",
+  "titulo": "Elementos de señalización y protección portuaria para cruceros con escala en el Puerto de Gijón",
+  "tipo": "1",
+  "cpv": [
+   "34928200",
+   "39254110",
+   "34928430"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Presidencia de la Autoridad Portuaria de Gijón",
+  "importe": 58719.26,
+  "adjudicatario": "S21 SEÑALIZACION, S.L",
+  "nif": "B74005588",
+  "ciudad_empresa": "LANGREO",
+  "fecha_adjudicacion": "2026-10-28",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=0GSWQMb3Enx9Zh%2FyRJgM8w%3D%3D",
+  "actualizado": "2026-11-03T12:13:31.529+01:00",
+  "clave": "SJ-ASE-CTR-MAY-2026-0058|B74005588",
+  "puntuacion": 28,
+  "motivos": [
+   "puerto",
+   "señalizacion",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20297309",
+  "expediente": "2026000701",
+  "estado": "RES",
+  "titulo": "Suministro, instalación y puesta en funcionamiento de un sistema de monitorización continua video EEG de 32 canales con destino al Servicio de Neurofisiología del Hospital Universitario de Cabueñes, Gijón, Área de Salud III Oriente",
+  "tipo": "1",
+  "cpv": [
+   "33121100"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Gerencia del Área Sanitaria V - Gijón del Servicio de Salud del Principado de Asturias",
+  "importe": 31500.0,
+  "adjudicatario": "ALMEVAN SL",
+  "nif": "B84070689",
+  "ciudad_empresa": "COLMENAR VIEJO",
+  "fecha_adjudicacion": "2026-10-27",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=mo6zvS%2FQn76cCF8sV%2BqtYA%3D%3D",
+  "actualizado": "2026-11-03T11:06:04.988+01:00",
+  "clave": "2026000701|B84070689",
+  "puntuacion": 25,
+  "motivos": [
+   "monitorizacion",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20816234",
+  "expediente": "CYP/2026/125",
+  "estado": "RES",
+  "titulo": "Contrato basado para el Servicio de Coordinación de Seguridad y Salud para la ejecución del proyecto de obras de Acondicionamiento, mejora y accesibilidad del  Mirado de Santa Marta e instalación de elemento singular en la Sierra de Tineo-Alto de la Casa del Puerto, en el ámbito del acuerdo marco de la FACC, Lote 3: Coordinación de Seguridad y Salud de las obras. Zona Occidental de Asturias",
+  "tipo": "2",
+  "cpv": [
+   "71000000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Tineo",
+  "importe": 550.0,
+  "adjudicatario": "EQUATTRO ARQUITECTURA MÁS INGENIERÍA, S.L.",
+  "nif": "B24541229",
+  "ciudad_empresa": "PONFERRADA",
+  "fecha_adjudicacion": "2026-10-26",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=TEFBNIelfFgQyBAnWzHfCg%3D%3D",
+  "actualizado": "2026-10-30T10:22:27.572+01:00",
+  "clave": "CYP/2026/125|B24541229",
+  "puntuacion": 25,
+  "motivos": [
+   "coordinacion",
+   "puerto",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "18909030",
+  "expediente": "026_01_PAS",
+  "estado": "RES",
+  "titulo": "Contrato que tiene por objeto el suministro de un servidor informático para la empresa pública Sociedad de Servicios del Principado de Asturias, S. A. junto con los servicios de mantenimiento y asistencia técnica",
+  "tipo": "1",
+  "cpv": [
+   "48823000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Gerencia de la Empresa Pública Sociedad de Servicios del Principado de Asturias, S.A., M.P.",
+  "importe": 34700.0,
+  "adjudicatario": "HERBECON SYSTEMS SL",
+  "nif": "B92200591",
+  "ciudad_empresa": "Sierra de Yeguas",
+  "fecha_adjudicacion": "2026-02-19",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=QA3jK7TLdh0Xhk1FZxEyvw%3D%3D",
+  "actualizado": "2026-10-16T12:58:45.874+02:00",
+  "clave": "026_01_PAS|B92200591",
+  "puntuacion": 25,
+  "motivos": [
+   "asistencia tecnica",
+   "Asturias"
+  ]
+ }
+]
