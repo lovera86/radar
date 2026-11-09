@@ -6,3 +6,4 @@ data/panel.json
 __pycache__/
 .claude/
 panel/
+data/abiertas_nuevas.json

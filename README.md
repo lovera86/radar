@@ -14,8 +14,16 @@ Cada mañana GitHub ejecuta `.github/workflows/radar.yml`:
 2. `exportar.py` deja los últimos 90 días en `docs/data/`.
 3. Los datos se guardan en el repositorio y la carpeta `docs/` se publica en
    GitHub Pages.
+4. `resumen.py` abre un aviso (issue) con lo nuevo del día; GitHub lo manda por
+   correo a la dueña del repositorio.
 
-Para lanzarlo a mano: pestaña **Actions → Radar diario → Run workflow**.
+Además de los adjudicados, el radar guarda las **licitaciones abiertas** que
+encajan (`data/abiertas.json`) y marca las que puntúan la experiencia del jefe
+de proyecto o del equipo. La web propone las empresas que suelen ganar
+contratos parecidos para ofrecerse a ir en su oferta.
+
+Para lanzarlo a mano: pestaña **Actions → Radar diario → Run workflow** (con
+«Días hacia atrás» se puede rellenar un periodo).
 
 ## Ajustar qué busca
 

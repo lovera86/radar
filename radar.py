@@ -75,7 +75,27 @@ def parse_entry(e):
         "fecha_adjudicacion": text(tr, "cbc:AwardDate"),
         "url": link.get("href") if link is not None else "",
         "actualizado": text(e, "a:updated"),
+        "plazo": text(cfs, "cac:TenderingProcess/cac:TenderSubmissionDeadlinePeriod/cbc:EndDate"),
+        "criterios": criterios(cfs),
     }
+
+
+# Criterios de adjudicación que puntúan al equipo: ahí es donde una empresa necesita
+# presentar con nombre a un jefe/coordinador de proyecto con experiencia.
+RE_PERSONAL = re.compile(r"(?i)equipo|personal adscrito|jefe|director|coordinador|responsable|perfil|experiencia (del|de la|de los|adicional)|cualificaci|t[eé]cnico")
+RE_PM = re.compile(r"(?i)jefe de proyecto|direcci[oó]n (del|de) proyecto|director (del|de) proyecto|coordinador|responsable (del|de) (proyecto|contrato|servicio|trabajo)|project manager|gesti[oó]n (del|de) proyecto|equipo adscrito|experiencia[^.]{0,40}equipo|experiencia (profesional )?adicional")
+
+
+def criterios(cfs):
+    if cfs is None:
+        return []
+    out = []
+    for c in cfs.findall(".//cac:AwardingCriteria", NS):
+        d = (c.findtext("cbc:Description", namespaces=NS) or "").strip()
+        if d and RE_PERSONAL.search(d):
+            w = c.findtext("cbc:WeightNumeric", namespaces=NS)
+            out.append({"texto": re.sub(r"\s+", " ", d)[:200], "peso": float(w) if w else None})
+    return out
 
 
 def puntuar(c, cfg):
@@ -165,13 +185,31 @@ def main():
         desde = ahora - timedelta(days=30)
 
     nuevas, revisados = [], 0
+    hoy = ahora.date().isoformat()
+    abiertas_f = DATA / "abiertas.json"
+    abiertas = {a["expediente"]: a for a in (json.loads(abiertas_f.read_text(encoding="utf-8")) if abiertas_f.exists() else [])}
+    abiertas_nuevas = []
     # Todos los adjudicados, para poder recalcular puntuaciones sin volver a descargar (recalcular.py).
     adjudicados = open(DATA / "adjudicados.jsonl", "a", encoding="utf-8")
     for feed in cfg["feeds"]:
         for e in recorrer(feed, desde):
             c = parse_entry(e)
             revisados += 1
-            if not c or c["estado"] not in cfg["estados"] or not c["adjudicatario"]:
+            if not c:
+                continue
+            if c["estado"] == "PUB" and c["plazo"] >= hoy:
+                p, motivos = puntuar(c, cfg)
+                c["pide_pm"] = any(RE_PM.search(x["texto"]) for x in c["criterios"])
+                if p and c["pide_pm"]:
+                    p = min(100, p + 15)
+                    motivos.append("puntúa el jefe de proyecto")
+                if p >= minimo(c, cfg):
+                    c.update(puntuacion=p, motivos=motivos)
+                    if c["expediente"] not in abiertas:
+                        abiertas_nuevas.append(c)
+                    abiertas[c["expediente"]] = c
+                continue
+            if c["estado"] not in cfg["estados"] or not c["adjudicatario"]:
                 continue
             clave = f'{c["expediente"]}|{c["nif"]}'
             if clave in vistos:
@@ -190,9 +228,16 @@ def main():
     hist_f = DATA / "historico.json"
     hist = json.loads(hist_f.read_text(encoding="utf-8")) if hist_f.exists() else []
     hist_f.write_text(json.dumps(hist + nuevas, ensure_ascii=False, indent=1), encoding="utf-8")
+    # Licitaciones abiertas: se quitan las que ya han cerrado o se han adjudicado.
+    cerradas = {c["expediente"] for c in nuevas}
+    vivas = sorted((a for a in abiertas.values() if a["plazo"] >= hoy and a["expediente"] not in cerradas), key=lambda a: a["plazo"])
+    abiertas_f.write_text(json.dumps(vivas, ensure_ascii=False, indent=1), encoding="utf-8")
+    nuevas_vivas = [a for a in abiertas_nuevas if a in vivas]
+    (DATA / "abiertas_nuevas.json").write_text(json.dumps(nuevas_vivas, ensure_ascii=False, indent=1), encoding="utf-8")
     estado.update(vistos=sorted(vistos), ultima=ahora.isoformat())
     estado_f.write_text(json.dumps(estado, ensure_ascii=False), encoding="utf-8")
     print(f"Revisados {revisados} contratos desde {desde:%Y-%m-%d}; {len(nuevas)} oportunidades nuevas -> data/nuevas.json")
+    print(f"Licitaciones abiertas que encajan: {len(vivas)} ({len(nuevas_vivas)} nuevas) -> data/abiertas.json")
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
 <header class="hero">
@@ -54,9 +54,14 @@
   <div class="layout">
     <section aria-labelledby="t-lista">
       <div class="cab">
-        <h2 id="t-lista">Contratos adjudicados</h2>
+        <h2 id="t-lista" class="sr-only">Oportunidades</h2>
+        <div class="pestanas" id="pestanas" role="tablist" aria-label="Tipo de oportunidad">
+          <button type="button" role="tab" data-v="adj" class="on" aria-selected="true">Adjudicados <span>—</span></button>
+          <button type="button" role="tab" data-v="ab" aria-selected="false">Licitaciones abiertas <span>—</span></button>
+        </div>
         <span class="cuenta" id="cuenta"></span>
       </div>
+      <p class="intro-ab" id="intro-ab" hidden>Concursos que aún no se han adjudicado. Muchos puntúan la experiencia del jefe de proyecto: ofrécete a las empresas que suelen ganarlos para ir en su oferta. Tu CV les suma puntos y, si ganan, el puesto es tuyo.</p>
       <div id="lista" class="lista" aria-live="polite">
         <p class="vacio">Cargando oportunidades…</p>
       </div>
@@ -80,7 +85,7 @@
 
 <dialog id="aplicar" aria-labelledby="ap-titulo">
   <form method="dialog" class="ap-cerrar"><button type="submit" aria-label="Cerrar">✕</button></form>
-  <p class="eyebrow">Aplicar</p>
+  <p class="eyebrow" id="ap-eyebrow">Aplicar</p>
   <h2 id="ap-titulo"></h2>
   <p class="ap-proyecto" id="ap-proyecto"></p>
   <div class="ap-grid">
@@ -106,6 +111,6 @@
   </div>
 </dialog>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>

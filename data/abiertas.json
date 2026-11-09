@@ -1,0 +1,68 @@
+[
+ {
+  "id": "20854014",
+  "expediente": "01/2027",
+  "estado": "PUB",
+  "titulo": "Servicios de Dirección-Coordinación Técnica y Equipo Técnico del Centro Niemeyer",
+  "tipo": "2",
+  "cpv": [
+   "92300000",
+   "92312000",
+   "92370000",
+   "92130000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Dirección General de la Fundación Centro Cultural Internacional Oscar Niemeyer-Principado de Asturias",
+  "importe": 210000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=7HPON8mxUyQZDGvgaZEVxQ%3D%3D",
+  "actualizado": "2026-11-06T14:47:25.987+01:00",
+  "plazo": "2026-11-23",
+  "criterios": [
+   {
+    "texto": "Experiencia profesional adicional del equipo adscrito a la ejecución del contrato",
+    "peso": 100.0
+   }
+  ],
+  "pide_pm": true,
+  "puntuacion": 55,
+  "motivos": [
+   "coordinacion",
+   "Asturias",
+   "puntúa el jefe de proyecto"
+  ]
+ },
+ {
+  "id": "20853987",
+  "expediente": "202600000058",
+  "estado": "PUB",
+  "titulo": "Servicio de montaje, mantenimiento y desmontaje museográfico de la exposición temporal FERNANDA LAGUNA",
+  "tipo": "2",
+  "cpv": [
+   "79956000"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Dirección del Museo Nacional Centro de Arte Reina Sofía",
+  "importe": 99173.56,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=WJJeg48gycV6nTs9LZ9RhQ%3D%3D",
+  "actualizado": "2026-11-06T15:16:25.054+01:00",
+  "plazo": "2026-11-25",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 55,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion"
+  ]
+ }
+]

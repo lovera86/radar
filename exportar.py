@@ -58,8 +58,52 @@ def main():
     web = DATA.parent / "docs" / "data"
     web.mkdir(parents=True, exist_ok=True)
     (web / "panel.json").write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
-    meta = {"actualizado": datetime.now(timezone.utc).isoformat(timespec="seconds"), "dias": args.dias, "oportunidades": len(rows)}
+    # Licitaciones abiertas y empresas que suelen ganar contratos parecidos.
+    ab_f = DATA / "abiertas.json"
+    abiertas = json.loads(ab_f.read_text(encoding="utf-8")) if ab_f.exists() else []
+    hoy = date.today().isoformat()
+    temas = lambda c: {m for m in c.get("motivos", []) if not m.startswith("CPV") and m != c.get("region") and m != "puntúa el jefe de proyecto" and not m.startswith("ES")}
+    cpv5 = lambda c: {x[:5] for x in c.get("cpv", [])}
+    salida_ab = []
+    for a in abiertas:
+        if a.get("plazo", "") < hoy:
+            continue
+        ta, ca = temas(a), cpv5(a)
+        cand = {}
+        for c in hist:
+            if not c.get("adjudicatario"):
+                continue
+            puntos = 2 * len(ta & temas(c)) + len(ca & cpv5(c))
+            if puntos:
+                k = c.get("nif") or c["adjudicatario"]
+                e = cand.setdefault(k, {"empresa": c["adjudicatario"], "nif": c.get("nif", ""), "ciudad_empresa": c.get("ciudad_empresa", ""), "puntos": 0, "contratos": 0})
+                e["puntos"] += puntos
+                e["contratos"] += 1
+        top = sorted(cand.values(), key=lambda e: (-bool(contactos.get(e["nif"], {}).get("email")), -e["puntos"]))[:4]
+        for e in top:
+            ct = contactos.get(e["nif"], {})
+            e.update(email=ct.get("email", ""), web=ct.get("web", ""))
+            del e["puntos"]
+        salida_ab.append({
+            "clave": a["expediente"],
+            "puntuacion": a["puntuacion"],
+            "contrato": a["titulo"],
+            "cliente": a.get("organo", ""),
+            "region": a.get("region") or NUTS.get((a.get("region_nuts") or "")[:4], "Sin especificar"),
+            "comunidad": NUTS.get((a.get("region_nuts") or "")[:4], a.get("region") or "Sin especificar"),
+            "importe": round(a["importe"], 2) if a.get("importe") is not None else None,
+            "plazo": a["plazo"],
+            "pide_pm": a.get("pide_pm", False),
+            "criterios": a.get("criterios", []),
+            "encaje": ", ".join(m for m in a.get("motivos", []) if not m.startswith("CPV")),
+            "url": a.get("url", ""),
+            "candidatas": top,
+        })
+    salida_ab.sort(key=lambda r: (-r["pide_pm"], -r["puntuacion"]))
+    (web / "abiertas.json").write_text(json.dumps(salida_ab, ensure_ascii=False), encoding="utf-8")
+    meta = {"actualizado": datetime.now(timezone.utc).isoformat(timespec="seconds"), "dias": args.dias, "oportunidades": len(rows), "abiertas": len(salida_ab)}
     (web / "meta.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
+    print(f"{len(salida_ab)} licitaciones abiertas -> docs/data/abiertas.json")
     print(f"{len(rows)} filas -> data/panel.json y docs/data/")
 
 

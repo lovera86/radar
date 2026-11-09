@@ -7,7 +7,7 @@ const PERFIL = {
 };
 const NORTE = ['Asturias', 'Galicia', 'Cantabria', 'País Vasco', 'Navarra', 'Castilla y León'];
 
-const estado = { filas: [], zona: '', minimo: 0, texto: '', vista: '' };
+const estado = { filas: [], abiertas: [], pestana: 'adj', zona: '', minimo: 0, texto: '', vista: '' };
 
 /* Candidaturas enviadas: se guardan en este navegador (clave del contrato -> fecha). */
 const CLAVE_APLICADAS = 'radar-aplicadas';
@@ -28,11 +28,14 @@ const enlace = (href, txt, cls) => { const a = el('a', cls || 'btn sec', txt); a
 
 async function cargar() {
   try {
-    const [filas, meta] = await Promise.all([
+    const [filas, meta, abiertas] = await Promise.all([
       fetch('data/panel.json', { cache: 'no-store' }).then((r) => r.json()),
       fetch('data/meta.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => ({})),
+      fetch('data/abiertas.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => []),
     ]);
     estado.filas = filas;
+    estado.abiertas = abiertas;
+    pestanas();
     resumen(meta);
     chipsZona();
     chipsVista();
@@ -69,8 +72,9 @@ function chipsZona() {
 }
 
 function chipsVista() {
-  const n = estado.filas.filter((r) => aplicadas[r.clave]).length;
-  const ops = [['', 'Todas', estado.filas.length], ['no', 'Pendientes', estado.filas.length - n], ['si', 'Aplicadas', n]];
+  const lista = estado.pestana === 'ab' ? estado.abiertas : estado.filas;
+  const n = lista.filter((r) => aplicadas[r.clave]).length;
+  const ops = [['', 'Todas', lista.length], ['no', 'Pendientes', lista.length - n], ['si', estado.pestana === 'ab' ? 'Ofrecidas' : 'Aplicadas', n]];
   $('#f-vista').replaceChildren(...ops.map(([v, t, c]) => {
     const b = el('button', 'chip' + (v === estado.vista ? ' on' : ''), t);
     b.type = 'button'; b.dataset.v = v; b.append(el('span', null, ' · ' + c));
@@ -78,13 +82,13 @@ function chipsVista() {
   }));
 }
 
-function filtradas() {
+function filtradas(lista) {
   const t = norm(estado.texto);
-  return estado.filas.filter((r) =>
+  return (lista || estado.filas).filter((r) =>
     r.puntuacion >= estado.minimo
     && (!estado.zona || (estado.zona === '__norte' ? NORTE.includes(r.comunidad) : r.comunidad === estado.zona))
     && (!estado.vista || (estado.vista === 'si') === Boolean(aplicadas[r.clave]))
-    && (!t || norm([r.empresa, r.contrato, r.cliente, r.region].join(' ')).includes(t)))
+    && (!t || norm([r.empresa, r.contrato, r.cliente, r.region, (r.candidatas || []).map((c) => c.empresa).join(' ')].join(' ')).includes(t)))
     .sort((a, b) => b.puntuacion - a.puntuacion || String(b.fecha).localeCompare(String(a.fecha)));
 }
 
@@ -131,13 +135,75 @@ function tarjeta(r) {
   return art;
 }
 
+function pestanas() {
+  const n = { adj: estado.filas.length, ab: estado.abiertas.length };
+  $('#pestanas').querySelectorAll('button').forEach((b) => {
+    const on = b.dataset.v === estado.pestana;
+    b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
+    b.querySelector('span').textContent = n[b.dataset.v];
+  });
+  $('#intro-ab').hidden = estado.pestana !== 'ab';
+}
+
 function pintar() {
-  const filas = filtradas();
-  $('#cuenta').textContent = `${filas.length} de ${estado.filas.length}`;
+  const ab = estado.pestana === 'ab';
+  const total = ab ? estado.abiertas : estado.filas;
+  const filas = filtradas(total);
+  $('#cuenta').textContent = `${filas.length} de ${total.length}`;
   const lista = $('#lista');
-  if (!filas.length) lista.replaceChildren(el('p', 'vacio', 'Ningún contrato cumple estos filtros. Prueba con otra zona o con un encaje menor.'));
-  else lista.replaceChildren(...filas.map(tarjeta));
-  empresas(filas);
+  if (!filas.length) lista.replaceChildren(el('p', 'vacio', ab ? 'Ahora mismo no hay licitaciones abiertas que cumplan estos filtros. El radar las busca cada mañana.' : 'Ningún contrato cumple estos filtros. Prueba con otra zona o con un encaje menor.'));
+  else lista.replaceChildren(...filas.map(ab ? tarjetaAbierta : tarjeta));
+  empresas(filtradas(estado.filas));
+}
+
+const diasHasta = (plazo) => Math.ceil((new Date(plazo + 'T23:59:59').getTime() - Date.now()) / 864e5);
+function quedan(plazo) {
+  const d = diasHasta(plazo);
+  return d <= 0 ? 'cierra hoy' : d === 1 ? 'queda 1 día' : `quedan ${d} días`;
+}
+
+function tarjetaAbierta(a) {
+  const hecha = aplicadas[a.clave];
+  const art = el('article', 'op abierta ' + (a.puntuacion >= 80 ? 'alto' : a.puntuacion >= 60 ? 'medio' : 'bajo') + (hecha ? ' hecha' : ''));
+  const cuerpo = el('div');
+  cuerpo.append(el('h3', null, a.contrato));
+  if (a.cliente) cuerpo.append(el('p', 'cliente', 'Cliente: ' + a.cliente));
+  const meta = el('div', 'meta');
+  meta.append(el('span', 'importe', eur(a.importe)), el('span', null, a.region),
+    el('span', 'plazo' + (diasHasta(a.plazo) <= 5 ? ' urge' : ''), 'Ofertas hasta ' + fecha(a.plazo) + ' · ' + quedan(a.plazo)));
+  cuerpo.append(meta);
+  if (a.criterios && a.criterios.length) {
+    const cr = el('div', 'criterios');
+    cr.append(el('p', 'campo', a.pide_pm ? 'Puntúa la experiencia del equipo' : 'Criterios sobre el equipo'));
+    const ul = el('ul');
+    a.criterios.slice(0, 3).forEach((c) => ul.append(el('li', null, c.texto + (c.peso ? ` · ${c.peso.toLocaleString('es-ES')} puntos` : ''))));
+    cr.append(ul);
+    cuerpo.append(cr);
+  }
+  if (a.candidatas && a.candidatas.length) {
+    const cd = el('div', 'candidatas');
+    cd.append(el('p', 'campo', 'Empresas que suelen ganar contratos así'));
+    a.candidatas.forEach((c) => {
+      const f = el('div', 'cand');
+      const n = el('span', 'cand-n', c.empresa);
+      if (c.ciudad_empresa) n.append(el('small', null, ' · ' + c.ciudad_empresa));
+      const b = el('button', 'btn sec mini', c.email ? 'Ofrecerme' : 'Ofrecerme · buscar contacto');
+      b.type = 'button';
+      b.onclick = () => abrirFicha({ ...a, empresa: c.empresa, email: c.email, web: c.web, ciudad_empresa: c.ciudad_empresa, abierta: true });
+      f.append(n, b);
+      cd.append(f);
+    });
+    cuerpo.append(cd);
+  }
+  const acc = el('div', 'acciones');
+  const bH = el('button', 'btn sec marca' + (hecha ? ' on' : ''), hecha ? '✓ Ofrecida · ' + fecha(hecha) : 'Marcar ofrecida');
+  bH.type = 'button'; bH.setAttribute('aria-pressed', hecha ? 'true' : 'false');
+  bH.onclick = () => marcar(a, !hecha);
+  acc.append(bH);
+  if (/^https:\/\//.test(a.url || '')) acc.append(enlace(a.url, 'Ver licitación y pliegos'));
+  cuerpo.append(acc);
+  art.append(anillo(a.puntuacion), cuerpo);
+  return art;
 }
 
 function empresas(filas) {
@@ -166,6 +232,7 @@ function tema(r) {
 }
 
 function correo(r) {
+  if (r.abierta) return correoAbierta(r);
   const corto = r.contrato.length > 70 ? r.contrato.slice(0, 68).replace(/\s+\S*$/, '') + '…' : r.contrato;
   const asunto = `Project Manager para el proyecto «${corto}»`;
   const cuerpo = `Hola, equipo de ${r.empresa}:
@@ -183,6 +250,28 @@ ${PERFIL.linkedin}`;
   return { asunto, cuerpo };
 }
 
+function correoAbierta(r) {
+  const corto = r.contrato.length > 60 ? r.contrato.slice(0, 58).replace(/\s+\S*$/, '') + '…' : r.contrato;
+  const asunto = `Jefa de proyecto para vuestra oferta: «${corto}»`;
+  const crit = (r.criterios || []).find((c) => /jefe|direc|coordin|responsable|equipo|experiencia/i.test(c.texto));
+  const valora = crit ? `Entre los criterios de adjudicación se valora «${crit.texto}»${crit.peso ? ` (${crit.peso.toLocaleString('es-ES')} puntos)` : ''}. ` : '';
+  const cuerpo = `Hola, equipo de ${r.empresa}:
+
+Está abierta la licitación «${r.contrato}»${r.cliente ? ' de ' + r.cliente : ''}, con plazo de ofertas hasta el ${fecha(r.plazo)}. Por vuestra trayectoria imagino que podéis estar preparando oferta.
+
+${valora}Si os presentáis, me gustaría formar parte de vuestra propuesta como Project Manager o jefa de proyecto. Puedo aportar CV, títulos y certificados para que cuenten en la valoración.
+
+Soy Ingeniera Técnica Industrial (Mecánica), con Máster en Project Management por la Universitat Politècnica de València y certificación CAPM. En Gárgola Lab dirijo ${tema(r)}, coordinando alcance, plazos, costes, proveedores y relación con el cliente.
+
+Si os encaja, hablamos cuando queráis. Os adjunto mi CV.
+
+Un saludo,
+${PERFIL.nombre}
+${PERFIL.email}
+${PERFIL.linkedin}`;
+  return { asunto, cuerpo };
+}
+
 function copiar(btn, texto) {
   const original = btn.textContent;
   const hecho = (t) => { btn.textContent = t; setTimeout(() => { btn.textContent = original; }, 1600); };
@@ -192,6 +281,7 @@ function copiar(btn, texto) {
 
 function abrirFicha(r) {
   const { asunto, cuerpo } = correo(r);
+  $('#ap-eyebrow').textContent = r.abierta ? 'Ofrecerte para su oferta' : 'Aplicar';
   $('#ap-titulo').textContent = r.empresa;
   $('#ap-proyecto').textContent = r.contrato;
   const c = $('#ap-contacto');
@@ -227,6 +317,10 @@ $('#f-encaje').addEventListener('click', (e) => {
   estado.minimo = +b.dataset.v;
   $('#f-encaje').querySelectorAll('.chip').forEach((x) => x.classList.toggle('on', x === b));
   pintar();
+});
+$('#pestanas').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  estado.pestana = b.dataset.v; estado.vista = ''; pestanas(); chipsVista(); pintar();
 });
 $('#f-vista').addEventListener('click', (e) => {
   const b = e.target.closest('.chip'); if (!b) return;

@@ -5,12 +5,18 @@ on:
   schedule:
     - cron: "15 5 * * *"   # 05:15 UTC = 06:15 en invierno / 07:15 en verano (hora de España)
   workflow_dispatch:        # botón «Run workflow» para lanzarlo a mano
+    inputs:
+      dias:
+        description: "Días hacia atrás (vacío = desde la última vez)"
+        required: false
+        default: ""
   push:
     branches: [main]
     paths: ["docs/**", ".github/workflows/radar.yml"]
 
 permissions:
   contents: write
+  issues: write
   pages: write
   id-token: write
 
@@ -22,14 +28,16 @@ jobs:
   actualizar:
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Buscar contratos nuevos
-        run: python radar.py
+        env:
+          DIAS: ${{ inputs.dias }}
+        run: python radar.py ${DIAS:+--dias "$DIAS"}
       - name: Preparar datos de la web
         run: python exportar.py
       - name: Guardar cambios
@@ -39,6 +47,10 @@ jobs:
           git add data docs/data
           git diff --cached --quiet || git commit -m "Radar: datos del $(date -u +%Y-%m-%d)"
           git push
+      - name: Resumen por correo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python resumen.py
 
   publicar:
     needs: actualizar
