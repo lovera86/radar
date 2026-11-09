@@ -18,31 +18,31 @@
   .barra input[type=tel] { width: 130px; }
   .boton { font: 600 14px inherit; font-family: inherit; background: #8fd3c7; color: #062033; border: 0; border-radius: 10px; padding: 9px 16px; cursor: pointer; }
   .ayuda { width: 100%; font-size: 12.5px; color: #9fb4c5; margin: 0; }
-  .hoja { width: min(210mm, calc(100vw - 24px)); margin: 20px auto 40px; background: #fff; padding: 14mm 15mm; box-shadow: 0 10px 30px rgba(12, 39, 64, .15); font-size: 9.6pt; line-height: 1.38; }
-  h1 { font-size: 21pt; margin: 0; letter-spacing: .2px; color: var(--tinta); }
+  .hoja { width: min(210mm, calc(100vw - 24px)); margin: 20px auto 40px; background: #fff; padding: 11mm 13mm; box-shadow: 0 10px 30px rgba(12, 39, 64, .15); font-size: 9pt; line-height: 1.32; }
+  h1 { font-size: 19pt; margin: 0; letter-spacing: .2px; color: var(--tinta); }
   .titular { font-size: 11pt; color: var(--tinta2); font-weight: 600; margin: 2px 0 6px; }
   .contacto { font-size: 8.8pt; color: var(--gris); }
   .contacto span + span::before { content: " · "; color: #9aa5b1; }
   .cabecera { border-bottom: 3px solid var(--tinta2); padding-bottom: 8px; }
-  h2 { font-size: 10.5pt; text-transform: uppercase; letter-spacing: 1.2px; color: var(--tinta); border-bottom: 1.5px solid var(--tinta); padding-bottom: 2px; margin: 13px 0 6px; }
+  h2 { font-size: 10.5pt; text-transform: uppercase; letter-spacing: 1.2px; color: var(--tinta); border-bottom: 1.5px solid var(--tinta); padding-bottom: 2px; margin: 9px 0 4px; }
   p { margin: 0 0 5px; }
-  .objetivo { background: #eef6f5; border-left: 3px solid var(--acento); padding: 5px 9px; margin: 8px 0 0; }
+  .objetivo { background: #eef6f5; border-left: 3px solid var(--acento); padding: 3px 8px; margin: 6px 0 0; }
   [contenteditable]:hover { outline: 1px dashed #9fb4c5; outline-offset: 2px; }
-  .trabajo { margin-bottom: 8px; break-inside: avoid; }
+  .trabajo { margin-bottom: 5px; break-inside: avoid; }
   .trabajo-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
   .puesto { font-weight: 700; color: #102a43; }
   .empresa { color: var(--tinta2); font-weight: 600; }
   .fechas { color: var(--gris); font-size: 8.8pt; white-space: nowrap; }
-  ul { margin: 3px 0 0; padding-left: 15px; }
-  li { margin: 1px 0; }
+  ul { margin: 2px 0 0; padding-left: 14px; }
+  li { margin: 0; }
   .otra { color: var(--gris); }
-  .rejilla { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; }
+  .rejilla { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px 14px; font-size: 8.6pt; }
   .edu { break-inside: avoid; }
   .chips { display: flex; flex-wrap: wrap; gap: 4px 6px; }
-  .chips span { border: 1px solid var(--linea); border-radius: 4px; padding: 1px 6px; font-size: 8.8pt; }
+  .chips span { border: 1px solid var(--linea); border-radius: 4px; padding: 0 5px; font-size: 8.4pt; }
   .chips span.clave { border-color: var(--acento); color: #0f5a52; }
   @media (max-width: 640px) { .hoja { padding: 18px; font-size: 10pt; } .rejilla { grid-template-columns: 1fr; } .trabajo-cab { flex-direction: column; gap: 0; } }
-  @page { size: A4; margin: 14mm 15mm; }
+  @page { size: A4; margin: 11mm 13mm; }
   @media print {
     body { background: #fff; }
     .barra { display: none; }
@@ -63,6 +63,6 @@
 </div>
 <main class="hoja" id="hoja"></main>
 <script src="cv-datos.js?v=2"></script>
-<script src="cv.js?v=3"></script>
+<script src="cv.js?v=4"></script>
 </body>
 </html>

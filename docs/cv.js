@@ -66,7 +66,7 @@ function pintar(o, info, tema) {
     const vin = x.vinetas.map((v, j) => ({ ...v, p: puntua(v), j }));
     const utiles = vin.filter((v) => v.p > 0).sort((a, b) => b.p - a.p || a.j - b.j);
     if (!x.siempre && !utiles.length) { otras.push(`${x.puesto} · ${x.empresa} (${x.fechas.replace(/[a-z.]+ /g, '')})`); return ''; }
-    const max = i === 0 ? 6 : 3;
+    const max = i === 0 ? 5 : 2;
     const elegidas = (utiles.length ? utiles : vin.slice(0, 1)).slice(0, max);
     return `<div class="trabajo">
       <div class="trabajo-cab"><div><span class="puesto">${esc(x.puesto)}</span> · <span class="empresa">${esc(x.empresa)}</span>${x.nota ? ' (' + esc(x.nota) + ')' : ''}</div><div class="fechas">${esc(x.fechas)}</div></div>
