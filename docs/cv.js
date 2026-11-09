@@ -63,7 +63,8 @@ function pintar(o, info, tema) {
 
   const otras = [];
   const trabajos = CV.experiencia.map((x, i) => {
-    const vin = x.vinetas.map((v, j) => ({ ...v, p: puntua(v), j }));
+    let oc = {}; try { oc = (JSON.parse(localStorage.getItem('radar-perfil')) || {}).ocultos || {}; } catch (e) { oc = {}; }
+    const vin = x.vinetas.map((v, j) => ({ ...v, p: puntua(v), j })).filter((v) => !oc[`${x.empresa}|${v.j}`]);
     const utiles = vin.filter((v) => v.p > 0).sort((a, b) => b.p - a.p || a.j - b.j);
     if (!x.siempre && !utiles.length) { otras.push(`${x.puesto} · ${x.empresa} (${x.fechas.replace(/[a-z.]+ /g, '')})`); return ''; }
     const max = i === 0 ? 5 : 2;

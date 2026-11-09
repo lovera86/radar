@@ -79,9 +79,12 @@ function temasOportunidad(o) {
   return { principal: puntos[0][0], secundario: puntos[1][1] >= 2 ? puntos[1][0] : '' };
 }
 
+function ocultosPerfil() { try { return (JSON.parse(localStorage.getItem('radar-perfil')) || {}).ocultos || {}; } catch (e) { return {}; } }
+
 function buscarEvidencia(rx) {
+  const oc = ocultosPerfil();
   for (const x of CV.experiencia) {
-    const v = x.vinetas.find((b) => rx.test(sinHtml(b.t)));
+    const v = x.vinetas.find((b, i) => !oc[`${x.empresa}|${i}`] && rx.test(sinHtml(b.t)));
     if (v) return { texto: sinHtml(v.t), cita: `${x.puesto} · ${x.empresa}` };
   }
   return null;

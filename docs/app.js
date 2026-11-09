@@ -36,6 +36,7 @@ const VISTAS = {
   empresas: { titulo: 'Empresas', intro: 'Empresas con señales verificables de actividad en tu sector. Una señal no es una vacante: es un buen motivo para escribirles.' },
   mapa: { titulo: 'Mapa', intro: 'Dónde están las oportunidades. Las remotas o sin ubicación fiable aparecen aparte, sin marcador.' },
   guardados: { titulo: 'Guardados y candidaturas', intro: 'Lo que has guardado y en qué punto está cada candidatura o contacto.' },
+  perfil: { titulo: 'Mi perfil', intro: 'Lo que RADAR sabe de ti y cómo lo usa. Tus preferencias y pesos cambian la compatibilidad de todas las oportunidades al momento. Se guarda solo en este navegador.' },
 };
 
 /* ---------- utilidades ---------- */
@@ -66,6 +67,16 @@ if (!ST.col) {
     .forEach(([k, n]) => { ST.col[k] = { nombre: n, items: {} }; });
 }
 const PESOS = { ...PESOS_BASE, ...leer('radar-pesos', {}) };
+const PREF = { zonas: [], modalidades: [], salarioMin: '', disponibilidad: '', permiso: '', roles: {}, evitar: '', ocultos: {}, ...leer('radar-perfil', {}) };
+const ROLES = [
+  { k: 'program', nombre: 'Program Manager', rx: /program(me)? manager/i, por: 'Has dirigido varios proyectos a la vez en Gárgola Lab (Atlántida, RURAL IA 3D, ForestScape).' },
+  { k: 'product', nombre: 'Product Manager / Product Owner', rx: /product (manager|owner)/i, por: 'Definiste la estructura y los requisitos de la plataforma RURAL IA 3D y de herramientas web con IA.' },
+  { k: 'pmo', nombre: 'PMO', rx: /\bpmo\b/i, por: 'Máster en Project Management, CAPM y control de alcance, plazos y costes.' },
+  { k: 'innovacion', nombre: 'Innovation Manager / gestión de I+D', rx: /innovaci|innovation|i\+d/i, por: 'ForestScape 3D Analytics: I+D con el CTAG y financiación del IGAPE.' },
+  { k: 'digital', nombre: 'Digital Transformation Manager', rx: /transformaci[oó]n digital|digital transformation|digitalizaci/i, por: 'Ecommerce integrado con ERP y automatización de procesos en Grumatel.' },
+  { k: 'delivery', nombre: 'Delivery / Service Delivery Manager', rx: /delivery manager/i, por: 'Coordinación de equipos de desarrollo y entregas con el cliente.' },
+];
+const guardarPref = () => { escribir('radar-perfil', PREF); D.ops.forEach((o) => { delete o._p; }); };
 const guardarST = () => { escribir('radar-v2', ST); contadorGuardados(); };
 
 function instantanea(id) {
@@ -89,11 +100,40 @@ function toggleFav(id) {
 /* ---------- datos ---------- */
 const D = { ops: [], meta: {}, porId: new Map() };
 
+/* Ajustes según tu perfil: se aplican sobre los criterios calculados en origen y se explican. */
+function ajustados(o) {
+  const c = {};
+  Object.entries(o.criterios).forEach(([k, v]) => { c[k] = { ...v, motivos: [...(v.motivos || [])] }; });
+  const t = norm(o.titulo);
+  if (PREF.zonas.length && c.geografia && o.ubicacion.comunidad && PREF.zonas.includes(o.ubicacion.comunidad) && (c.geografia.valor ?? 0) < 0.85) {
+    c.geografia.valor = 0.85; c.geografia.motivos.push(`${o.ubicacion.comunidad} está entre las zonas que aceptas`);
+  }
+  if (PREF.modalidades.length && o.modalidad !== 'desconocida' && c.geografia?.valor != null) {
+    if (PREF.modalidades.includes(o.modalidad)) { c.geografia.valor = Math.min(1, c.geografia.valor + 0.1); c.geografia.motivos.push('modalidad que prefieres'); } else { c.geografia.valor = Math.max(0, c.geografia.valor - 0.25); c.geografia.motivos.push('modalidad que no prefieres'); }
+  }
+  const min = parseInt(PREF.salarioMin, 10);
+  if (min && o.salario?.texto) {
+    const nums = (o.salario.texto.match(/\d{2,3}(?:[.,]\d{3})+|\d{4,6}/g) || []).map((n) => +n.replace(/[.,]/g, '')).map((n) => (n < 1000 ? n * 1000 : n));
+    if (nums.length && Math.max(...nums) < min) { c.salario.valor = 0.15; c.salario.motivos.push(`por debajo de tu mínimo (${min.toLocaleString('es-ES')} €)`); }
+  }
+  if (c.encaje) {
+    const rol = ROLES.find((r) => PREF.roles[r.k] === true && r.rx.test(o.titulo));
+    if (rol) { c.encaje.valor = Math.min(1, (c.encaje.valor ?? 0) + 0.12); c.encaje.motivos.push(`rol que has aceptado: ${rol.nombre}`); }
+    const rech = ROLES.find((r) => PREF.roles[r.k] === false && r.rx.test(o.titulo));
+    if (rech) { c.encaje.valor = Math.max(0, (c.encaje.valor ?? 0) - 0.2); c.encaje.motivos.push(`rol que has descartado: ${rech.nombre}`); }
+    const evitar = PREF.evitar.split(',').map((x) => norm(x).trim()).filter(Boolean);
+    const e = evitar.find((x) => t.includes(x));
+    if (e) { c.encaje.valor = Math.max(0, (c.encaje.valor ?? 0) - 0.3); c.encaje.motivos.push(`contiene «${e}», que no quieres priorizar`); }
+  }
+  return c;
+}
+
 function puntuar(o) {
   if (o._p) return o._p;
   let s = 0, w = 0;
+  const crits = ajustados(o);
   const partes = Object.entries(CRITERIOS).map(([k]) => {
-    const c = o.criterios[k] || { valor: null, sin_info: true, motivos: [] };
+    const c = crits[k] || { valor: null, sin_info: true, motivos: [] };
     const peso = PESOS[k] || 0;
     if (c.valor != null) { s += c.valor * peso; w += peso; }
     return { k, ...c, peso };
@@ -372,9 +412,10 @@ function tarjeta(o) {
 
 function razones(o) {
   const out = [];
-  const enc = o.criterios.encaje;
+  const cr = Object.fromEntries(puntuar(o).partes.map((x) => [x.k, x]));
+  const enc = cr.encaje;
   (enc.motivos || []).slice(0, 2).forEach((m) => out.push(m.replace(/^(puesto|tema): /, '').replace(/^./, (c) => c.toUpperCase())));
-  const geo = o.criterios.geografia;
+  const geo = cr.geografia;
   if (geo.valor >= 0.6 && geo.motivos?.[0]) out.push(geo.motivos[0].replace(/^./, (c) => c.toUpperCase()));
   else if (o.criterios.necesidad.valor >= 0.75 && o.subtipo !== 'oferta') out.push(o.criterios.necesidad.motivos.at(-1).replace(/^./, (c) => c.toUpperCase()));
   return out.slice(0, 3);
@@ -397,6 +438,7 @@ function pintar() {
       enlace('https://www.tecnoempleo.com/ofertas-trabajo/?te=project+manager', 'Tecnoempleo', 'btn sec mini'));
   }
   if (VISTA === 'empresas') { $('#mejores').hidden = true; return pintarEmpresas(); }
+  if (VISTA === 'perfil') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarPerfil(); }
   if (VISTA === 'guardados') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarGuardados(); }
   const lista = ordenar(D.ops.filter((o) => pasa(o)));
   const total = D.ops.filter((o) => pasa(o, false) || true).length;
@@ -537,7 +579,7 @@ function analisis(o) {
     const d = el('div'); d.append(el('h4', null, titulo));
     const ul = el('ul'); (items.length ? items : [vacio]).forEach((t) => ul.append(el('li', null, t))); d.append(ul); return d;
   };
-  const c = o.criterios;
+  const c = Object.fromEntries(puntuar(o).partes.map((x) => [x.k, x]));
   const fuertes = [...(c.encaje.motivos || []), ...(c.geografia.valor >= 0.6 ? c.geografia.motivos : []), ...(c.acceso.valor >= 0.7 ? c.acceso.motivos : [])];
   const dudas = [...(c.acceso.valor < 0.7 ? c.acceso.motivos : []), ...(c.geografia.valor != null && c.geografia.valor < 0.6 ? c.geografia.motivos : [])];
   const sin = Object.entries(c).filter(([, x]) => x.valor == null).map(([k]) => CRITERIOS[k]);
@@ -977,6 +1019,100 @@ function pintarGuardados() {
   });
   if (!alguna) cand.append(el('p', 'nota', 'Aún no hay candidaturas. Usa «Me interesa» o cambia el estado desde la ficha de una oportunidad.'));
   cont.append(cand);
+
+  $('#rejilla').replaceChildren(cont);
+}
+
+/* ---------- Mi perfil ---------- */
+const ZONAS_PERFIL = ['Asturias', 'Galicia', 'Cantabria', 'País Vasco', 'Navarra', 'Castilla y León', 'Madrid', 'Cataluña', 'Comunitat Valenciana', 'Andalucía', 'Aragón'];
+
+function pintarPerfil() {
+  $('#res-n').textContent = '';
+  const cont = el('div', 'perfil');
+  const repintar = () => { guardarPref(); pintar(); };
+  const sec = (titulo, nota) => { const s = el('section', 'p-sec'); s.append(el('h3', null, titulo)); if (nota) s.append(el('p', 'nota', nota)); return s; };
+  const chk = (txt, on, fn) => { const l = el('label', 'op'); const i = el('input'); i.type = 'checkbox'; i.checked = on; i.addEventListener('change', () => fn(i.checked)); l.append(i, ' ', txt); return l; };
+
+  // completitud
+  const campos = [
+    ['Experiencia', CV.experiencia.length > 0], ['Formación', CV.formacion.length > 0], ['Idiomas', Boolean(CV.idiomas)],
+    ['Zonas que aceptas', PREF.zonas.length > 0], ['Modalidad preferida', PREF.modalidades.length > 0], ['Salario mínimo orientativo', Boolean(PREF.salarioMin)],
+    ['Disponibilidad para incorporarte', Boolean(PREF.disponibilidad)], ['Permiso de trabajo en la UE', Boolean(PREF.permiso)],
+    ['Roles adyacentes revisados', ROLES.every((r) => r.k in PREF.roles)],
+  ];
+  const hechos = campos.filter((x) => x[1]).length;
+  const comp = sec('Perfil completo al ' + Math.round((100 * hechos) / campos.length) + ' %');
+  const barra = el('div', 'emb-b'); const bi = el('i'); bi.style.width = (100 * hechos) / campos.length + '%'; barra.append(bi); comp.append(barra);
+  const falta = campos.filter((x) => !x[1]).map((x) => x[0]);
+  comp.append(el('p', 'nota', falta.length ? 'Falta: ' + falta.join(', ') + '. No resta puntos: solo ayuda a afinar.' : 'Tienes todo lo necesario.'));
+  cont.append(comp);
+
+  // preferencias
+  const pref = sec('Preferencias', 'Cambian la compatibilidad de todas las oportunidades. Cada ajuste aparece explicado en la ficha.');
+  pref.append(el('h4', null, 'Zonas que aceptas (además de Asturias y remoto)'));
+  const zonas = el('div', 'opciones col2');
+  ZONAS_PERFIL.filter((z) => z !== 'Asturias').forEach((z) => zonas.append(chk(z, PREF.zonas.includes(z), (on) => { PREF.zonas = on ? [...PREF.zonas, z] : PREF.zonas.filter((x) => x !== z); repintar(); })));
+  pref.append(zonas);
+  pref.append(el('h4', null, 'Modalidad que prefieres'));
+  const mods = el('div', 'opciones');
+  [['remoto', 'Remoto'], ['hibrido', 'Híbrido'], ['presencial', 'Presencial']].forEach(([k, n]) => mods.append(chk(n, PREF.modalidades.includes(k), (on) => { PREF.modalidades = on ? [...PREF.modalidades, k] : PREF.modalidades.filter((x) => x !== k); repintar(); })));
+  pref.append(mods);
+  const campo = (lbl, key, ph, tipo) => {
+    const l = el('label', 'p-campo'); l.append(el('span', null, lbl));
+    const i = el('input'); i.type = tipo || 'text'; i.value = PREF[key] || ''; i.placeholder = ph || '';
+    i.addEventListener('change', () => { PREF[key] = i.value.trim(); repintar(); });
+    l.append(i); return l;
+  };
+  pref.append(campo('Salario bruto anual mínimo orientativo (€)', 'salarioMin', 'p. ej. 32000', 'number'),
+    campo('Disponibilidad para incorporarte', 'disponibilidad', 'p. ej. inmediata, 15 días'),
+    campo('Permiso de trabajo en la UE', 'permiso', 'sí / no'),
+    campo('Palabras que no quieres priorizar (separadas por comas)', 'evitar', 'p. ej. comercial, junior'));
+  cont.append(pref);
+
+  // roles adyacentes
+  const roles = sec('Roles a los que podrías optar', 'Deducidos por RADAR a partir de lo que has hecho, no de tus títulos anteriores. Acepta los que te interesen (suben la compatibilidad de esas ofertas) o recházalos (la bajan).');
+  ROLES.forEach((r) => {
+    const f = el('div', 'rol');
+    const t = el('div'); t.append(el('b', null, r.nombre), ' ', el('span', 'origen o-inferido', 'inferido'), el('small', null, r.por));
+    const b = el('div', 'acc-t');
+    const si = boton(PREF.roles[r.k] === true ? '✓ Me interesa' : 'Me interesa', PREF.roles[r.k] === true ? 'on' : '', () => { PREF.roles[r.k] = PREF.roles[r.k] === true ? undefined : true; if (PREF.roles[r.k] === undefined) delete PREF.roles[r.k]; repintar(); });
+    const no = boton(PREF.roles[r.k] === false ? '✓ No' : 'No', PREF.roles[r.k] === false ? 'on' : '', () => { PREF.roles[r.k] = PREF.roles[r.k] === false ? undefined : false; if (PREF.roles[r.k] === undefined) delete PREF.roles[r.k]; repintar(); });
+    b.append(si, no); f.append(t, b); roles.append(f);
+  });
+  cont.append(roles);
+
+  // pesos
+  const pesos = sec('Cómo se calcula la compatibilidad', 'Pesos relativos de cada criterio. Se reparten en proporción y los criterios sin información no cuentan.');
+  Object.entries(CRITERIOS).forEach(([k, n]) => {
+    const l = el('label', 'peso'); l.append(el('span', null, n));
+    const r = el('input'); r.type = 'range'; r.min = 0; r.max = 50; r.step = 5; r.value = PESOS[k];
+    const out = el('output', null, PESOS[k] + ' %');
+    r.addEventListener('input', () => { out.textContent = r.value + ' %'; });
+    r.addEventListener('change', () => { PESOS[k] = +r.value; escribir('radar-pesos', PESOS); D.ops.forEach((o) => { delete o._p; }); pintar(); });
+    l.append(r, out); pesos.append(l);
+  });
+  pesos.append(boton('Volver a los pesos iniciales (30/20/15/15/10/10)', 'enlace', () => { Object.assign(PESOS, PESOS_BASE); escribir('radar-pesos', PESOS); D.ops.forEach((o) => { delete o._p; }); pintar(); }));
+  cont.append(pesos);
+
+  // datos del CV
+  const cv = sec('Tu experiencia según el CV', 'Esto es lo que RADAR usa para la propuesta de valor y el CV adaptado. Si un dato no quieres que se use, desmárcalo. Para corregir o añadir algo, pídemelo y lo actualizo en el CV.');
+  CV.experiencia.forEach((x) => {
+    const d = el('details', 'exp'); d.open = CV.experiencia.indexOf(x) < 2;
+    d.append(el('summary', null, `${x.puesto} · ${x.empresa} · ${x.fechas}`));
+    x.vinetas.forEach((v, i) => {
+      const id = `${x.empresa}|${i}`;
+      const l = el('label', 'op exp-v' + (PREF.ocultos[id] ? ' oculto' : ''));
+      const c = el('input'); c.type = 'checkbox'; c.checked = !PREF.ocultos[id];
+      c.addEventListener('change', () => { if (c.checked) delete PREF.ocultos[id]; else PREF.ocultos[id] = true; guardarPref(); l.classList.toggle('oculto', !c.checked); });
+      l.append(c, ' ', el('span', null, v.t.replace(/<[^>]+>/g, '')), ' ', el('span', 'origen o-confirmado', 'CV'));
+      d.append(l);
+    });
+    cv.append(d);
+  });
+  cv.append(el('h4', null, 'Formación'));
+  const ul = el('ul', 'p-lista'); CV.formacion.forEach((f) => { const li = el('li'); li.append(el('b', null, f.t), ' · ' + f.d, ' ', el('span', 'origen o-confirmado', 'CV')); ul.append(li); }); cv.append(ul);
+  cv.append(el('h4', null, 'Idiomas y otros'), el('p', null, CV.idiomas + ' · ' + CV.extra));
+  cont.append(cv);
 
   $('#rejilla').replaceChildren(cont);
 }
