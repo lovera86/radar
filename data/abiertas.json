@@ -1,5 +1,924 @@
 [
  {
+  "id": "20676731",
+  "expediente": "CAA/2026/256",
+  "estado": "PUB",
+  "titulo": "Asistencia técnica para la redacción del anteproyecto para la ampliación de la ETAP de Rioseco.",
+  "tipo": "2",
+  "cpv": [
+   "71300000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Consorcio para el Abastecimiento de Agua y Saneamiento en el Principado de Asturias",
+  "importe": 251585.91,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=OMBm1H2xQj69Hd5zqvq9cg%3D%3D",
+  "actualizado": "2026-11-03T11:18:42.086+01:00",
+  "plazo": "2026-11-09",
+  "criterios": [
+   {
+    "texto": "P4.- Mayor experiencia del perfil requerido del Autor anteproyecto.",
+    "peso": 7.0
+   },
+   {
+    "texto": "P3.- Mayor experiencia del perfil requerido de Especialista en geotecnia.",
+    "peso": 8.0
+   }
+  ],
+  "pide_pm": false,
+  "puntuacion": 45,
+  "motivos": [
+   "asistencia tecnica",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "19806601",
+  "expediente": "PA-SARA-LIC/2026/000010",
+  "estado": "PUB",
+  "titulo": "Obras de remodelación antiguo IES Valliniello (Avilés) para la creación de un espacio para la innovación y la investigación industrial denominado Manzana del Talento y el emprendimiento industrial cofinanciado por el Fondo de Transición Justa (FTJ).",
+  "tipo": "3",
+  "cpv": [
+   "45000000",
+   "45213150",
+   "45210000",
+   "45200000",
+   "45213000",
+   "45214620"
+  ],
+  "region_nuts": "ES120",
+  "region": "",
+  "organo": "Agencia de Ciencia, Competitividad Empresarial e Innovación Asturiana",
+  "importe": 5134027.86,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=nCZYzecA0iQzjChw4z%2FXvw%3D%3D",
+  "actualizado": "2026-10-21T15:52:32.552+02:00",
+  "plazo": "2026-11-09",
+  "criterios": [
+   {
+    "texto": "Experiencia del Jefe de obra",
+    "peso": 15.0
+   },
+   {
+    "texto": "Experiencia del Encargado de obra",
+    "peso": 15.0
+   }
+  ],
+  "pide_pm": false,
+  "puntuacion": 52,
+  "motivos": [
+   "innovacion",
+   "ES12"
+  ]
+ },
+ {
+  "id": "20767800",
+  "expediente": "LI82EH26",
+  "estado": "PUB",
+  "titulo": "Contratación del servicio de transporte de concentración de piezas de la exposición temporal CRANIA en el Museo de la Evolución Humana, así como los servicios de diseño, producción de soportes y montaje de piezas de la misma.",
+  "tipo": "2",
+  "cpv": [
+   "92521100",
+   "60000000"
+  ],
+  "region_nuts": "ES412",
+  "region": "Burgos",
+  "organo": "Fundación Siglo para el Turismo y las Artes de Castilla y León",
+  "importe": 99900.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=o%2FeHVDqf%2Fis2wEhQbcAqug%3D%3D",
+  "actualizado": "2026-10-23T11:01:30.284+02:00",
+  "plazo": "2026-11-09",
+  "criterios": [
+   {
+    "texto": "Equipo técnico especializado en montaje de piezas arqueológicas u obras de arte",
+    "peso": 36.0
+   }
+  ],
+  "pide_pm": false,
+  "puntuacion": 50,
+  "motivos": [
+   "museo",
+   "exposicion",
+   "CPV 92521100,60000000"
+  ]
+ },
+ {
+  "id": "20589236",
+  "expediente": "CONTR 2026 0000237603",
+  "estado": "PUB",
+  "titulo": "gestión inteligente de las emergencias de andalucía (gie)",
+  "tipo": "2",
+  "cpv": [
+   "73100000",
+   "79311000",
+   "73220000",
+   "79111000",
+   "32571000",
+   "79411000",
+   "73200000",
+   "79140000",
+   "73300000",
+   "72224000",
+   "72000000"
+  ],
+  "region_nuts": "ES618",
+  "region": "",
+  "organo": "Agencia de Emergencias de Andalucía",
+  "importe": 2719008.26,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.juntadeandalucia.es/haciendayadministracionpublica/apl/pdc_sirec/perfiles-licitaciones/detalle-licitacion.jsf?idExpediente=1009277",
+  "actualizado": "2026-10-22T12:42:21.730+02:00",
+  "plazo": "2026-11-09",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 73100000,79311000,73220000"
+  ]
+ },
+ {
+  "id": "20751037",
+  "expediente": "2026060EI",
+  "estado": "PUB",
+  "titulo": "Servicios para el funcionamiento del Museo de la Industria Armera – Armagintzaren Museoa",
+  "tipo": "2",
+  "cpv": [
+   "92521000"
+  ],
+  "region_nuts": "ES212",
+  "region": "",
+  "organo": "Ayuntamiento de Eibar-Alcalde del Ayuntamiento de Eibar",
+  "importe": 50462.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratacion.euskadi.eus/webkpe00-kpeperfi/es/contenidos/anuncio_contratacion/expjaso751563/es_doc/index.html",
+  "actualizado": "2026-10-21T19:11:34.281+02:00",
+  "plazo": "2026-11-09",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 43,
+  "motivos": [
+   "museo",
+   "CPV 92521000",
+   "ES21"
+  ]
+ },
+ {
+  "id": "20777843",
+  "expediente": "CMAYOR/2026/MUSEO/852",
+  "estado": "PUB",
+  "titulo": "AUXILIARES SOROLLA. Servicio de auxiliares de sala, control de accesos, venta de entradas, tienda y consigna de la exposición «La colección Sorolla de la Hispanic Society» en el Museo de la Ciudad de València.",
+  "tipo": "2",
+  "cpv": [
+   "92521000"
+  ],
+  "region_nuts": "ES523",
+  "region": "Valencia/València",
+  "organo": "Gerencia del Consorcio de Museos de la Comunitat Valenciana",
+  "importe": 1716010.92,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=kuE6C6S145yqb7rCcv76BA%3D%3D",
+  "actualizado": "2026-10-25T12:57:02.945+01:00",
+  "plazo": "2026-11-10",
+  "criterios": [
+   {
+    "texto": "Plan de acogida y experiencia del visitante",
+    "peso": 10.0
+   },
+   {
+    "texto": "Experiencia del COORDINADOR / JEFE DE EQUIPO en el ámbito museístico",
+    "peso": 6.0
+   }
+  ],
+  "pide_pm": true,
+  "puntuacion": 80,
+  "motivos": [
+   "museo",
+   "exposicion",
+   "CPV 92521000",
+   "puntúa el jefe de proyecto"
+  ]
+ },
+ {
+  "id": "20677104",
+  "expediente": "SER/2026/0000122251",
+  "estado": "PUB",
+  "titulo": "Asistencia tecnica a la produccion estadistica del Instituto Canario de Estadistica",
+  "tipo": "2",
+  "cpv": [
+   "72310000",
+   "79330000",
+   "72311000",
+   "72330000",
+   "73100000",
+   "72311200",
+   "72312100",
+   "79311400",
+   "79421000",
+   "72316000",
+   "72322000",
+   "79311000",
+   "79311410",
+   "72311100",
+   "72320000"
+  ],
+  "region_nuts": "ES70",
+  "region": "Canarias",
+  "organo": "Director del Instituto Canario de Estadística (ISTAC)",
+  "importe": 2703076.69,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=4RMgcGMsKrfs%2BnLj3vAg5A%3D%3D",
+  "actualizado": "2026-11-04T13:50:05.632+01:00",
+  "plazo": "2026-11-11",
+  "criterios": [
+   {
+    "texto": "10. Número de personas tituladas Nivel 4 MECES entre el equipo mínimo estable",
+    "peso": 4.0
+   },
+   {
+    "texto": "11. Nivel de inglés en el equipo",
+    "peso": 4.0
+   }
+  ],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 72310000,79330000,72311000"
+  ]
+ },
+ {
+  "id": "20788119",
+  "expediente": "C-4505-26/D-4010",
+  "estado": "PUB",
+  "titulo": "Trabajos de apoyo en el archivo histórico de hunosa: tratamiento documental, digitalización y difusión  archivo histórico. -CONTRATO RESERVADO A CENTROS ESPECIALES DE EMPLEO DE INICIATIVA -SOCIAL Y EMPRESAS DE INSERCIÓN, reguladas en la Disposición Adicional -cuarta de la Ley 9/2017, de 8 de noviembre, de Contratos del Sector Público",
+  "tipo": "2",
+  "cpv": [
+   "79560000"
+  ],
+  "region_nuts": "ES12",
+  "region": "Principado de Asturias",
+  "organo": "Hulleras del Norte S.A.",
+  "importe": 540000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=UmLWKniHc7wadbH3CysQuQ%3D%3D",
+  "actualizado": "2026-10-27T12:18:40.471+01:00",
+  "plazo": "2026-11-11",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 50,
+  "motivos": [
+   "digitalizacion",
+   "Principado de Asturias"
+  ]
+ },
+ {
+  "id": "20798240",
+  "expediente": "1870/26",
+  "estado": "PUB",
+  "titulo": "Suministro, fabricación, instalación y puesta en funcionamiento de un recurso museográfico basado en maqueta 3D y videomapping para el  Museo de la ciudad Luis de Morales",
+  "tipo": "1",
+  "cpv": [
+   "32323400",
+   "92521100",
+   "39162100",
+   "39133000"
+  ],
+  "region_nuts": "ES431",
+  "region": "Badajoz",
+  "organo": "Alcaldía del Ayuntamiento de Badajoz",
+  "importe": 72695.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=QpI2j13vl8Qtm4eBPtV6eQ%3D%3D",
+  "actualizado": "2026-10-28T10:34:24.999+01:00",
+  "plazo": "2026-11-12",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 58,
+  "motivos": [
+   "museograf",
+   "museo",
+   "CPV 32323400,92521100,39162100"
+  ]
+ },
+ {
+  "id": "20682088",
+  "expediente": "2026/ETSAE0921/00001411E",
+  "estado": "PUB",
+  "titulo": "Exposición temporal Real y Militar Orden de San Fernando",
+  "tipo": "2",
+  "cpv": [
+   "92521000"
+  ],
+  "region_nuts": "ES425",
+  "region": "Toledo",
+  "organo": "Dirección de Asuntos Económicos del Ejército",
+  "importe": 111570.25,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=VAKDw3DaLbucTfjQf3USOg%3D%3D",
+  "actualizado": "2026-10-23T09:48:17.791+02:00",
+  "plazo": "2026-11-12",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 47,
+  "motivos": [
+   "exposicion",
+   "CPV 92521000"
+  ]
+ },
+ {
+  "id": "20762065",
+  "expediente": "CONTR 2026 0000288498",
+  "estado": "PUB",
+  "titulo": "Servicios Exposición temporal \"Manuel Rivera\" (3 lotes)",
+  "tipo": "2",
+  "cpv": [
+   "60000000",
+   "92521100",
+   "45255400",
+   "39154000"
+  ],
+  "region_nuts": "ES614",
+  "region": "",
+  "organo": "Patronato de la Alhambra y Generalife",
+  "importe": 380433.53,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.juntadeandalucia.es/haciendayadministracionpublica/apl/pdc_sirec/perfiles-licitaciones/detalle-licitacion.jsf?idExpediente=1014891",
+  "actualizado": "2026-10-22T11:42:04.498+02:00",
+  "plazo": "2026-11-12",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 52,
+  "motivos": [
+   "exposicion",
+   "CPV 60000000,92521100,45255400"
+  ]
+ },
+ {
+  "id": "20570866",
+  "expediente": "1216/2026",
+  "estado": "PUB",
+  "titulo": "Asistencia Técnica de Soporte a las Unidades del Excmo. Cabildo Insular de La Gomera en Materia de Captación de Financiación, Gestión e Implementación de la Estrategia Gomera 36",
+  "tipo": "2",
+  "cpv": [
+   "72224000",
+   "79410000",
+   "79411000"
+  ],
+  "region_nuts": "ES70",
+  "region": "Canarias",
+  "organo": "Presidencia del Cabildo Insular de La Gomera",
+  "importe": 467446.9,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=ml1kqclH8mnua%2Fi14w%2FPLA%3D%3D",
+  "actualizado": "2026-10-26T09:46:27.415+01:00",
+  "plazo": "2026-11-15",
+  "criterios": [
+   {
+    "texto": "FORMACIÓN EN ALGUNA DE LAS NORMAS 9001, 14001 O 27001 DEL PERSONAL ADSCRITO A LA EJECUCIÓN DEL PROYECTO",
+    "peso": 4.0
+   },
+   {
+    "texto": "DISPONIBILIDAD DE PRESENCIALIDAD DE LOS/AS COORDINADORES/AS DE PROYECTO",
+    "peso": 6.0
+   }
+  ],
+  "pide_pm": true,
+  "puntuacion": 50,
+  "motivos": [
+   "CPV 72224000,79410000,79411000",
+   "puntúa el jefe de proyecto"
+  ]
+ },
+ {
+  "id": "20815635",
+  "expediente": "CC2026/309",
+  "estado": "PUB",
+  "titulo": "Servicio de dirección de las obras de reforma parcial de la UTS de Vallobín 1; Dirección de ejecución de las obras y coordinación de seguridad y salud en fase de construcción",
+  "tipo": "2",
+  "cpv": [
+   "71221000",
+   "71312000",
+   "71334000",
+   "71247000",
+   "71313410"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Junta de Gobierno del Ayuntamiento de Oviedo",
+  "importe": 22542.36,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=q1eGv1vjFp67JOCXkOhcDg%3D%3D",
+  "actualizado": "2026-10-30T16:03:07.916+01:00",
+  "plazo": "2026-11-16",
+  "criterios": [
+   {
+    "texto": "Mayor experiencia del equipo del licitador",
+    "peso": 20.0
+   }
+  ],
+  "pide_pm": true,
+  "puntuacion": 60,
+  "motivos": [
+   "coordinacion",
+   "CPV 71221000,71312000,71334000",
+   "Asturias",
+   "puntúa el jefe de proyecto"
+  ]
+ },
+ {
+  "id": "20815764",
+  "expediente": "2026/I/147_P-1546.05.F.05",
+  "estado": "PUB",
+  "titulo": "Contratación del servicio de asistencia técnica para el control batimétrico del proyecto constructivo de prolongación del Muelle A3 para nuevo atraque de graneles líquidos en el Puerto Exterior de Punta Langosteira.",
+  "tipo": "2",
+  "cpv": [
+   "71351923"
+  ],
+  "region_nuts": "ES111",
+  "region": "A Coruña",
+  "organo": "Presidencia de la Autoridad Portuaria de A Coruña",
+  "importe": 33320.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=IFBf4Pb5UhSzz8fXU2i3eQ%3D%3D",
+  "actualizado": "2026-10-30T14:09:23.644+01:00",
+  "plazo": "2026-11-16",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 65,
+  "motivos": [
+   "batimetr",
+   "CPV 71351923",
+   "A Coruña"
+  ]
+ },
+ {
+  "id": "19930945",
+  "expediente": "2026000538",
+  "estado": "PUB",
+  "titulo": "suministro de víveres y asistencia técnica en actividades de restauración con destino a centros adscritos al Organismo Autónomo Establecimientos a adjudicar mediante procedimiento abierto, varios criterios de adjudicación y expediente de anticipado de gasto",
+  "tipo": "1",
+  "cpv": [
+   "15800000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Organismo Autónomo Establecimientos Residenciales para Ancianos de Asturias",
+  "importe": 9638167.66,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Kdd%2Bgq%2BnhN7N3k3tjedSGw%3D%3D",
+  "actualizado": "2026-10-29T11:14:05.577+01:00",
+  "plazo": "2026-11-16",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "asistencia tecnica",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20780399",
+  "expediente": "CON/2026/250",
+  "estado": "PUB",
+  "titulo": "pavimentación tramos de calles en Navia y Puerto de Vega",
+  "tipo": "3",
+  "cpv": [
+   "45233222"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Junta de Gobierno del Ayuntamiento de Navia",
+  "importe": 165289.26,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=SPPjI07eTaVq1DdmE7eaXg%3D%3D",
+  "actualizado": "2026-10-25T20:57:23.409+01:00",
+  "plazo": "2026-11-16",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "puerto",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20716128",
+  "expediente": "72254/2026",
+  "estado": "PUB",
+  "titulo": "Contrato del Servicio de Dirección facultativa y Coordinación de Seguridad y Salud de las obras del Auditorio de Torrevieja, C/ Salero y Varadero completo, (EXP. 21209/2021), punto de entronque en media tensión para suministro eléctrico y actualización de la red de agua potable y evacuación de pluviales en el ámbito del Museo del Mar y Auditorio, mediante tramitación anticipada del gasto",
+  "tipo": "2",
+  "cpv": [
+   "71000000",
+   "71541000",
+   "71317200"
+  ],
+  "region_nuts": "ES521",
+  "region": "Alicante/Alacant",
+  "organo": "Junta de Gobierno del Ayuntamiento de Torrevieja",
+  "importe": 315857.02,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=cjk9VeUpwgt4zIRvjBVCSw%3D%3D",
+  "actualizado": "2026-10-22T08:34:30.476+02:00",
+  "plazo": "2026-11-16",
+  "criterios": [
+   {
+    "texto": "Experiencia del equipo adjudicatario",
+    "peso": 15.0
+   }
+  ],
+  "pide_pm": true,
+  "puntuacion": 53,
+  "motivos": [
+   "museo",
+   "CPV 71000000,71541000,71317200",
+   "puntúa el jefe de proyecto"
+  ]
+ },
+ {
+  "id": "20751886",
+  "expediente": "CONEXP2026000129",
+  "estado": "PUB",
+  "titulo": "Constitueix l'objecte del contracte la construcció d’una galeria-corredor a la coberta de l’ala sud de l’edifici que completarà l’itinerari circular del recorregut museogràfic previst i que permetrà garantir les condicions d’evacuació de l’ala oest. Així mateix, el projecte inclou elements de sectorització contra incendis de la planta segona i una escala de connexió entre les plantes segona i tercera de l’ala oest.",
+  "tipo": "3",
+  "cpv": [
+   "45212350"
+  ],
+  "region_nuts": "ES511",
+  "region": "",
+  "organo": "Ajuntament de Manresa",
+  "importe": 794257.36,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contractaciopublica.cat/ca/detall-publicacio/15120932-b5b3-43f2-a1ac-0025f4f2ac62/300914243",
+  "actualizado": "2026-10-21T10:03:57.227+02:00",
+  "plazo": "2026-11-16",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 53,
+  "motivos": [
+   "museograf",
+   "museo"
+  ]
+ },
+ {
+  "id": "20788218",
+  "expediente": "2026000757",
+  "estado": "PUB",
+  "titulo": "Obras de construcción e instalación de un carro de varada en el puerto de Tapia de Casariego",
+  "tipo": "3",
+  "cpv": [
+   "45244000"
+  ],
+  "region_nuts": "ES120",
+  "region": "",
+  "organo": "Consejería de Medio Rural y Política Agraria",
+  "importe": 139569.51,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=OkAubvYgMs7N3k3tjedSGw%3D%3D",
+  "actualizado": "2026-10-27T11:00:34.192+01:00",
+  "plazo": "2026-11-17",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "puerto",
+   "ES12"
+  ]
+ },
+ {
+  "id": "20698306",
+  "expediente": "30-1564",
+  "estado": "PUB",
+  "titulo": "Elaboración de la cartografía actualizada a escala 1/1.000 de la costa de la provincia de Murcia, entre el Cabo de Palos y el límite con la provincia de Almería.",
+  "tipo": "2",
+  "cpv": [
+   "71354200"
+  ],
+  "region_nuts": "ES620",
+  "region": "Murcia",
+  "organo": "Dirección General de la Costa y el Mar",
+  "importe": 388418.14,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=w6LBGSPhHJG2gkLQ8TeYKA%3D%3D",
+  "actualizado": "2026-10-23T08:05:37.768+02:00",
+  "plazo": "2026-11-17",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 55,
+  "motivos": [
+   "cartograf",
+   "CPV 71354200"
+  ]
+ },
+ {
+  "id": "20558775",
+  "expediente": "SG-4/2026",
+  "estado": "PUB",
+  "titulo": "El objeto del presente contrato es la prestación de servicios de asistencia técnica, supervisión,&nbsp;seguimiento y apoyo técnico especializado en el marco del proyecto de implantación de un nuevo Centro de Información del Transporte de Madrid (CITRAM) en la Comunidad de Madrid, con los alcances establecidos en el Pliego de Prescripciones Técnicas Particulares.",
+  "tipo": "2",
+  "cpv": [
+   "72220000",
+   "72224000",
+   "72266000"
+  ],
+  "region_nuts": "ES300",
+  "region": "",
+  "organo": "Organismo Autónomo Consorcio Regional de Transportes Regulares de Madrid.",
+  "importe": 1908837.54,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contratos-publicos.comunidad.madrid/contrato-publico/sg-42026-servicio-asistencia-tecnica-consorcio-regional-transportes-madrid-crtm",
+  "actualizado": "2026-10-25T09:26:11.732+01:00",
+  "plazo": "2026-11-17",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 72220000,72224000,72266000"
+  ]
+ },
+ {
+  "id": "20827823",
+  "expediente": "SJ-ASE-CTR-MAY-2026-0099",
+  "estado": "PUB",
+  "titulo": "Servicio para la redacción del Plan de Movilidad Sostenible del Puerto de El Musel",
+  "tipo": "2",
+  "cpv": [
+   "71311200",
+   "71313000",
+   "79311000",
+   "79311200"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Presidencia de la Autoridad Portuaria de Gijón",
+  "importe": 50000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=97ONV6Ys9U9rSd8H4b2soA%3D%3D",
+  "actualizado": "2026-11-03T13:55:51.081+01:00",
+  "plazo": "2026-11-18",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 45,
+  "motivos": [
+   "puerto",
+   "CPV 71311200,71313000,79311000",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20827947",
+  "expediente": "2026000960",
+  "estado": "PUB",
+  "titulo": "Servicio de redacción del proyecto de digitalización de las instalaciones de abastecimiento en los concejos de Oscos (San Martín, Santa Eulalia y Villanueva) y Taramundi",
+  "tipo": "2",
+  "cpv": [
+   "71310000"
+  ],
+  "region_nuts": "ES120",
+  "region": "",
+  "organo": "Consejería de Movilidad, Medio Ambiente y Gestión de Emergencias del Principado de Asturias",
+  "importe": 56611.57,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=rIRUFZpy0QPyoM4us5k4vw%3D%3D",
+  "actualizado": "2026-11-03T12:57:01.301+01:00",
+  "plazo": "2026-11-18",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 55,
+  "motivos": [
+   "redaccion del proyecto",
+   "digitalizacion",
+   "ES12"
+  ]
+ },
+ {
+  "id": "20824210",
+  "expediente": "2026063652",
+  "estado": "PUB",
+  "titulo": "Servicio de asistencia técnica para la puesta en marcha, ejecución y seguimiento del proyecto 0543 SMART BUILDING COOP 1 E gestión y transformación para la eficiencia energética y sustentatibilidad de edificios  aprobado en la sexta convocatoria del programa de cooperacion INTERREG VI España y Portugal  POCTEP 2021-2027 cofinanciado por el FEDER",
+  "tipo": "2",
+  "cpv": [
+   "72224000"
+  ],
+  "region_nuts": "ES114",
+  "region": "Pontevedra",
+  "organo": "Presidencia de la Diputación Provincial de Pontevedra",
+  "importe": 26486.25,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=VHoIYSLbahE%2B1TMyIiZmzw%3D%3D",
+  "actualizado": "2026-11-02T14:35:38.791+01:00",
+  "plazo": "2026-11-18",
+  "criterios": [
+   {
+    "texto": "Experiencia do equipo abscrito ao contrato en proyectos INTERREG POCTEP",
+    "peso": 51.0
+   }
+  ],
+  "pide_pm": true,
+  "puntuacion": 55,
+  "motivos": [
+   "CPV 72224000",
+   "Pontevedra",
+   "puntúa el jefe de proyecto"
+  ]
+ },
+ {
+  "id": "20836385",
+  "expediente": "CMAYOR/2026/MUSEO/659",
+  "estado": "PUB",
+  "titulo": "MEDIACIÓN SOROLLA. Servicio de ejecución del programa educativo y de mediación cultural de la exposición «La Colección Sorolla de la Hispanic Society».",
+  "tipo": "2",
+  "cpv": [
+   "92521000",
+   "92312000",
+   "92320000"
+  ],
+  "region_nuts": "ES523",
+  "region": "Valencia/València",
+  "organo": "Gerencia del Consorcio de Museos de la Comunitat Valenciana",
+  "importe": 55000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=sZslkV5NGmhq1DdmE7eaXg%3D%3D",
+  "actualizado": "2026-11-04T14:33:59.980+01:00",
+  "plazo": "2026-11-19",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 42,
+  "motivos": [
+   "exposicion",
+   "CPV 92521000,92312000,92320000"
+  ]
+ },
+ {
+  "id": "20845744",
+  "expediente": "26F.2.1.0083",
+  "estado": "PUB",
+  "titulo": "Servicio de asistencia técnica para la realización de los trabajos para la formación de Cartografía Urbana a escala 1/1.000 por el sistema de restitución fotogramétrica numérica y la obtención final de la Cartografía Digital de distintos municipios de la provincia de Salamanca en el programa 2026.",
+  "tipo": "2",
+  "cpv": [
+   "71354100"
+  ],
+  "region_nuts": "ES415",
+  "region": "Salamanca",
+  "organo": "Presidencia de la Diputación Provincial de Salamanca",
+  "importe": 61981.88,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=kmTU1nTFjNdrSd8H4b2soA%3D%3D",
+  "actualizado": "2026-11-05T14:23:27.495+01:00",
+  "plazo": "2026-11-20",
+  "criterios": [
+   {
+    "texto": "B.3 Características técnicas de los equipos técnicos a utilizar",
+    "peso": 10.0
+   }
+  ],
+  "pide_pm": false,
+  "puntuacion": 80,
+  "motivos": [
+   "fotogrametr",
+   "cartograf",
+   "CPV 71354100"
+  ]
+ },
+ {
+  "id": "20854492",
+  "expediente": "9755/2026",
+  "estado": "PUB",
+  "titulo": "Contrato mixto de servicio de redacción de proyecto y dirección y ejecución de obras de demolición de varias edificaciones situadas en el entorno del parque Pinín",
+  "tipo": "3",
+  "cpv": [
+   "45110000",
+   "45111000",
+   "71242000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Langreo",
+  "importe": 45000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=4uRdFOpVPjYmMOlAXxDEjw%3D%3D",
+  "actualizado": "2026-11-06T10:07:04.393+01:00",
+  "plazo": "2026-11-20",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "redaccion de proyecto",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20846144",
+  "expediente": "SJ-ASE-CTR-MAY-2026-0059",
+  "estado": "PUB",
+  "titulo": "Cambio, reposición y ampliación de la red de fibra óptica en el Puerto de El Musel",
+  "tipo": "1",
+  "cpv": [
+   "35120000",
+   "45232300",
+   "32235000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Presidencia de la Autoridad Portuaria de Gijón",
+  "importe": 243169.61,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=njVuqbQ4HUoS7pcxhTeWOg%3D%3D",
+  "actualizado": "2026-11-05T10:32:24.604+01:00",
+  "plazo": "2026-11-20",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 25,
+  "motivos": [
+   "puerto",
+   "Asturias"
+  ]
+ },
+ {
   "id": "20854014",
   "expediente": "01/2027",
   "estado": "PUB",
@@ -37,6 +956,200 @@
   ]
  },
  {
+  "id": "20854647",
+  "expediente": "TSA0084482",
+  "estado": "PUB",
+  "titulo": "UT2 Servicio de levantamiento topográfico mediante drones equipados con sensor lidar para la obtención del modelo digital del terreno (mdt) y cálculo de movimiento de tierras en la obra 0786471 renaturalización y mejora de la resiliencia en las cuencas afectadas por la DANA: Turia, Magro, Poyo y Picassent.",
+  "tipo": "2",
+  "cpv": [
+   "71355000"
+  ],
+  "region_nuts": "ES523",
+  "region": "Valencia/València",
+  "organo": "Empresa de Transformación Agraria S.A.,S.M.E., M.P., (TRAGSA)",
+  "importe": 67500.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Fqe%2FUCre6T7kY6rls5tG9A%3D%3D",
+  "actualizado": "2026-11-06T08:26:17.115+01:00",
+  "plazo": "2026-11-23",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 100,
+  "motivos": [
+   "lidar",
+   "topograf",
+   "dron",
+   "drones",
+   "CPV 71355000"
+  ]
+ },
+ {
+  "id": "20232651",
+  "expediente": "AYAL-2026000181",
+  "estado": "PUB",
+  "titulo": "Contrato de servicios de atención al visitante en los distintos museos y espacios expositivos municipales",
+  "tipo": "2",
+  "cpv": [
+   "92500000",
+   "92521000"
+  ],
+  "region_nuts": "ES611",
+  "region": "Almería",
+  "organo": "Junta de Gobierno del Ayuntamiento de Almería",
+  "importe": 896599.13,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=qswc4ZJuXRGzz8fXU2i3eQ%3D%3D",
+  "actualizado": "2026-10-27T09:29:06.180+01:00",
+  "plazo": "2026-11-23",
+  "criterios": [
+   {
+    "texto": "Criterios cualitativos objetivos. Cualificación Recursos Humanos.",
+    "peso": 20.0
+   }
+  ],
+  "pide_pm": false,
+  "puntuacion": 48,
+  "motivos": [
+   "museo",
+   "CPV 92500000,92521000"
+  ]
+ },
+ {
+  "id": "20757787",
+  "expediente": "10/2026 AB (DCCPI/OCPI)",
+  "estado": "PUB",
+  "titulo": "Servicio de asistencia técnica especializada en compra pública innovadora, financiado por el Fondo Europeo de Desarrollo Regional 2021-2027, en el CDTI E.P.E.",
+  "tipo": "2",
+  "cpv": [
+   "79411000",
+   "72224000",
+   "71356200"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Dirección General del Centro para el Desarrollo Tecnológico y la Innovación, E.P.E",
+  "importe": 1115658.5,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=iI8yPR6ZBogUqXM96WStVA%3D%3D",
+  "actualizado": "2026-10-22T10:46:29.815+02:00",
+  "plazo": "2026-11-23",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 79411000,72224000,71356200"
+  ]
+ },
+ {
+  "id": "20767804",
+  "expediente": "TC-2026-055",
+  "estado": "PUB",
+  "titulo": "Concurso de Proyectos con intervención de Jurado para el diseño y desarrollo de una exposición interactiva sobre indumentaria, identidad, folclore y transformación en las zonas de Transición Justa tramitado por la FUNDACIÓN CIUDAD DE LA ENERGÍA-CIUDEN, F.S.P.",
+  "tipo": "2",
+  "cpv": [
+   "92521000",
+   "92500000"
+  ],
+  "region_nuts": "ES",
+  "region": "España",
+  "organo": "Dirección General de la Fundación Ciudad de la Energía",
+  "importe": 650000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=VVGzt7zpwW1VYjgxA4nMUw%3D%3D",
+  "actualizado": "2026-10-23T11:00:56.378+02:00",
+  "plazo": "2026-11-23",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 52,
+  "motivos": [
+   "exposicion",
+   "CPV 92521000,92500000"
+  ]
+ },
+ {
+  "id": "20757738",
+  "expediente": "EC-1820/2026",
+  "estado": "PUB",
+  "titulo": "Acuerdo marco de servicios de ingeniería para la redacción de proyectos constructivos, memorias valoradas e informes técnicos, dirección de obra, coordinación de seguridad y salud y asistencia técnica en obras .",
+  "tipo": "2",
+  "cpv": [
+   "71311000",
+   "71351914",
+   "71351800",
+   "71242000",
+   "71355000"
+  ],
+  "region_nuts": "ES",
+  "region": "España",
+  "organo": "Consejero Delegado de la Empresa General Valenciana del Agua S.A.",
+  "importe": 1200000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=GF6Ac6sUs9Ts%2BnLj3vAg5A%3D%3D",
+  "actualizado": "2026-10-22T11:21:02.233+02:00",
+  "plazo": "2026-11-23",
+  "criterios": [
+   {
+    "texto": "5.1 Experiencia de los técnicos adscritos al contrato Lote 1",
+    "peso": 10.0
+   },
+   {
+    "texto": "5.2 Experiencia de los técnicos adscritos al contrato Lote 2",
+    "peso": 10.0
+   },
+   {
+    "texto": "2. Plan de aseguramiento de la calidad y gestión de riesgos técnicos",
+    "peso": 20.0
+   }
+  ],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 71311000,71351914,71351800"
+  ]
+ },
+ {
+  "id": "20783814",
+  "expediente": "8379_0005-CP01-2026-000121",
+  "estado": "PUB",
+  "titulo": "Oficina de Proyectos Departamentales",
+  "tipo": "2",
+  "cpv": [
+   "72224000"
+  ],
+  "region_nuts": "ES220",
+  "region": "",
+  "organo": "el Director General de Telecomunicaciones y Digitalización",
+  "importe": 1806500.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://hacienda.navarra.es/sicpportal/mtoAnunciosModalidad.aspx?cod=261023143830BAE65002",
+  "actualizado": "2026-10-26T11:00:26.392+01:00",
+  "plazo": "2026-11-23",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 72224000"
+  ]
+ },
+ {
   "id": "20853987",
   "expediente": "202600000058",
   "estado": "PUB",
@@ -63,6 +1176,330 @@
    "museograf",
    "museo",
    "exposicion"
+  ]
+ },
+ {
+  "id": "20854348",
+  "expediente": "10830/2026",
+  "estado": "PUB",
+  "titulo": "Contrato mixto de servicio de redacción de proyecto y dirección y ejecución de obras de demolición de varios inmuebles del concejo de Langreo",
+  "tipo": "3",
+  "cpv": [
+   "45110000",
+   "71242000",
+   "45111000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Langreo",
+  "importe": 145000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=ZGJTi6OaZMQS7pcxhTeWOg%3D%3D",
+  "actualizado": "2026-11-06T11:30:37.768+01:00",
+  "plazo": "2026-11-26",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 45,
+  "motivos": [
+   "redaccion de proyecto",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20788179",
+  "expediente": "C4301/2026/000019",
+  "estado": "PUB",
+  "titulo": "Contratación del servicio de elaboración de un vuelo fotogramétrico digital multivista combinado con LiDAR y creación de productos derivados para la totalidad del territorio de Menorca",
+  "tipo": "2",
+  "cpv": [
+   "71355100"
+  ],
+  "region_nuts": "ES533",
+  "region": "Menorca",
+  "organo": "Consejo Ejecutivo del Consell Insular de Menorca (CIM)",
+  "importe": 432640.2,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=BRHS9ZPha1BSYrkJkLlFdw%3D%3D",
+  "actualizado": "2026-10-27T11:33:47.838+01:00",
+  "plazo": "2026-11-30",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 100,
+  "motivos": [
+   "lidar",
+   "fotogrametr",
+   "CPV 71355100"
+  ]
+ },
+ {
+  "id": "20824349",
+  "expediente": "6123/2026",
+  "estado": "PUB",
+  "titulo": "Elaboración da cartografía municipal e redacción do Plan xeral de ordenación municipal",
+  "tipo": "2",
+  "cpv": [
+   "71240000",
+   "71400000",
+   "71410000",
+   "71354000"
+  ],
+  "region_nuts": "ES112",
+  "region": "Lugo",
+  "organo": "Junta de Gobierno del Ayuntamiento de Monforte de Lemos",
+  "importe": 710000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=BTUgQDnZeei8ebB%2FXTwy0A%3D%3D",
+  "actualizado": "2026-11-02T08:55:56.839+01:00",
+  "plazo": "2026-11-30",
+  "criterios": [
+   {
+    "texto": "Composición, calidad, valor técnico y eficacia equipo técnicco",
+    "peso": 15.0
+   }
+  ],
+  "pide_pm": false,
+  "puntuacion": 70,
+  "motivos": [
+   "cartograf",
+   "CPV 71240000,71400000,71410000",
+   "Lugo"
+  ]
+ },
+ {
+  "id": "20823699",
+  "expediente": "4.4.1013/26",
+  "estado": "PUB",
+  "titulo": "Vuelo y generación de ortofotos verdaderas de Cantabria 2027.",
+  "tipo": "2",
+  "cpv": [
+   "79961200",
+   "71355100",
+   "60440000",
+   "71354100",
+   "71354200"
+  ],
+  "region_nuts": "ES130",
+  "region": "Cantabria",
+  "organo": "Consejería de Fomento, Vivienda, Ordenación del Territorio y Medio Ambiente de la Comunidad Autónoma de Cantabria",
+  "importe": 202205.15,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=yjGXpan9n3bECtSnloz%2BZQ%3D%3D",
+  "actualizado": "2026-11-01T12:56:51.145+01:00",
+  "plazo": "2026-11-30",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 67,
+  "motivos": [
+   "ortofoto",
+   "CPV 79961200,71355100,60440000",
+   "Cantabria"
+  ]
+ },
+ {
+  "id": "20802041",
+  "expediente": "31566/2026",
+  "estado": "PUB",
+  "titulo": "Servicio de atención a los usuarios y soporte técnico del Museo y la Oficina de Turismo de Sant Cugat del Vallès.",
+  "tipo": "999",
+  "cpv": [
+   "92521000",
+   "92000000"
+  ],
+  "region_nuts": "ES511",
+  "region": "",
+  "organo": "Ajuntament de Sant Cugat del Vallès",
+  "importe": 769210.16,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contractaciopublica.cat/ca/detall-publicacio/f9c271e3-68a3-49c1-bd10-d3628b68d157/300897479",
+  "actualizado": "2026-10-28T06:00:25.049+01:00",
+  "plazo": "2026-11-30",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 48,
+  "motivos": [
+   "museo",
+   "CPV 92521000,92000000"
+  ]
+ },
+ {
+  "id": "20828238",
+  "expediente": "925/2026",
+  "estado": "PUB",
+  "titulo": "Servicios de protocolo, acomodación, información, visitas guiadas y asistencia al público y a los organizadores, artistas, compañías y productoras en los eventos, exposiciones y actividades en cuya organización intervenga la Sociedad Regional de Educación, Cultura y Deporte, S.L",
+  "tipo": "2",
+  "cpv": [
+   "92000000",
+   "79952100",
+   "79956000",
+   "79953000"
+  ],
+  "region_nuts": "ES130",
+  "region": "Cantabria",
+  "organo": "Consejo de Administración de la Sociedad Regional de Educación, Cultura y Deporte S.L.",
+  "importe": 359400.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=t89EFxUbrEu2gkLQ8TeYKA%3D%3D",
+  "actualizado": "2026-11-03T09:27:47.826+01:00",
+  "plazo": "2026-12-03",
+  "criterios": [
+   {
+    "texto": "Equipo de trabajo",
+    "peso": 10.0
+   },
+   {
+    "texto": "Coordinador del servicio",
+    "peso": 15.0
+   }
+  ],
+  "pide_pm": true,
+  "puntuacion": 66,
+  "motivos": [
+   "exposicion",
+   "exposiciones",
+   "CPV 92000000,79952100,79956000",
+   "Cantabria",
+   "puntúa el jefe de proyecto"
+  ]
+ },
+ {
+  "id": "20831545",
+  "expediente": "2610OB06",
+  "estado": "PUB",
+  "titulo": "Contratación de un servicio de Oficina Técnica de Gestión de Licencias, suscripciones cloud, software, certificados digitales y servicios digitales basados ​​en consumo, incluyendo herramientas de inteligencia artificial e inteligencia artificial generativa.",
+  "tipo": "2",
+  "cpv": [
+   "48000000",
+   "72268000"
+  ],
+  "region_nuts": "ES511",
+  "region": "",
+  "organo": "Corporació Catalana de Mitjans Audiovisuals, SA (CCMA, SA)",
+  "importe": 2037500.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contractaciopublica.cat/ca/detall-publicacio/f5dbc7c8-0d40-436b-ab45-2635035dc854/300925200",
+  "actualizado": "2026-11-03T10:02:28.693+01:00",
+  "plazo": "2026-12-04",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "inteligencia artificial"
+  ]
+ },
+ {
+  "id": "20825534",
+  "expediente": "A-14-DETE-2026",
+  "estado": "PUB",
+  "titulo": "Servicios de asistencia técnica a la Dirección de Inclusión para la dinamización e implementación del modelo de gobernanza propio de las de Mesas Locales de Coordinación entre Sistemas de Inclusión Sociolaboral de Euskadi",
+  "tipo": "2",
+  "cpv": [
+   "72224000"
+  ],
+  "region_nuts": "ES211",
+  "region": "",
+  "organo": "Gobierno Vasco-Dirección de Servicios de Trabajo y Empleo",
+  "importe": 452288.6,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratacion.euskadi.eus/webkpe00-kpeperfi/es/contenidos/anuncio_contratacion/expjaso753108/es_doc/index.html",
+  "actualizado": "2026-11-02T11:11:21.942+01:00",
+  "plazo": "2026-12-09",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 72224000",
+   "ES21"
+  ]
+ },
+ {
+  "id": "20836323",
+  "expediente": "3.26/27507.0240",
+  "estado": "PUB",
+  "titulo": "Servicios para la redacción del proyecto de construcción adaptado del túnel de penetración del ferrocarril en Gijón. Estaciones de Bibio y de Viesques. Obra civil.",
+  "tipo": "2",
+  "cpv": [
+   "71311230"
+  ],
+  "region_nuts": "ES120",
+  "region": "",
+  "organo": "ADIF - Presidencia",
+  "importe": 1729830.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=n0PyfH2lQKgXhk1FZxEyvw%3D%3D",
+  "actualizado": "2026-11-04T15:25:07.816+01:00",
+  "plazo": "2026-12-14",
+  "criterios": [
+   {
+    "texto": "Criterio evaluable mediante fórmulas (experiencia adicional)",
+    "peso": 8.0
+   }
+  ],
+  "pide_pm": true,
+  "puntuacion": 70,
+  "motivos": [
+   "redaccion del proyecto",
+   "ES12",
+   "puntúa el jefe de proyecto"
+  ]
+ },
+ {
+  "id": "20846271",
+  "expediente": "2026/304/B5104",
+  "estado": "PUB",
+  "titulo": "Concurso de proyectos con intervención de Jurado para la contratación de los servicios de redacción del proyecto básico y de ejecución, dirección facultativa y coordinación de seguridad y salud del edificio de la Junta General del Principado de Asturias, situado en la calle Principado nº 3 de Oviedo, incluida la obtención de la certificación ambiental.",
+  "tipo": "2",
+  "cpv": [
+   "71221000",
+   "71320000",
+   "71000000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Mesa de la Cámara de la Junta General del Principado de Asturias",
+  "importe": 600215.77,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Nq%2BZC7erWbVxseVhcqrkhw%3D%3D",
+  "actualizado": "2026-11-05T09:15:15.669+01:00",
+  "plazo": "2027-01-04",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 85,
+  "motivos": [
+   "direccion facultativa",
+   "redaccion del proyecto",
+   "coordinacion",
+   "ambiental",
+   "Asturias"
   ]
  }
 ]
