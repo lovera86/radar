@@ -2116,5 +2116,71 @@
    "asistencia tecnica",
    "Asturias"
   ]
+ },
+ {
+  "id": "20657901",
+  "expediente": "87241T",
+  "estado": "RES",
+  "titulo": "Contrato de servicios para la redacción del Catálogo Urbanístico del Ayuntamiento de Amieva",
+  "tipo": "2",
+  "cpv": [
+   "71410000",
+   "92522000",
+   "71354000",
+   "71240000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Amieva",
+  "importe": 34408.87,
+  "adjudicatario": "VÍCTOR GARCÍA OVIEDO",
+  "nif": "***0275**",
+  "ciudad_empresa": "OVIEDO",
+  "fecha_adjudicacion": "2026-11-04",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=ekh0t0ypTieTylGzYmBF9Q%3D%3D",
+  "actualizado": "2026-11-09T12:24:02.817+01:00",
+  "plazo": "2026-10-22",
+  "criterios": [
+   {
+    "texto": "CRITERIO C- EQUIPO REDACTOR",
+    "peso": 80.0
+   }
+  ],
+  "clave": "87241T|***0275**",
+  "puntuacion": 55,
+  "motivos": [
+   "CPV 71410000,92522000,71354000",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20499240",
+  "expediente": "CMAYOR/2026/SPTD0/0034",
+  "estado": "ADJ",
+  "titulo": "Servicio de instalación temporal, producción, gestión y explotación del espacio de ocio digital (gaming, e-sports, realidad virtual y realidad aumentada) del evento Alicante 2027 Puerto de Salida de la Vuelta al Mundo a Vela. The Ocean Race.",
+  "tipo": "2",
+  "cpv": [
+   "79952000",
+   "92000000"
+  ],
+  "region_nuts": "ES521",
+  "region": "Alicante/Alacant",
+  "organo": "Dirección General de la Sociedad de Proyectos para la Transformación Digital, SAU",
+  "importe": 296710.27,
+  "adjudicatario": "GGTECH ENTERTAINMENT S.L.",
+  "nif": "B87948477",
+  "ciudad_empresa": "MADRID",
+  "fecha_adjudicacion": "2026-11-09",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=5ZgnxKbWcKi9Hd5zqvq9cg%3D%3D",
+  "actualizado": "2026-11-09T13:48:36.508+01:00",
+  "plazo": "2026-10-05",
+  "criterios": [],
+  "clave": "CMAYOR/2026/SPTD0/0034|B87948477",
+  "puntuacion": 50,
+  "motivos": [
+   "realidad virtual",
+   "realidad aumentada",
+   "CPV 79952000,92000000"
+  ]
  }
 ]
