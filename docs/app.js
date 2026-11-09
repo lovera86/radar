@@ -58,10 +58,22 @@ const iniciales = (s) => (String(s || '').replace(/\b(S\.?L\.?U?|S\.?A\.?|UTE|DE
 /* ---------- estado personal (solo este navegador) ---------- */
 const ST = leer('radar-v2', { fav: {}, est: {}, busq: [], migrado: false });
 ST.prop = ST.prop || {};
+ST.vistas = ST.vistas || {};
+ST.snap = ST.snap || {};
+if (!ST.col) {
+  ST.col = {};
+  [['mejores', 'Mis mejores oportunidades'], ['remoto', 'Trabajo remoto'], ['empresas', 'Empresas para contactar'], ['proyectos', 'Proyectos interesantes'], ['pendientes', 'Candidaturas pendientes']]
+    .forEach(([k, n]) => { ST.col[k] = { nombre: n, items: {} }; });
+}
 const PESOS = { ...PESOS_BASE, ...leer('radar-pesos', {}) };
 const guardarST = () => { escribir('radar-v2', ST); contadorGuardados(); };
 
+function instantanea(id) {
+  const o = D.porId.get(id);
+  if (o) ST.snap[id] = { titulo: o.titulo, org: o.organizacion.nombre, url: o.fuentes[0]?.url || '', subtipo: o.subtipo, plazo: o.fechas.plazo || null };
+}
 function setEstado(id, e, nota) {
+  instantanea(id);
   const prev = ST.est[id];
   if (prev && prev.estado === e) return;
   const h = prev ? prev.hist : [];
@@ -69,6 +81,7 @@ function setEstado(id, e, nota) {
   guardarST();
 }
 function toggleFav(id) {
+  instantanea(id);
   if (ST.fav[id]) delete ST.fav[id]; else ST.fav[id] = new Date().toISOString();
   guardarST();
 }
@@ -384,6 +397,7 @@ function pintar() {
       enlace('https://www.tecnoempleo.com/ofertas-trabajo/?te=project+manager', 'Tecnoempleo', 'btn sec mini'));
   }
   if (VISTA === 'empresas') { $('#mejores').hidden = true; return pintarEmpresas(); }
+  if (VISTA === 'guardados') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarGuardados(); }
   const lista = ordenar(D.ops.filter((o) => pasa(o)));
   const total = D.ops.filter((o) => pasa(o, false) || true).length;
   $('#res-n').textContent = `${lista.length} de ${D.ops.filter((o) => !v.tipo || o.tipo === v.tipo).length} oportunidades`;
@@ -670,6 +684,7 @@ function abrirFicha(id) {
     boton('No me interesa', 'btn sec', () => { setEstado(o.id, 'descartada', 'Descartada desde la ficha'); sel.value = 'descartada'; historial(); pintar(); }));
   acc.append(fila2);
   der.append(acc);
+  der.append(selectorColecciones(o.id));
 
   const est = el('div', 'panel-est');
   const lab = el('label', null, 'Estado');
@@ -694,6 +709,7 @@ function abrirFicha(id) {
   if (!d.open) d.showModal();
   d.scrollTop = 0;
   history.replaceState(null, '', '#' + VISTA + '/o/' + encodeURIComponent(o.id));
+  if (!ST.vistas[o.id]) { ST.vistas[o.id] = new Date().toISOString(); guardarST(); }
 }
 
 function abrirEmpresa(e) {
@@ -799,7 +815,173 @@ function abrirContacto(o, cand) {
   $('#aplicar').showModal();
 }
 
-/* ---------- guardados ---------- */
+/* ---------- guardados, colecciones y candidaturas ---------- */
+let COL_ACTIVA = '';
+const fechaCorta = (iso) => (iso ? new Date(iso).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : '');
+
+function selectorColecciones(id) {
+  const box = el('details', 'colecciones');
+  const n = Object.values(ST.col).filter((c) => c.items[id]).length;
+  box.append(el('summary', null, n ? `En ${n} colección${n > 1 ? 'es' : ''}` : 'Añadir a una colección'));
+  const lista = el('div', 'col-lista');
+  Object.entries(ST.col).forEach(([k, c]) => {
+    const l = el('label', 'op'); const i = el('input'); i.type = 'checkbox'; i.checked = Boolean(c.items[id]);
+    i.addEventListener('change', () => {
+      instantanea(id);
+      if (i.checked) { c.items[id] = new Date().toISOString(); if (!ST.fav[id]) ST.fav[id] = c.items[id]; } else delete c.items[id];
+      guardarST();
+      const m = Object.values(ST.col).filter((x) => x.items[id]).length;
+      box.querySelector('summary').textContent = m ? `En ${m} colección${m > 1 ? 'es' : ''}` : 'Añadir a una colección';
+      if (VISTA === 'guardados') pintar();
+    });
+    l.append(i, ' ', c.nombre); lista.append(l);
+  });
+  box.append(lista);
+  return box;
+}
+
+function datosGuardado(id) {
+  const o = D.porId.get(id);
+  const sn = ST.snap[id] || {};
+  const titulo = o?.titulo || sn.titulo || id;
+  const org = o?.organizacion.nombre || sn.org || '';
+  const plazo = o?.fechas.plazo || sn.plazo;
+  let aviso = '';
+  if (!o) aviso = 'Ya no aparece en las fuentes: puede haber caducado o haberse retirado.';
+  else if (plazo && plazo < hoyISO()) aviso = 'El plazo terminó el ' + fecha(plazo) + '.';
+  return { o, titulo, org, url: o?.fuentes[0]?.url || sn.url, subtipo: o?.subtipo || sn.subtipo, aviso };
+}
+
+function siguientePaso(id) {
+  const e = ST.est[id];
+  if (!e) return 'Revisa la ficha y decide si te interesa.';
+  const ult = e.hist[e.hist.length - 1];
+  const d = Math.floor((Date.now() - Date.parse(ult.f)) / 864e5);
+  return {
+    interes: 'Prepara la candidatura o el contacto.',
+    pendiente: 'Revisa la ficha y decide.',
+    borrador: 'Envíalo y márcalo como «Enviada».',
+    enviada: d >= 7 ? `Sin respuesta en ${d} días: toca insistir con un mensaje breve.` : `Enviada hace ${d} día${d === 1 ? '' : 's'}: espera unos días.`,
+    respuesta: 'Contesta y propón una conversación.',
+    entrevista: 'Prepara la entrevista con tu propuesta de valor.',
+    descartada: '', cerrada: '',
+  }[e.estado] || '';
+}
+
+function filaGuardado(id) {
+  const g = datosGuardado(id);
+  const li = el('li', 'fila-g');
+  const izq = el('div', 'fila-g-t');
+  const t = g.o ? boton(g.titulo, 'enlace titulo-g', () => abrirFicha(id)) : el('span', 'titulo-g', g.titulo);
+  izq.append(t, el('small', null, [SUBTIPOS[g.subtipo]?.nombre, g.org, ST.fav[id] ? 'guardada el ' + fechaCorta(ST.fav[id]) : ''].filter(Boolean).join(' · ')));
+  if (g.aviso) izq.append(el('small', 'aviso-g', g.aviso));
+  const paso = siguientePaso(id);
+  if (paso) izq.append(el('small', 'paso-g' + (/insistir/.test(paso) ? ' urge' : ''), '→ ' + paso));
+  const der = el('div', 'fila-g-c');
+  const sel = el('select'); sel.setAttribute('aria-label', 'Estado de ' + g.titulo);
+  sel.append(new Option('Sin estado', '')); ESTADOS.forEach(([v, n]) => sel.append(new Option(n, v)));
+  sel.value = ST.est[id]?.estado || '';
+  sel.addEventListener('change', () => { if (sel.value) setEstado(id, sel.value); else { delete ST.est[id]; guardarST(); } pintar(); });
+  der.append(sel);
+  if (g.url) der.append(enlace(g.url, 'Fuente', 'enlace'));
+  li.append(izq, der);
+  return li;
+}
+
+function indicadores(ids) {
+  const box = el('section', 'indicadores');
+  box.append(el('h3', null, 'Tu actividad'));
+  const est = (e) => Object.values(ST.est).filter((x) => x.estado === e || x.hist.some((h) => h.e === e)).length;
+  const pasos = [
+    ['Detectadas', D.ops.length], ['Revisadas', Object.keys(ST.vistas).filter((k) => D.porId.has(k)).length],
+    ['Guardadas o con interés', ids.length], ['Borradores preparados', est('borrador')], ['Enviadas / contactos', est('enviada')],
+    ['Respuestas', est('respuesta')], ['Entrevistas', est('entrevista')],
+  ];
+  const max = Math.max(1, ...pasos.map((x) => x[1]));
+  const ol = el('ol', 'embudo');
+  pasos.forEach(([n, v]) => {
+    const li = el('li'); const b = el('div', 'emb-b'); const i = el('i'); i.style.width = Math.max(v ? 2 : 0, (100 * v) / max) + '%'; b.append(i);
+    li.append(el('span', 'emb-n', n), b, el('b', null, String(v))); ol.append(li);
+  });
+  box.append(ol);
+  // por canal
+  const canales = {};
+  Object.entries(ST.est).forEach(([id, e]) => {
+    const sub = datosGuardado(id).subtipo || 'otro';
+    const c = canales[sub] || (canales[sub] = { enviadas: 0, respuestas: 0 });
+    if (e.hist.some((h) => h.e === 'enviada')) c.enviadas++;
+    if (e.hist.some((h) => h.e === 'respuesta' || h.e === 'entrevista')) c.respuestas++;
+  });
+  const filas = Object.entries(canales).filter(([, c]) => c.enviadas);
+  if (filas.length) {
+    const t = el('table', 'canales');
+    const th = el('tr'); ['Canal', 'Enviadas', 'Con respuesta'].forEach((x) => th.append(el('th', null, x)));
+    const tb = el('tbody'); filas.forEach(([k, c]) => { const tr = el('tr'); tr.append(el('td', null, SUBTIPOS[k]?.nombre || k), el('td', null, String(c.enviadas)), el('td', null, String(c.respuestas))); tb.append(tr); });
+    const thead = el('thead'); thead.append(th); t.append(thead, tb);
+    box.append(el('h4', null, 'Qué canal te funciona'), t);
+    const total = filas.reduce((a, [, c]) => a + c.enviadas, 0);
+    box.append(el('p', 'nota', total < 10 ? `Con ${total} envío${total === 1 ? '' : 's'} todavía no se pueden sacar conclusiones: hacen falta al menos 10 por canal.` : 'Compara los canales con prudencia: son tus propios datos, no una estadística general.'));
+  } else box.append(el('p', 'nota', 'Cuando marques candidaturas como «Enviada» y luego «Respuesta» o «Entrevista», aquí verás qué canal te da mejores resultados.'));
+  return box;
+}
+
+function pintarGuardados() {
+  const ids = [...new Set([...Object.keys(ST.fav), ...Object.keys(ST.est), ...Object.values(ST.col).flatMap((c) => Object.keys(c.items))])];
+  $('#res-n').textContent = `${ids.length} oportunidad${ids.length === 1 ? '' : 'es'} guardada${ids.length === 1 ? '' : 's'} o con estado`;
+  const cont = el('div', 'guardados');
+  cont.append(indicadores(ids));
+
+  // colecciones
+  const cols = el('section', 'cols');
+  const cab = el('div', 'cols-cab'); cab.append(el('h3', null, 'Colecciones'));
+  cab.append(boton('+ Nueva colección', 'btn sec mini', () => {
+    const n = prompt('Nombre de la colección'); if (!n || !n.trim()) return;
+    const k = 'c' + Date.now().toString(36); ST.col[k] = { nombre: n.trim().slice(0, 60), items: {} }; COL_ACTIVA = k; guardarST(); pintar();
+  }));
+  cols.append(cab);
+  const chips = el('div', 'chips-col');
+  const chipC = (k, nombre, n) => { const b = boton(`${nombre} · ${n}`, 'chip' + (COL_ACTIVA === k ? ' on' : ''), () => { COL_ACTIVA = k; pintar(); }); return b; };
+  chips.append(chipC('', 'Todas las guardadas', Object.keys(ST.fav).length));
+  Object.entries(ST.col).forEach(([k, c]) => chips.append(chipC(k, c.nombre, Object.keys(c.items).length)));
+  cols.append(chips);
+  if (COL_ACTIVA && ST.col[COL_ACTIVA]) {
+    const c = ST.col[COL_ACTIVA];
+    const gest = el('div', 'acciones col-gest');
+    gest.append(boton('Renombrar', 'enlace', () => { const n = prompt('Nuevo nombre', c.nombre); if (n && n.trim()) { c.nombre = n.trim().slice(0, 60); guardarST(); pintar(); } }),
+      boton('Eliminar colección', 'enlace', () => { if (confirm(`¿Eliminar la colección «${c.nombre}»? Las oportunidades siguen guardadas.`)) { delete ST.col[COL_ACTIVA]; COL_ACTIVA = ''; guardarST(); pintar(); } }));
+    cols.append(gest);
+  }
+  const enCol = COL_ACTIVA && ST.col[COL_ACTIVA] ? Object.entries(ST.col[COL_ACTIVA].items).sort((a, b) => b[1].localeCompare(a[1])).map(([id]) => id)
+    : Object.entries(ST.fav).sort((a, b) => b[1].localeCompare(a[1])).map(([id]) => id);
+  const ulc = el('ul', 'lista-g');
+  if (enCol.length) enCol.forEach((id) => ulc.append(filaGuardado(id)));
+  else ulc.append(el('li', 'vacio-g', COL_ACTIVA ? 'Esta colección está vacía. Añade oportunidades desde su ficha.' : 'Pulsa el corazón de una tarjeta para guardarla.'));
+  cols.append(ulc);
+  cont.append(cols);
+
+  // candidaturas por estado
+  const cand = el('section', 'candidaturas');
+  cand.append(el('h3', null, 'Candidaturas y contactos'));
+  const porEstado = {};
+  Object.entries(ST.est).forEach(([id, e]) => { (porEstado[e.estado] = porEstado[e.estado] || []).push(id); });
+  const orden = ['interes', 'pendiente', 'borrador', 'enviada', 'respuesta', 'entrevista', 'descartada', 'cerrada'];
+  let alguna = false;
+  orden.forEach((e) => {
+    const lista = (porEstado[e] || []).sort((a, b) => (ST.est[b].hist.at(-1).f).localeCompare(ST.est[a].hist.at(-1).f));
+    if (!lista.length) return;
+    alguna = true;
+    const g = el('details', 'grupo-e'); g.open = !['descartada', 'cerrada'].includes(e);
+    g.append(el('summary', null, `${NOMBRE_ESTADO[e]} · ${lista.length}`));
+    const ul = el('ul', 'lista-g'); lista.forEach((id) => ul.append(filaGuardado(id))); g.append(ul);
+    cand.append(g);
+  });
+  if (!alguna) cand.append(el('p', 'nota', 'Aún no hay candidaturas. Usa «Me interesa» o cambia el estado desde la ficha de una oportunidad.'));
+  cont.append(cand);
+
+  $('#rejilla').replaceChildren(cont);
+}
+
+/* ---------- contador ---------- */
 function contadorGuardados() {
   const n = new Set([...Object.keys(ST.fav), ...Object.keys(ST.est)]).size;
   $('#n-guardados').textContent = n ? String(n) : '';

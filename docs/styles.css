@@ -310,3 +310,40 @@ dialog::backdrop { background: rgba(10, 16, 22, .5); backdrop-filter: blur(2px);
 .prop-pre { white-space: pre-wrap; font: 400 14px/1.55 var(--body); margin: 0; }
 .prop-texto { width: 100%; border: 1px solid var(--line2); border-radius: 12px; padding: 12px; font: 400 14px/1.5 var(--body); background: var(--surface); color: var(--ink); resize: vertical; }
 .propuesta .acciones { margin-top: 12px; }
+
+/* Guardados, colecciones y candidaturas */
+.guardados { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 22px; align-items: start; }
+@media (max-width: 900px) { .guardados { grid-template-columns: minmax(0, 1fr); } }
+.guardados > section { border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; background: var(--surface); }
+.guardados h3 { margin: 0 0 12px; font-size: 16px; }
+.guardados h4 { margin: 16px 0 6px; font: 600 13.5px var(--display); }
+.indicadores { grid-row: span 2; }
+.embudo { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.embudo li { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 36px; gap: 10px; align-items: center; font-size: 13.5px; }
+.emb-b { height: 8px; background: var(--soft); border-radius: 4px; overflow: hidden; }
+.emb-b i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+.embudo b { text-align: right; font: 600 14px var(--display); }
+.canales { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.canales th, .canales td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--line); }
+.cols-cab { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.cols-cab h3 { margin: 0 !important; }
+.chips-col { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 8px; }
+.col-gest { margin-bottom: 6px; }
+.lista-g { list-style: none; margin: 0; padding: 0; display: grid; }
+.fila-g { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.fila-g:last-child { border-bottom: 0; }
+.fila-g-t { display: grid; gap: 2px; min-width: 0; }
+.titulo-g { font-weight: 500; font-size: 14px; text-align: left; text-decoration: none; color: var(--ink) !important; }
+.titulo-g:hover { text-decoration: underline; }
+.fila-g small { color: var(--muted); font-size: 12.5px; }
+.aviso-g { color: var(--warn) !important; }
+.paso-g { color: var(--ink) !important; }
+.paso-g.urge { color: var(--warn) !important; font-weight: 500; }
+.fila-g-c { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.fila-g-c select { border: 1px solid var(--line2); border-radius: 8px; padding: 4px 6px; background: var(--surface); color: var(--ink); font-size: 12.5px; max-width: 170px; }
+.vacio-g { color: var(--muted); font-size: 13.5px; padding: 10px 0; }
+.grupo-e { border-top: 1px solid var(--line); padding: 8px 0; }
+.grupo-e summary { cursor: pointer; font-weight: 600; font-size: 14px; padding: 4px 0; }
+.colecciones { border-top: 1px solid var(--line); padding-top: 10px; }
+.colecciones summary { cursor: pointer; font-size: 13.5px; font-weight: 500; }
+.col-lista { display: grid; gap: 6px; margin-top: 8px; }
