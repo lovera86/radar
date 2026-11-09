@@ -24,6 +24,7 @@ const eur = (v) => (v == null ? '—' : new Intl.NumberFormat('es-ES', { style: 
 const eurCorto = (v) => (v >= 1e6 ? (v / 1e6).toLocaleString('es-ES', { maximumFractionDigits: 1 }) + ' M€' : Math.round(v / 1e3).toLocaleString('es-ES') + ' k€');
 const fecha = (s) => (s ? new Date(s + 'T00:00:00Z').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '—');
 const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const cvUrl = (l, k, e) => 'cv.html?' + new URLSearchParams({ l, k, ...(e ? { e } : {}) }).toString();
 const enlace = (href, txt, cls) => { const a = el('a', cls || 'btn sec', txt); a.href = href; a.target = '_blank'; a.rel = 'noopener'; return a; };
 
 async function cargar() {
@@ -132,7 +133,7 @@ function tarjeta(r) {
   bH.type = 'button'; bH.setAttribute('aria-pressed', hecha ? 'true' : 'false');
   bH.title = hecha ? 'Pulsa para desmarcar' : 'Marca que ya has enviado tu candidatura';
   bH.onclick = () => marcar(r, !hecha);
-  acc.append(b, bH);
+  acc.append(b, enlace(cvUrl('adj', r.clave), 'CV adaptado'), bH);
   if (hecha && diasDesde(hecha) >= 7) acc.append(el('span', 'insistir', 'Han pasado ' + diasDesde(hecha) + ' días: toca insistir'));
   if (/^https:\/\//.test(r.url || '')) acc.append(enlace(r.url, 'Ver licitación'));
   if (r.email) acc.append(el('span', 'contacto-ok', '✓ contacto verificado'));
@@ -194,6 +195,7 @@ function tarjetaPublico(o) {
   }
   const acc = el('div', 'acciones');
   if (/^https:\/\//.test(o.url || '')) acc.append(enlace(o.url, 'Ver convocatoria y requisitos', 'btn'));
+  acc.append(enlace(cvUrl('pub', o.clave), 'CV adaptado'));
   const bH = el('button', 'btn sec marca' + (hecha ? ' on' : ''), hecha ? '✓ Presentada · ' + fecha(hecha) : 'Marcar presentada');
   bH.type = 'button'; bH.setAttribute('aria-pressed', hecha ? 'true' : 'false');
   bH.onclick = () => marcar(o, !hecha);
@@ -222,6 +224,7 @@ function tarjetaEmpleo(o) {
   }
   const acc = el('div', 'acciones');
   if (/^https:\/\//.test(o.url || '')) acc.append(enlace(o.url, 'Ver oferta e inscribirme', 'btn'));
+  acc.append(enlace(cvUrl('emp', o.clave), 'CV adaptado'));
   const bH = el('button', 'btn sec marca' + (hecha ? ' on' : ''), hecha ? '✓ Inscrita · ' + fecha(hecha) : 'Marcar inscrita');
   bH.type = 'button'; bH.setAttribute('aria-pressed', hecha ? 'true' : 'false');
   bH.onclick = () => marcar(o, !hecha);
@@ -371,7 +374,8 @@ function abrirFicha(r) {
   const bA = el('button', 'btn sec', 'Copiar asunto'); bA.type = 'button'; bA.onclick = () => copiar(bA, asunto);
   const bG = enlace(gmail, 'Abrir en Gmail', 'btn');
   bG.addEventListener('click', () => { if (!aplicadas[r.clave]) { marcar(r, true); bG.after(el('span', 'contacto-ok', '✓ Marcada como aplicada')); } });
-  acc.replaceChildren(bG, bM, bA);
+  const bCV = r.abierta ? enlace(cvUrl('ab', r.clave, r.empresa), 'CV adaptado (PDF)') : enlace(cvUrl('adj', r.clave), 'CV adaptado (PDF)');
+  acc.replaceChildren(bG, bCV, bM, bA);
   if (r.email) { const bE = el('button', 'btn sec', 'Copiar email'); bE.type = 'button'; bE.onclick = () => copiar(bE, r.email); acc.append(bE); }
   const d = $('#aplicar');
   if (typeof d.showModal === 'function') d.showModal(); else d.setAttribute('open', '');

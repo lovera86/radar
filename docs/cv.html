@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV adaptado · Rocío Lovera</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --tinta: #0b2545; --tinta2: #13315c; --texto: #1f2933; --gris: #52606d; --linea: #d6e1e7; --acento: #1d7c72; --fondo: #e9eef1; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font: 15px/1.5 "Segoe UI", Calibri, Arial, sans-serif; }
+  .barra { position: sticky; top: 0; z-index: 2; background: #0b2238; color: #e8f0f5; padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+  .barra a { color: #8fd3c7; }
+  .barra .oferta { flex: 1 1 260px; min-width: 0; font-size: 13.5px; }
+  .barra .oferta b { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .barra label { font-size: 13px; display: flex; gap: 6px; align-items: center; }
+  .barra select, .barra input[type=tel] { font: inherit; font-size: 13px; padding: 6px 8px; border-radius: 8px; border: 1px solid #2c4a66; background: #0d2640; color: #e8f0f5; }
+  .barra input[type=tel] { width: 130px; }
+  .boton { font: 600 14px inherit; font-family: inherit; background: #8fd3c7; color: #062033; border: 0; border-radius: 10px; padding: 9px 16px; cursor: pointer; }
+  .ayuda { width: 100%; font-size: 12.5px; color: #9fb4c5; margin: 0; }
+  .hoja { width: min(210mm, calc(100vw - 24px)); margin: 20px auto 40px; background: #fff; padding: 14mm 15mm; box-shadow: 0 10px 30px rgba(12, 39, 64, .15); font-size: 9.6pt; line-height: 1.38; }
+  h1 { font-size: 21pt; margin: 0; letter-spacing: .2px; color: var(--tinta); }
+  .titular { font-size: 11pt; color: var(--tinta2); font-weight: 600; margin: 2px 0 6px; }
+  .contacto { font-size: 8.8pt; color: var(--gris); }
+  .contacto span + span::before { content: " · "; color: #9aa5b1; }
+  .cabecera { border-bottom: 3px solid var(--tinta2); padding-bottom: 8px; }
+  h2 { font-size: 10.5pt; text-transform: uppercase; letter-spacing: 1.2px; color: var(--tinta); border-bottom: 1.5px solid var(--tinta); padding-bottom: 2px; margin: 13px 0 6px; }
+  p { margin: 0 0 5px; }
+  .objetivo { background: #eef6f5; border-left: 3px solid var(--acento); padding: 5px 9px; margin: 8px 0 0; }
+  [contenteditable]:hover { outline: 1px dashed #9fb4c5; outline-offset: 2px; }
+  .trabajo { margin-bottom: 8px; break-inside: avoid; }
+  .trabajo-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .puesto { font-weight: 700; color: #102a43; }
+  .empresa { color: var(--tinta2); font-weight: 600; }
+  .fechas { color: var(--gris); font-size: 8.8pt; white-space: nowrap; }
+  ul { margin: 3px 0 0; padding-left: 15px; }
+  li { margin: 1px 0; }
+  .otra { color: var(--gris); }
+  .rejilla { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; }
+  .edu { break-inside: avoid; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+  .chips span { border: 1px solid var(--linea); border-radius: 4px; padding: 1px 6px; font-size: 8.8pt; }
+  .chips span.clave { border-color: var(--acento); color: #0f5a52; }
+  @media (max-width: 640px) { .hoja { padding: 18px; font-size: 10pt; } .rejilla { grid-template-columns: 1fr; } .trabajo-cab { flex-direction: column; gap: 0; } }
+  @page { size: A4; margin: 14mm 15mm; }
+  @media print {
+    body { background: #fff; }
+    .barra { display: none; }
+    .hoja { width: auto; margin: 0; padding: 0; box-shadow: none; }
+    [contenteditable]:hover { outline: 0; }
+    .chips span.clave { color: inherit; border-color: var(--linea); }
+  }
+</style>
+</head>
+<body>
+<div class="barra">
+  <div class="oferta" id="oferta"><b>CV adaptado</b><span>Cargando la oferta…</span></div>
+  <label>Enfoque <select id="tema"></select></label>
+  <label><input type="checkbox" id="con-objetivo" checked> Objetivo</label>
+  <label>Teléfono <input type="tel" id="telefono" placeholder="solo en este equipo" autocomplete="tel"></label>
+  <button class="boton" type="button" id="pdf">Descargar PDF</button>
+  <p class="ayuda">Puedes retocar el perfil y el objetivo haciendo clic en el texto. «Descargar PDF» abre la impresión: elige <b>Guardar como PDF</b>. El teléfono se guarda solo en este navegador y no se publica. <a href="./">Volver al radar</a></p>
+</div>
+<main class="hoja" id="hoja"></main>
+<script src="cv-datos.js?v=2"></script>
+<script src="cv.js?v=3"></script>
+</body>
+</html>
