@@ -1,44 +1,80 @@
 {
-  "B27245091": {
-    "empresa": "TOPCAD Ingeniería",
-    "email": "topcad@topcadingenieria.com",
-    "telefono": "+34 982 120 016",
-    "web": "https://www.topcadingenieria.com/index.php/contacto",
-    "fuente": "Web de la empresa, comprobada el 9/11/2026"
-  },
-  "A41781774": {
-    "empresa": "Estudio Cartográfico GEA",
-    "email": "info@geacartografia.es",
-    "telefono": "+34 954 76 28 70",
-    "web": "https://www.geacartografia.es/contanto/",
-    "fuente": "Web de la empresa, comprobada el 9/11/2026"
-  },
-  "A36196418": {
-    "empresa": "EOSA (Estrategia y Organización)",
-    "email": "info@eosa.com",
-    "telefono": "+34 986 419 922",
-    "web": "https://www.eosa.com/contacto/",
-    "fuente": "Web de la empresa, comprobada el 9/11/2026"
-  },
-  "B31731250": {
-    "empresa": "GEEA Geólogos (delegación de Pamplona)",
-    "email": "earana@geea.es",
-    "telefono": "+34 948 382 975",
-    "web": "https://geea.es/delegacion-pamplona/",
-    "fuente": "Web de la empresa, comprobada el 9/11/2026"
-  },
-  "F90279639": {
-    "empresa": "Studio Etérea",
-    "email": "info@studioeterea.com",
-    "telefono": "+34 655 539 402",
-    "web": "https://studioeterea.com/contacto/",
-    "fuente": "Web de la empresa, comprobada el 9/11/2026"
-  },
-  "B97256325": {
-    "empresa": "Block Decorats",
-    "email": "info@blockdecorats.es",
-    "telefono": "+34 96 340 48 35",
-    "web": "https://www.blockdecorats.net",
-    "fuente": "Web de la empresa, comprobada el 9/11/2026"
-  }
+ "B27245091": {
+  "empresa": "TOPCAD Ingeniería",
+  "email": "topcad@topcadingenieria.com",
+  "telefono": "+34 982 120 016",
+  "web": "https://www.topcadingenieria.com/index.php/contacto",
+  "fuente": "Web de la empresa, comprobada el 9/11/2026"
+ },
+ "A41781774": {
+  "empresa": "Estudio Cartográfico GEA",
+  "email": "info@geacartografia.es",
+  "telefono": "+34 954 76 28 70",
+  "web": "https://www.geacartografia.es/contanto/",
+  "fuente": "Web de la empresa, comprobada el 9/11/2026"
+ },
+ "A36196418": {
+  "empresa": "EOSA (Estrategia y Organización)",
+  "email": "info@eosa.com",
+  "telefono": "+34 986 419 922",
+  "web": "https://www.eosa.com/contacto/",
+  "fuente": "Web de la empresa, comprobada el 9/11/2026"
+ },
+ "B31731250": {
+  "empresa": "GEEA Geólogos (delegación de Pamplona)",
+  "email": "earana@geea.es",
+  "telefono": "+34 948 382 975",
+  "web": "https://geea.es/delegacion-pamplona/",
+  "fuente": "Web de la empresa, comprobada el 9/11/2026"
+ },
+ "F90279639": {
+  "empresa": "Studio Etérea",
+  "email": "info@studioeterea.com",
+  "telefono": "+34 655 539 402",
+  "web": "https://studioeterea.com/contacto/",
+  "fuente": "Web de la empresa, comprobada el 9/11/2026"
+ },
+ "B97256325": {
+  "empresa": "Block Decorats",
+  "email": "info@blockdecorats.es",
+  "telefono": "+34 96 340 48 35",
+  "web": "https://www.blockdecorats.net",
+  "fuente": "Web de la empresa, comprobada el 9/11/2026"
+ },
+ "B95073839": {
+  "email": "info@zorrozua.es",
+  "telefono": "+34 944 35 21 05",
+  "web": "https://www.zorrozua.es",
+  "fuente": "https://www.zorrozua.es/aviso-legal/"
+ },
+ "****9809*": {
+  "email": "hola@layersofreality.com",
+  "telefono": "",
+  "web": "https://layersofreality.com",
+  "fuente": "https://layersofreality.com/legal-notice/"
+ },
+ "B85847168": {
+  "email": "contacto@alfestal.com",
+  "telefono": "+34 984 078 091",
+  "web": "https://www.alfestal.com",
+  "fuente": "https://www.alfestal.com/contacto.html"
+ },
+ "B83341933": {
+  "email": "contacto@grusamar.com",
+  "telefono": "+34 91 709 69 00",
+  "web": "https://grusamar.com",
+  "fuente": "https://grusamar.com/aviso-legal/"
+ },
+ "B95790317": {
+  "email": "info@innovative-systems.es",
+  "telefono": "+34 946 522 767",
+  "web": "https://www.innovative-systems.es",
+  "fuente": "https://innovative-systems.es/legal.php"
+ },
+ "B01678606": {
+  "email": "xesteco@xesteco.com",
+  "telefono": "633 371 828",
+  "web": "https://www.xesteco.com",
+  "fuente": "https://www.xesteco.com/contacto"
+ }
 }
