@@ -1,0 +1,8 @@
+# Copia completa de adjudicados (solo para recalcular en local; crece cada día)
+data/adjudicados.jsonl
+data/nuevas.json
+data/panel.json
+*.log
+__pycache__/
+.claude/
+panel/

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Radar · Rocío Lovera</title>
+<meta name="description" content="Contratos públicos recién adjudicados en musealización, gemelos digitales, LiDAR, fotogrametría e IA: empresas que van a necesitar una Project Manager.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="hero">
+  <canvas id="nube" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <p class="eyebrow">Radar de oportunidades · Rocío Lovera</p>
+    <h1>Proyectos que acaban de adjudicarse<br><span>y van a necesitar quien los dirija</span></h1>
+    <p class="lead">Cada mañana el radar revisa los contratos adjudicados en la Plataforma de Contratación del Sector Público y se queda con los de musealización, gemelos digitales, LiDAR, fotogrametría, batimetría e IA. La empresa que gana tiene que ejecutar el proyecto: ese es el momento de escribirle.</p>
+    <dl class="stats" aria-live="polite">
+      <div><dt>Oportunidades</dt><dd id="st-n">—</dd></div>
+      <div><dt>En el norte</dt><dd id="st-norte">—</dd></div>
+      <div><dt>Importe adjudicado</dt><dd id="st-importe">—</dd></div>
+      <div><dt>Actualizado</dt><dd id="st-fecha">—</dd></div>
+    </dl>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="filtros" aria-label="Filtros">
+    <div class="grupo">
+      <span class="etq">Zona</span>
+      <div class="chips" id="f-zona" role="group" aria-label="Zona"></div>
+    </div>
+    <div class="grupo">
+      <span class="etq">Encaje</span>
+      <div class="chips" id="f-encaje" role="group" aria-label="Encaje mínimo">
+        <button type="button" class="chip on" data-v="0">Todas</button>
+        <button type="button" class="chip" data-v="60">Bueno · 60+</button>
+        <button type="button" class="chip" data-v="80">Muy alto · 80+</button>
+      </div>
+    </div>
+    <div class="grupo crece">
+      <label class="etq" for="f-texto">Buscar</label>
+      <input id="f-texto" type="search" placeholder="Empresa, proyecto, cliente…" autocomplete="off">
+    </div>
+  </section>
+
+  <div class="layout">
+    <section aria-labelledby="t-lista">
+      <div class="cab">
+        <h2 id="t-lista">Contratos adjudicados</h2>
+        <span class="cuenta" id="cuenta"></span>
+      </div>
+      <div id="lista" class="lista" aria-live="polite">
+        <p class="vacio">Cargando oportunidades…</p>
+      </div>
+    </section>
+
+    <aside aria-labelledby="t-empresas" class="lateral">
+      <h2 id="t-empresas">Quién está ganando proyectos</h2>
+      <p class="nota">Empresas con más contratos de tu perfil en el periodo.</p>
+      <ol id="empresas" class="barras"></ol>
+      <div class="como">
+        <h3>Cómo se puntúa</h3>
+        <p>De 0 a 100, según cuánto se parece el proyecto a tu experiencia: palabras del título (musealización, LiDAR, batimetría, gemelo digital, IA…), el tipo de servicio, el importe y la zona. En Asturias el radar es más flexible y muestra también encajes parciales.</p>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer class="wrap pie">
+  <p>Datos públicos de la <a href="https://contrataciondelsectorpublico.gob.es" target="_blank" rel="noopener">Plataforma de Contratación del Sector Público</a> y de las plataformas autonómicas agregadas. Los contactos se comprueban en la web de cada empresa.</p>
+</footer>
+
+<dialog id="aplicar" aria-labelledby="ap-titulo">
+  <form method="dialog" class="ap-cerrar"><button type="submit" aria-label="Cerrar">✕</button></form>
+  <p class="eyebrow">Aplicar</p>
+  <h2 id="ap-titulo"></h2>
+  <p class="ap-proyecto" id="ap-proyecto"></p>
+  <div class="ap-grid">
+    <section>
+      <h3>A quién enviarlo</h3>
+      <div id="ap-contacto"></div>
+      <div class="acciones" id="ap-busqueda"></div>
+      <h3>Pasos</h3>
+      <ol class="pasos">
+        <li>Pulsa <b>Abrir en Gmail</b>: el correo se abre ya escrito.</li>
+        <li>Adjunta tu CV en PDF.</li>
+        <li>Revisa el texto y envíalo.</li>
+      </ol>
+    </section>
+    <section>
+      <h3>Mensaje preparado</h3>
+      <p class="campo">Asunto</p>
+      <p class="asunto" id="ap-asunto"></p>
+      <p class="campo">Mensaje</p>
+      <pre id="ap-mensaje"></pre>
+      <div class="acciones" id="ap-acciones"></div>
+    </section>
+  </div>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
