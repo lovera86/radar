@@ -287,5 +287,8 @@
       "jr",
       "jr."
     ]
+  },
+  "publico": {
+    "puntuacion_minima": 35
   }
 }

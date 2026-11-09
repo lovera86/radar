@@ -8,3 +8,4 @@ __pycache__/
 panel/
 data/abiertas_nuevas.json
 data/empleos_nuevos.json
+data/publico_nuevos.json

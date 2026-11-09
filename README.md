@@ -39,6 +39,13 @@ de IA, gemelos digitales, BIM, patrimonio…). Ajustes en `config.json → emple
 - LinkedIn e Indeed no permiten leer sus ofertas de forma automática: la web
   enlaza sus búsquedas de las últimas 24 horas.
 
+## Empleo público
+
+`publico.py` revisa cada día el BOE (sección II.B, Oposiciones y concursos) y los
+contratos de técnico en proyectos de la Universidad de Oviedo. Puntúa más las
+plazas de Ingeniería Técnica Industrial, los cuerpos de gestión A2 y lo que es
+en Asturias. El BOPA no tiene un canal legible por programas: la web enlaza.
+
 ## Ajustar qué busca
 
 Todo está en `config.json`:

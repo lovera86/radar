@@ -46,6 +46,8 @@ jobs:
           ADZUNA_ID: ${{ secrets.ADZUNA_ID }}
           ADZUNA_KEY: ${{ secrets.ADZUNA_KEY }}
         run: python empleos.py
+      - name: Buscar empleo público
+        run: python publico.py
       - name: Preparar datos de la web
         run: python exportar.py
       - name: Guardar cambios

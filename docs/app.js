@@ -7,7 +7,7 @@ const PERFIL = {
 };
 const NORTE = ['Asturias', 'Galicia', 'Cantabria', 'País Vasco', 'Navarra', 'Castilla y León'];
 
-const estado = { filas: [], abiertas: [], empleos: [], pestana: 'emp', zona: '', minimo: 0, texto: '', vista: '' };
+const estado = { filas: [], abiertas: [], empleos: [], publico: [], pestana: 'emp', zona: '', minimo: 0, texto: '', vista: '' };
 
 /* Candidaturas enviadas: se guardan en este navegador (clave del contrato -> fecha). */
 const CLAVE_APLICADAS = 'radar-aplicadas';
@@ -28,12 +28,14 @@ const enlace = (href, txt, cls) => { const a = el('a', cls || 'btn sec', txt); a
 
 async function cargar() {
   try {
-    const [filas, meta, abiertas, empleos] = await Promise.all([
+    const [filas, meta, abiertas, empleos, publico] = await Promise.all([
       fetch('data/panel.json', { cache: 'no-store' }).then((r) => r.json()),
       fetch('data/meta.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => ({})),
       fetch('data/abiertas.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => []),
       fetch('data/empleos.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => []),
+      fetch('data/publico.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => []),
     ]);
+    estado.publico = publico;
     estado.empleos = empleos;
     estado.filas = filas;
     estado.abiertas = abiertas;
@@ -77,7 +79,7 @@ function chipsZona() {
 function chipsVista() {
   const lista = listaActual();
   const n = lista.filter((r) => aplicadas[r.clave]).length;
-  const hechas = { ab: 'Ofrecidas', emp: 'Inscritas', adj: 'Aplicadas' }[estado.pestana];
+  const hechas = { ab: 'Ofrecidas', emp: 'Inscritas', pub: 'Presentadas', adj: 'Aplicadas' }[estado.pestana];
   const ops = [['', 'Todas', lista.length], ['no', 'Pendientes', lista.length - n], ['si', hechas, n]];
   $('#f-vista').replaceChildren(...ops.map(([v, t, c]) => {
     const b = el('button', 'chip' + (v === estado.vista ? ' on' : ''), t);
@@ -140,7 +142,7 @@ function tarjeta(r) {
 }
 
 function pestanas() {
-  const n = { emp: estado.empleos.length, adj: estado.filas.length, ab: estado.abiertas.length };
+  const n = { emp: estado.empleos.length, pub: estado.publico.length, adj: estado.filas.length, ab: estado.abiertas.length };
   $('#pestanas').querySelectorAll('button').forEach((b) => {
     const on = b.dataset.v === estado.pestana;
     b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
@@ -148,21 +150,23 @@ function pestanas() {
   });
   $('#intro-ab').hidden = estado.pestana !== 'ab';
   $('#intro-emp').hidden = estado.pestana !== 'emp';
+  $('#intro-pub').hidden = estado.pestana !== 'pub';
 }
 
 function listaActual() {
-  return estado.pestana === 'ab' ? estado.abiertas : estado.pestana === 'emp' ? estado.empleos : estado.filas;
+  return { ab: estado.abiertas, emp: estado.empleos, pub: estado.publico }[estado.pestana] || estado.filas;
 }
 
 function pintar() {
   const ab = estado.pestana === 'ab';
   const emp = estado.pestana === 'emp';
+  const pub = estado.pestana === 'pub';
   const total = listaActual();
   const filas = filtradas(total);
   $('#cuenta').textContent = `${filas.length} de ${total.length}`;
   const lista = $('#lista');
-  if (!filas.length) lista.replaceChildren(el('p', 'vacio', emp ? 'Ninguna oferta cumple estos filtros. Prueba con «Toda España» o con un encaje menor.' : ab ? 'Ahora mismo no hay licitaciones abiertas que cumplan estos filtros. El radar las busca cada mañana.' : 'Ningún contrato cumple estos filtros. Prueba con otra zona o con un encaje menor.'));
-  else lista.replaceChildren(...filas.map(emp ? tarjetaEmpleo : ab ? tarjetaAbierta : tarjeta));
+  if (!filas.length) lista.replaceChildren(el('p', 'vacio', pub ? 'Ahora mismo no hay convocatorias que cumplan estos filtros. El radar revisa el BOE y la Universidad de Oviedo cada mañana.' : emp ? 'Ninguna oferta cumple estos filtros. Prueba con «Toda España» o con un encaje menor.' : ab ? 'Ahora mismo no hay licitaciones abiertas que cumplan estos filtros. El radar las busca cada mañana.' : 'Ningún contrato cumple estos filtros. Prueba con otra zona o con un encaje menor.'));
+  else lista.replaceChildren(...filas.map(pub ? tarjetaPublico : emp ? tarjetaEmpleo : ab ? tarjetaAbierta : tarjeta));
   empresas(filtradas(estado.filas));
 }
 
@@ -170,6 +174,33 @@ const diasHasta = (plazo) => Math.ceil((new Date(plazo + 'T23:59:59').getTime() 
 function quedan(plazo) {
   const d = diasHasta(plazo);
   return d <= 0 ? 'cierra hoy' : d === 1 ? 'queda 1 día' : `quedan ${d} días`;
+}
+
+function tarjetaPublico(o) {
+  const hecha = aplicadas[o.clave];
+  const art = el('article', 'op publico ' + (o.puntuacion >= 80 ? 'alto' : o.puntuacion >= 60 ? 'medio' : 'bajo') + (hecha ? ' hecha' : ''));
+  const cuerpo = el('div');
+  const [resol, plaza] = o.titulo.split(' — ');
+  cuerpo.append(el('h3', null, plaza || resol));
+  cuerpo.append(el('span', 'ciudad', o.organismo));
+  if (plaza) cuerpo.append(el('p', 'cliente', resol));
+  const meta = el('div', 'meta');
+  meta.append(el('span', 'fuente', o.fuente), el('span', null, o.comunidad), el('span', null, 'Publicada ' + fecha(o.fecha)));
+  cuerpo.append(meta);
+  if (o.encaje) {
+    const tags = el('div', 'tags');
+    o.encaje.split(', ').filter(Boolean).forEach((t) => tags.append(el('span', 'tag', t)));
+    cuerpo.append(tags);
+  }
+  const acc = el('div', 'acciones');
+  if (/^https:\/\//.test(o.url || '')) acc.append(enlace(o.url, 'Ver convocatoria y requisitos', 'btn'));
+  const bH = el('button', 'btn sec marca' + (hecha ? ' on' : ''), hecha ? '✓ Presentada · ' + fecha(hecha) : 'Marcar presentada');
+  bH.type = 'button'; bH.setAttribute('aria-pressed', hecha ? 'true' : 'false');
+  bH.onclick = () => marcar(o, !hecha);
+  acc.append(bH);
+  cuerpo.append(acc);
+  art.append(anillo(o.puntuacion), cuerpo);
+  return art;
 }
 
 function tarjetaEmpleo(o) {

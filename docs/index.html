@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
 <header class="hero">
@@ -57,6 +57,7 @@
         <h2 id="t-lista" class="sr-only">Oportunidades</h2>
         <div class="pestanas" id="pestanas" role="tablist" aria-label="Tipo de oportunidad">
           <button type="button" role="tab" data-v="emp" class="on" aria-selected="true">Ofertas de empleo <span>—</span></button>
+          <button type="button" role="tab" data-v="pub" aria-selected="false">Empleo público <span>—</span></button>
           <button type="button" role="tab" data-v="adj" aria-selected="false">Adjudicados <span>—</span></button>
           <button type="button" role="tab" data-v="ab" aria-selected="false">Licitaciones abiertas <span>—</span></button>
         </div>
@@ -72,6 +73,18 @@
           <a class="btn sec mini" target="_blank" rel="noopener" href="https://es.indeed.com/jobs?q=project+manager+teletrabajo&l=Espa%C3%B1a&fromage=1">Indeed · teletrabajo</a>
           <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.infojobs.net/jobsearch/search-results/list.xhtml?keyword=project%20manager&sinceDate=_24_HOURS">InfoJobs</a>
           <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.tecnoempleo.com/ofertas-trabajo/?te=project+manager">Tecnoempleo</a>
+        </div>
+      </div>
+      <div class="intro-emp" id="intro-pub" hidden>
+        <p>Oposiciones y contratos públicos a los que puedes optar con tu Ingeniería Técnica (grupo A2): plazas de ingeniería técnica, cuerpos de gestión A2 como la Gestión del Estado, y contratos de técnico en proyectos de la Universidad de Oviedo. Comprueba siempre los requisitos en las bases.</p>
+        <p class="etq">Consultar también</p>
+        <div class="acciones atajos">
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://administracion.gob.es/pagFront/empleoBecas/empleo/buscadorEmpleo.htm">Buscador de empleo público</a>
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://miprincipado.asturias.es/bopa">BOPA</a>
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.asturias.es/web/iaap">IAAP · Principado</a>
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.uniovi.es/conocenos/rrhh/convocatorias/investigacion">Universidad de Oviedo</a>
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.gijon.es/es/directorio/empleo-publico">Ayuntamiento de Gijón</a>
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://puertogijon.gob.es">Puerto de Gijón</a>
         </div>
       </div>
       <p class="intro-ab" id="intro-ab" hidden>Concursos que aún no se han adjudicado. Muchos puntúan la experiencia del jefe de proyecto: ofrécete a las empresas que suelen ganarlos para ir en su oferta. Tu CV les suma puntos y, si ganan, el puesto es tuyo.</p>
@@ -124,6 +137,6 @@
   </div>
 </dialog>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>
