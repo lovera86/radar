@@ -50,6 +50,8 @@ jobs:
         run: python publico.py
       - name: Preparar datos de la web
         run: python exportar.py
+      - name: Unificar oportunidades (modelo común)
+        run: python unificar.py
       - name: Guardar cambios
         run: |
           git config user.name "radar-bot"

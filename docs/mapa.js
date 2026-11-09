@@ -59,29 +59,27 @@ function ubicar(textos) {
   return null;
 }
 
-const TIPOS = {
-  emp: { nombre: 'Ofertas de empleo', color: '#1d7c72' },
-  pub: { nombre: 'Empleo público', color: '#6b5bd2' },
-  ab: { nombre: 'Licitaciones abiertas', color: '#c27a1a' },
-  adj: { nombre: 'Adjudicados', color: '#2b6cb0' },
+const TIPOS_MAPA = {
+  oferta: { nombre: 'Ofertas de empleo', color: '#0f766e' },
+  publico: { nombre: 'Empleo público', color: '#6b5bd2' },
+  licitacion_abierta: { nombre: 'Licitaciones abiertas', color: '#b8651a' },
+  adjudicacion: { nombre: 'Proyectos adjudicados', color: '#2b6cb0' },
 };
+const grupoTipo = (o) => (o.subtipo === 'oposicion' || o.subtipo === 'contrato_publico' ? 'publico' : o.subtipo);
 
-/* Recibe las listas ya filtradas y devuelve puntos agrupados + sin ubicar. */
-function agrupar(listas) {
+/* Recibe oportunidades del modelo común; devuelve puntos agrupados y las que no se pueden situar. */
+function agrupar(ops) {
   const grupos = new Map();
   const sinLugar = [];
-  for (const [tipo, filas] of Object.entries(listas)) {
-    for (const r of filas) {
-      const textos = tipo === 'emp' ? [r.ubicacion, r.comunidad]
-        : tipo === 'pub' ? [r.titulo, r.organismo, r.comunidad === 'Asturias' ? 'asturias' : '']
-          : [r.cliente, r.region !== r.comunidad ? r.region : '', r.contrato, r.region, r.comunidad];
-      const u = /remot|teletrabajo/i.test(r.ubicacion || '') ? null : ubicar(textos);
-      const item = { tipo, r };
-      if (!u) { sinLugar.push(item); continue; }
-      const k = u.punto.join(',');
-      if (!grupos.has(k)) grupos.set(k, { punto: u.punto, lugar: u.lugar, items: [] });
-      grupos.get(k).items.push(item);
-    }
+  for (const o of ops) {
+    const textos = o.tipo === 'empleo' && o.subtipo === 'oferta' ? [o.ubicacion.texto, o.ubicacion.comunidad]
+      : o.tipo === 'empleo' ? [o.resolucion, o.ubicacion.texto, o.organizacion.nombre, o.ubicacion.comunidad === 'Asturias' ? 'asturias' : '']
+        : [o.cliente, o.ubicacion.texto !== o.ubicacion.comunidad ? o.ubicacion.texto : '', o.titulo, o.ubicacion.texto, o.ubicacion.comunidad];
+    const u = o.modalidad === 'remoto' ? null : ubicar(textos);
+    if (!u) { sinLugar.push(o); continue; }
+    const k = u.punto.join(',');
+    if (!grupos.has(k)) grupos.set(k, { punto: u.punto, lugar: u.lugar, items: [] });
+    grupos.get(k).items.push(o);
   }
   return { grupos: [...grupos.values()], sinLugar };
 }
@@ -109,16 +107,6 @@ function oscuro() {
   return t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
-function titulo(tipo, r) {
-  if (tipo === 'emp') return r.titulo + (r.empresa ? ' · ' + r.empresa : '');
-  if (tipo === 'pub') { const [a, b] = (r.titulo || '').split(' — '); return (b || a) + ' · ' + (r.organismo || ''); }
-  if (tipo === 'ab') return r.contrato;
-  return r.empresa + ' · ' + r.contrato;
-}
-
-function enlaceItem(tipo, r) {
-  return r.url && /^https:\/\//.test(r.url) ? r.url : '';
-}
 
 function popup(g) {
   const caja = document.createElement('div');
@@ -128,36 +116,29 @@ function popup(g) {
   h.textContent = g.lugar.replace(/\b\w/g, (c) => c.toUpperCase()) + ' · ' + g.items.length + (g.items.length === 1 ? ' oportunidad' : ' oportunidades');
   caja.append(h);
   const ul = document.createElement('ul');
-  g.items.sort((a, b) => b.r.puntuacion - a.r.puntuacion).slice(0, 12).forEach(({ tipo, r }) => {
+  g.items.slice(0, 12).forEach((o) => {
     const li = document.createElement('li');
     const chip = document.createElement('span');
-    chip.className = 'pop-chip'; chip.style.background = TIPOS[tipo].color; chip.textContent = r.puntuacion;
-    chip.title = TIPOS[tipo].nombre;
-    li.append(chip);
-    const url = enlaceItem(tipo, r);
-    const a = document.createElement(url ? 'a' : 'span');
-    if (url) { a.href = url; a.target = '_blank'; a.rel = 'noopener'; }
-    a.textContent = titulo(tipo, r).slice(0, 120);
-    li.append(a);
-    if (tipo !== 'ab') {
-      const cv = document.createElement('a');
-      cv.className = 'pop-cv'; cv.textContent = 'CV'; cv.title = 'CV adaptado';
-      cv.href = 'cv.html?' + new URLSearchParams({ l: tipo, k: r.clave }).toString(); cv.target = '_blank';
-      li.append(' ', cv);
-    }
+    chip.className = 'pop-chip'; chip.style.background = TIPOS_MAPA[grupoTipo(o)].color; chip.textContent = puntuar(o).total;
+    chip.title = TIPOS_MAPA[grupoTipo(o)].nombre;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = (o.titulo + (o.organizacion.nombre ? ' · ' + o.organizacion.nombre : '')).slice(0, 120);
+    b.addEventListener('click', () => window.abrirFicha(o.id));
+    li.append(chip, b);
     ul.append(li);
   });
   caja.append(ul);
-  if (g.items.length > 12) { const m = document.createElement('p'); m.className = 'pop-mas'; m.textContent = `y ${g.items.length - 12} más en las pestañas`; caja.append(m); }
+  if (g.items.length > 12) { const m = document.createElement('p'); m.className = 'nota'; m.textContent = `y ${g.items.length - 12} más en la lista`; caja.append(m); }
   return caja;
 }
 
 function icono(g) {
-  const tipos = [...new Set(g.items.map((i) => i.tipo))];
+  const tipos = [...new Set(g.items.map(grupoTipo))];
   const n = g.items.length;
   const tam = Math.min(46, 22 + Math.sqrt(n) * 7);
-  const fondo = tipos.length === 1 ? TIPOS[tipos[0]].color
-    : `conic-gradient(${tipos.map((t, i) => `${TIPOS[t].color} ${(i / tipos.length) * 360}deg ${((i + 1) / tipos.length) * 360}deg`).join(',')})`;
+  const fondo = tipos.length === 1 ? TIPOS_MAPA[tipos[0]].color
+    : `conic-gradient(${tipos.map((t, i) => `${TIPOS_MAPA[t].color} ${(i / tipos.length) * 360}deg ${((i + 1) / tipos.length) * 360}deg`).join(',')})`;
   return L.divIcon({
     className: 'pin',
     html: `<span style="width:${tam}px;height:${tam}px;background:${fondo}">${n}</span>`,

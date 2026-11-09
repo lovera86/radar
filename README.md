@@ -46,6 +46,19 @@ contratos de técnico en proyectos de la Universidad de Oviedo. Puntúa más las
 plazas de Ingeniería Técnica Industrial, los cuerpos de gestión A2 y lo que es
 en Asturias. El BOPA no tiene un canal legible por programas: la web enlaza.
 
+## Modelo común (RADAR v2)
+
+`unificar.py` junta todas las fuentes en `docs/data/oportunidades.json`: cada
+oportunidad lleva tipo, verificación (vacante publicada u oportunidad potencial
+no publicada), datos confirmados o inferidos, fuentes con fecha de consulta y seis
+criterios (encaje, necesidad, ubicación, calidad, salario, acceso). La web
+calcula la compatibilidad con los pesos del perfil; los criterios sin información
+no restan, pero bajan la confianza.
+
+La web: Explorar (buscador, filtros, mejores matches), Empleo, Proyectos,
+Empresas, Mapa y Guardados. Favoritos, «Me interesa», estados de candidatura e
+historial se guardan solo en el navegador (con exportar/importar).
+
 ## Ajustar qué busca
 
 Todo está en `config.json`:

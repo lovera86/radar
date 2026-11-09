@@ -3,124 +3,177 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Radar · Rocío Lovera</title>
-<meta name="description" content="Contratos públicos recién adjudicados en musealización, gemelos digitales, LiDAR, fotogrametría e IA: empresas que van a necesitar una Project Manager.">
+<title>RADAR · Rocío Lovera</title>
+<meta name="description" content="RADAR: ofertas de empleo, empleo público, licitaciones y proyectos adjudicados que encajan con el perfil de Rocío Lovera, puntuados y explicados.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="styles.css?v=8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css?v=20">
 </head>
 <body>
-<header class="hero">
-  <canvas id="nube" aria-hidden="true"></canvas>
-  <div class="wrap hero-in">
-    <p class="eyebrow">Radar de oportunidades · Rocío Lovera</p>
-    <h1>Empresas y proyectos<br><span>que necesitan quien los dirija</span></h1>
-    <p class="lead">Cada mañana el radar reúne ofertas de empleo de Project Manager y revisa la Plataforma de Contratación del Sector Público: concursos abiertos donde puntúa el jefe de proyecto y contratos recién adjudicados en musealización, gemelos digitales, LiDAR, fotogrametría, batimetría e IA. Todo puntuado según tu perfil.</p>
-    <dl class="stats" aria-live="polite">
-      <div><dt>Oportunidades</dt><dd id="st-n">—</dd></div>
-      <div><dt>En el norte</dt><dd id="st-norte">—</dd></div>
-      <div><dt>Importe adjudicado</dt><dd id="st-importe">—</dd></div>
-      <div><dt>Actualizado</dt><dd id="st-fecha">—</dd></div>
-    </dl>
+<header class="barra">
+  <div class="wrap barra-in">
+    <a class="marca" href="#explorar" aria-label="RADAR, inicio">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="16" r="8.5" fill="none" stroke="currentColor" stroke-width="2" opacity=".55"/><path d="M16 16 L27 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="22" cy="20" r="2.4" fill="currentColor"/></svg>
+      <span>RADAR</span>
+    </a>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#explorar" data-v="explorar">Explorar</a>
+      <a href="#empleo" data-v="empleo">Empleo</a>
+      <a href="#proyectos" data-v="proyectos">Proyectos</a>
+      <a href="#empresas" data-v="empresas">Empresas</a>
+      <a href="#mapa" data-v="mapa">Mapa</a>
+      <a href="#guardados" data-v="guardados">Guardados <span class="contador" id="n-guardados"></span></a>
+    </nav>
+    <p class="actualizado" id="actualizado"></p>
   </div>
 </header>
 
-<main class="wrap">
-  <section class="filtros" aria-label="Filtros">
-    <div class="grupo">
-      <span class="etq">Zona</span>
-      <div class="chips" id="f-zona" role="group" aria-label="Zona"></div>
-    </div>
-    <div class="grupo">
-      <span class="etq">Encaje</span>
-      <div class="chips" id="f-encaje" role="group" aria-label="Encaje mínimo">
-        <button type="button" class="chip on" data-v="0">Todas</button>
-        <button type="button" class="chip" data-v="60">Bueno · 60+</button>
-        <button type="button" class="chip" data-v="80">Muy alto · 80+</button>
+<main id="principal">
+  <section class="buscador-zona" id="buscador-zona" aria-label="Buscar oportunidades">
+    <div class="wrap">
+      <h1 class="lema" id="lema">Descubre dónde puede llegar tu talento</h1>
+      <form class="buscador" id="buscador" role="search" autocomplete="off">
+        <label class="campo-b ancho">
+          <span>Qué buscas</span>
+          <input id="q-que" type="search" list="sugerencias" placeholder="Puesto, tema, empresa o proyecto">
+        </label>
+        <label class="campo-b">
+          <span>Dónde</span>
+          <select id="q-donde">
+            <option value="">Toda España</option>
+            <option value="asturias">Asturias</option>
+            <option value="norte">Norte de España</option>
+            <option value="remoto">En remoto</option>
+          </select>
+        </label>
+        <label class="campo-b">
+          <span>Modalidad</span>
+          <select id="q-modalidad">
+            <option value="">Cualquiera</option>
+            <option value="remoto">Remoto</option>
+            <option value="hibrido">Híbrido</option>
+            <option value="presencial">Presencial</option>
+          </select>
+        </label>
+        <label class="campo-b" id="campo-tipo">
+          <span>Tipo</span>
+          <select id="q-tipo">
+            <option value="">Todas</option>
+            <option value="empleo">Empleo (ofertas y oposiciones)</option>
+            <option value="proyecto">Proyectos (licitaciones y adjudicaciones)</option>
+          </select>
+        </label>
+        <button class="buscar" type="submit" aria-label="Buscar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          <span>Buscar</span>
+        </button>
+      </form>
+      <datalist id="sugerencias"></datalist>
+
+      <div class="rapidos" id="rapidos" role="group" aria-label="Filtros rápidos">
+        <button type="button" class="chip" data-f="remoto">Remoto</button>
+        <button type="button" class="chip" data-f="asturias">Asturias</button>
+        <button type="button" class="chip" data-f="alto">Encaje alto</button>
+        <button type="button" class="chip" data-f="contacto">Con contacto</button>
+        <button type="button" class="chip" data-f="nuevas">Últimos 7 días</button>
+        <button type="button" class="chip" data-f="plazo">Plazo abierto</button>
+        <button type="button" class="chip" data-f="salario">Con salario</button>
+        <button type="button" class="chip mas" id="abrir-filtros">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          Más filtros
+        </button>
       </div>
-    </div>
-    <div class="grupo">
-      <span class="etq">Candidatura</span>
-      <div class="chips" id="f-vista" role="group" aria-label="Candidatura"></div>
-    </div>
-    <div class="grupo crece">
-      <label class="etq" for="f-texto">Buscar</label>
-      <input id="f-texto" type="search" placeholder="Empresa, proyecto, cliente…" autocomplete="off">
+      <div class="activos" id="activos" aria-live="polite"></div>
     </div>
   </section>
 
-  <div class="layout">
-    <section aria-labelledby="t-lista">
-      <div class="cab">
-        <h2 id="t-lista" class="sr-only">Oportunidades</h2>
-        <div class="pestanas" id="pestanas" role="tablist" aria-label="Tipo de oportunidad">
-          <button type="button" role="tab" data-v="emp" class="on" aria-selected="true">Ofertas de empleo <span>—</span></button>
-          <button type="button" role="tab" data-v="mapa" aria-selected="false">Mapa <span>—</span></button>
-          <button type="button" role="tab" data-v="pub" aria-selected="false">Empleo público <span>—</span></button>
-          <button type="button" role="tab" data-v="adj" aria-selected="false">Adjudicados <span>—</span></button>
-          <button type="button" role="tab" data-v="ab" aria-selected="false">Licitaciones abiertas <span>—</span></button>
-        </div>
-        <span class="cuenta" id="cuenta"></span>
+  <section class="wrap resultados" aria-labelledby="titulo-vista">
+    <div class="res-cab">
+      <div>
+        <h2 id="titulo-vista">Explorar</h2>
+        <p class="res-n" id="res-n"></p>
       </div>
-      <div class="intro-emp" id="intro-emp">
-        <p>Ofertas de los últimos 30 días que encajan con tu perfil: puestos de Project Manager, jefa de proyecto, PMO o Product Owner, con más puntos si son en Asturias, en remoto o de IA, gemelos digitales, BIM o patrimonio.</p>
-        <p class="etq">Buscar también en (últimas 24 horas)</p>
-        <div class="acciones atajos">
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.linkedin.com/jobs/search/?keywords=project%20manager&location=Asturias%2C%20Espa%C3%B1a&f_TPR=r86400">LinkedIn · Asturias</a>
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.linkedin.com/jobs/search/?keywords=project%20manager&location=Espa%C3%B1a&f_WT=2&f_TPR=r86400">LinkedIn · remoto</a>
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://es.indeed.com/jobs?q=project+manager&l=Asturias&fromage=1">Indeed · Asturias</a>
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://es.indeed.com/jobs?q=project+manager+teletrabajo&l=Espa%C3%B1a&fromage=1">Indeed · teletrabajo</a>
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.infojobs.net/jobsearch/search-results/list.xhtml?keyword=project%20manager&sinceDate=_24_HOURS">InfoJobs</a>
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.tecnoempleo.com/ofertas-trabajo/?te=project+manager">Tecnoempleo</a>
+      <div class="res-ctl">
+        <label class="orden">Ordenar
+          <select id="orden">
+            <option value="relevancia">Relevancia</option>
+            <option value="encaje">Encaje con tu perfil</option>
+            <option value="recientes">Más recientes</option>
+            <option value="plazo">Plazo más cercano</option>
+          </select>
+        </label>
+        <div class="vista-btns" role="group" aria-label="Vista">
+          <button type="button" data-vista="rejilla" class="on" aria-pressed="true">Cuadrícula</button>
+          <button type="button" data-vista="mapa" aria-pressed="false">Mapa</button>
         </div>
       </div>
-      <div class="intro-emp" id="intro-pub" hidden>
-        <p>Oposiciones y contratos públicos a los que puedes optar con tu Ingeniería Técnica (grupo A2): plazas de ingeniería técnica, cuerpos de gestión A2 como la Gestión del Estado, y contratos de técnico en proyectos de la Universidad de Oviedo. Comprueba siempre los requisitos en las bases.</p>
-        <p class="etq">Consultar también</p>
-        <div class="acciones atajos">
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://administracion.gob.es/pagFront/empleoBecas/empleo/buscadorEmpleo.htm">Buscador de empleo público</a>
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://miprincipado.asturias.es/bopa">BOPA</a>
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.asturias.es/web/iaap">IAAP · Principado</a>
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.uniovi.es/conocenos/rrhh/convocatorias/investigacion">Universidad de Oviedo</a>
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.gijon.es/es/directorio/empleo-publico">Ayuntamiento de Gijón</a>
-          <a class="btn sec mini" target="_blank" rel="noopener" href="https://puertogijon.gob.es">Puerto de Gijón</a>
-        </div>
-      </div>
-      <div id="mapa-zona" hidden>
-        <div class="mapa-cab">
-          <div class="chips" id="mapa-tipos" role="group" aria-label="Tipos en el mapa"></div>
-          <div class="acciones"><button type="button" class="btn sec mini" id="m-ast">Asturias</button><button type="button" class="btn sec mini" id="m-esp">España</button></div>
-        </div>
-        <div id="mapa" class="mapa" role="region" aria-label="Mapa de oportunidades"></div>
-        <p class="nota mapa-sin" id="mapa-sin"></p>
-      </div>
-      <p class="intro-ab" id="intro-ab" hidden>Concursos que aún no se han adjudicado. Muchos puntúan la experiencia del jefe de proyecto: ofrécete a las empresas que suelen ganarlos para ir en su oferta. Tu CV les suma puntos y, si ganan, el puesto es tuyo.</p>
-      <div id="lista" class="lista" aria-live="polite">
-        <p class="vacio">Cargando oportunidades…</p>
-      </div>
-    </section>
+    </div>
+    <p class="intro" id="intro"></p>
+    <div class="atajos" id="atajos" hidden></div>
 
-    <aside aria-labelledby="t-empresas" class="lateral">
-      <h2 id="t-empresas">Quién está ganando proyectos</h2>
-      <p class="nota">Empresas con más contratos de tu perfil en el periodo.</p>
-      <ol id="empresas" class="barras"></ol>
-      <div class="como">
-        <h3>Cómo se puntúa</h3>
-        <p>De 0 a 100, según cuánto se parece el proyecto a tu experiencia: palabras del título (musealización, LiDAR, batimetría, gemelo digital, IA…), el tipo de servicio, el importe y la zona. En Asturias el radar es más flexible y muestra también encajes parciales.</p>
+    <div id="mejores" class="mejores" hidden></div>
+    <div id="rejilla" class="rejilla" aria-live="polite">
+      <div class="tarjeta esqueleto"></div><div class="tarjeta esqueleto"></div><div class="tarjeta esqueleto"></div>
+    </div>
+
+    <div id="vista-mapa" class="vista-mapa" hidden>
+      <div id="mapa" class="mapa" role="region" aria-label="Mapa de oportunidades"></div>
+      <div class="mapa-lado">
+        <div class="leyenda" id="leyenda"></div>
+        <ol class="mini-lista" id="mini-lista"></ol>
+        <p class="nota" id="mapa-sin"></p>
       </div>
-    </aside>
-  </div>
+    </div>
+  </section>
 </main>
 
 <footer class="wrap pie">
-  <p>Datos públicos de la <a href="https://contrataciondelsectorpublico.gob.es" target="_blank" rel="noopener">Plataforma de Contratación del Sector Público</a> y de las plataformas autonómicas agregadas. Los contactos se comprueban en la web de cada empresa.</p>
+  <p>Fuentes: Plataforma de Contratación del Sector Público, BOE, Universidad de Oviedo, Tecnoempleo y Remotive. Cada oportunidad enlaza a su fuente original. Los contactos se comprueban en la web oficial de cada empresa. Tus favoritos y candidaturas se guardan solo en este navegador.</p>
+  <p class="pie-acc"><button type="button" class="enlace" id="exportar">Exportar mis datos</button> · <label class="enlace">Importar copia<input type="file" id="importar" accept="application/json" hidden></label></p>
 </footer>
 
-<dialog id="aplicar" aria-labelledby="ap-titulo">
-  <form method="dialog" class="ap-cerrar"><button type="submit" aria-label="Cerrar">✕</button></form>
-  <p class="eyebrow" id="ap-eyebrow">Aplicar</p>
+<!-- Más filtros -->
+<dialog id="filtros" class="panel-dialogo" aria-labelledby="filtros-t">
+  <form method="dialog" class="cerrar"><button aria-label="Cerrar">✕</button></form>
+  <h2 id="filtros-t">Más filtros</h2>
+  <div class="grupo-f">
+    <h3>Tipo de oportunidad</h3>
+    <div class="opciones" id="f-subtipo"></div>
+  </div>
+  <div class="grupo-f">
+    <h3>Fuente</h3>
+    <div class="opciones" id="f-fuente"></div>
+  </div>
+  <div class="grupo-f">
+    <h3>Confianza de la puntuación</h3>
+    <div class="opciones" id="f-confianza"></div>
+  </div>
+  <div class="grupo-f">
+    <h3>Encaje mínimo</h3>
+    <input type="range" id="f-minimo" min="0" max="90" step="5" value="0" aria-describedby="f-minimo-v"> <output id="f-minimo-v">0</output>
+  </div>
+  <div class="grupo-f">
+    <h3>Estado</h3>
+    <div class="opciones" id="f-estado"></div>
+  </div>
+  <div class="pie-dialogo">
+    <button type="button" class="btn sec" id="limpiar-filtros">Limpiar todo</button>
+    <button type="button" class="btn" id="ver-resultados">Ver resultados</button>
+  </div>
+</dialog>
+
+<!-- Ficha de oportunidad -->
+<dialog id="ficha" class="ficha-dialogo" aria-labelledby="fi-titulo">
+  <form method="dialog" class="cerrar"><button aria-label="Cerrar">✕</button></form>
+  <div id="ficha-cuerpo"></div>
+</dialog>
+
+<!-- Preparar contacto (correo) -->
+<dialog id="aplicar" class="panel-dialogo ancho" aria-labelledby="ap-titulo">
+  <form method="dialog" class="cerrar"><button aria-label="Cerrar">✕</button></form>
+  <p class="eyebrow" id="ap-eyebrow">Preparar contacto</p>
   <h2 id="ap-titulo"></h2>
   <p class="ap-proyecto" id="ap-proyecto"></p>
   <div class="ap-grid">
@@ -131,8 +184,9 @@
       <h3>Pasos</h3>
       <ol class="pasos">
         <li>Pulsa <b>Abrir en Gmail</b>: el correo se abre ya escrito.</li>
-        <li>Pulsa <b>CV adaptado (PDF)</b>, guárdalo y adjúntalo al correo.</li>
-        <li>Revisa el texto y envíalo. Al abrir Gmail la oportunidad queda marcada como <b>aplicada</b>.</li>
+        <li>Pulsa <b>CV adaptado</b>, guarda el PDF y adjúntalo.</li>
+        <li>Revisa el texto y envíalo desde Gmail.</li>
+        <li>Vuelve aquí y marca <b>Enviada</b>: RADAR no lo marca solo.</li>
       </ol>
     </section>
     <section>
@@ -146,7 +200,7 @@
   </div>
 </dialog>
 
-<script src="mapa.js?v=4"></script>
-<script src="app.js?v=7"></script>
+<script src="mapa.js?v=20"></script>
+<script src="app.js?v=20"></script>
 </body>
 </html>
