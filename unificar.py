@@ -318,12 +318,61 @@ def desde_adjudicados(filas, consultada):
     return out
 
 
+def desde_senales(filas, consultada):
+    """Señales de empresa del BORME. Nunca son vacantes: necesidad potencial e inferida."""
+    out = []
+    for g in filas:
+        if g.get("categoria") != "crecimiento":
+            continue  # cambios y avisos solo se muestran en la vista Empresas
+        com = g.get("comunidad", "")
+        nueva = g["tipo"] == "constitucion"
+        temas_g = [m for m in g.get("motivos", []) if not m.startswith("CNAE") and m != "en Asturias"]
+        if nueva:
+            enc = crit(0.35 + 0.12 * len(temas_g) + (0.15 if g.get("cnae") else 0), g.get("motivos", [])[:4])
+            nec = crit(0.3, ["empresa recién constituida: puede necesitar perfiles, pero no hay ninguna vacante"])
+            titulo = f"Empresa nueva de tu sector: {g['empresa']}"
+            datos = [{"campo": "Acto inscrito", "valor": "Constitución", "origen": "confirmado"},
+                     {"campo": "Objeto social", "valor": g.get("objeto") or None, "origen": "confirmado"},
+                     {"campo": "Capital", "valor": (g.get("capital") + " €") if g.get("capital") else None, "origen": "confirmado"},
+                     {"campo": "Domicilio", "valor": g.get("municipio") or None, "origen": "confirmado"}]
+        else:
+            enc = crit(0.6, [f"ya gana contratos de tu perfil ({g.get('empresa_radar', g['empresa'])})"])
+            nec = crit(0.45, [f"{g['titulo'].lower()}: señal de crecimiento, no es una vacante"])
+            titulo = f"{g['titulo']}: {g['empresa']}"
+            datos = [{"campo": "Acto inscrito", "valor": g["titulo"], "origen": "confirmado"},
+                     {"campo": "Extracto del BORME", "valor": g.get("extracto") or None, "origen": "confirmado"}]
+            if g.get("ampliacion"):
+                datos.append({"campo": "Capital tras la ampliación", "valor": g["ampliacion"] + " €", "origen": "confirmado"})
+        datos += [{"campo": "Necesidad de perfiles", "valor": "posible", "origen": "inferido"},
+                  {"campo": "Contacto", "valor": None, "origen": "desconocido"}]
+        out.append({
+            "id": "emp-senal:" + g["id"], "origen": {"lista": "senal", "clave": g["id"]},
+            "tipo": "empresa", "subtipo": "senal_empresa", "verificacion": "necesidad_potencial",
+            "titulo": titulo, "organizacion": {"nombre": g["empresa"], "nif": ""},
+            "ubicacion": {"texto": g.get("municipio") or g.get("provincia", ""), "comunidad": com}, "modalidad": "desconocida",
+            "salario": {"texto": None}, "importe": None,
+            "fechas": {"publicada": g["fecha"], "plazo": None, "consultada": g["fuente"].get("consultada", consultada)},
+            "fuentes": [{"nombre": "BORME", "url": g["fuente"]["url"], "consultada": g["fuente"].get("consultada", consultada)}],
+            "datos": datos, "etiquetas": temas_g,
+            "criterios": {
+                "encaje": enc, "necesidad": nec,
+                "geografia": geografia(com, "desconocida") if com else crit(0, [], sin_info=True),
+                "calidad": calidad(g["fecha"], g["fuente"]["url"], 3),
+                "salario": crit(0, [], sin_info=True),
+                "acceso": crit(0.3, ["sin contacto verificado: buscar su web y responsables en LinkedIn"]),
+            },
+            "accion": {"tipo": "contactar_empresa", "url": g["fuente"]["url"]},
+        })
+    return out
+
+
 def main():
     meta_f = WEB / "meta.json"
     meta = json.loads(meta_f.read_text(encoding="utf-8")) if meta_f.exists() else {}
     consultada = (meta.get("actualizado") or datetime.now().isoformat())[:10]
     todas = (desde_empleos(leer("empleos"), consultada) + desde_publico(leer("publico"), consultada)
-             + desde_abiertas(leer("abiertas"), consultada) + desde_adjudicados(leer("panel"), consultada))
+             + desde_abiertas(leer("abiertas"), consultada) + desde_adjudicados(leer("panel"), consultada)
+             + desde_senales(leer("empresas"), consultada))
     # Deduplicación: mismo tipo, mismo título y misma organización -> se juntan las fuentes.
     unicas, vistas, duplicadas = [], {}, 0
     for o in todas:

@@ -64,6 +64,7 @@ const TIPOS_MAPA = {
   publico: { nombre: 'Empleo público', color: '#6b5bd2' },
   licitacion_abierta: { nombre: 'Licitaciones abiertas', color: '#b8651a' },
   adjudicacion: { nombre: 'Proyectos adjudicados', color: '#2b6cb0' },
+  senal_empresa: { nombre: 'Señales de empresa', color: '#9a4a8f' },
 };
 const grupoTipo = (o) => (o.subtipo === 'oposicion' || o.subtipo === 'contrato_publico' ? 'publico' : o.subtipo);
 

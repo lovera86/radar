@@ -59,6 +59,15 @@ La web: Explorar (buscador, filtros, mejores matches), Empleo, Proyectos,
 Empresas, Mapa y Guardados. Favoritos, «Me interesa», estados de candidatura e
 historial se guardan solo en el navegador (con exportar/importar).
 
+## Señales de empresas (BORME)
+
+`empresas.py` lee cada día la sección primera del BORME (Asturias, Galicia,
+Cantabria, León, País Vasco, Navarra y Madrid) y guarda dos tipos de señal con
+fuente y fecha: empresas nuevas de tu sector (por CNAE u objeto social) y actos
+de empresas que ya están en el radar (ampliaciones de capital, sucursales,
+fusiones, cambios; y avisos como concursos). Una señal nunca es una vacante.
+Necesita `pypdf`.
+
 ## Ajustar qué busca
 
 Todo está en `config.json`:

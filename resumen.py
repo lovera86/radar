@@ -48,7 +48,8 @@ def main():
     abiertas = leer("abiertas_nuevas.json")
     empleos = leer("empleos_nuevos.json")
     publico = leer("publico_nuevos.json")
-    if not nuevas and not abiertas and not empleos and not publico:
+    senales = [g for g in leer("empresas_nuevas.json") if g.get("categoria") == "crecimiento"]
+    if not nuevas and not abiertas and not empleos and not publico and not senales:
         print("Nada nuevo hoy: no se abre resumen.")
         return
     repo = os.environ.get("GITHUB_REPOSITORY", "usuaria/radar")
@@ -56,6 +57,8 @@ def main():
     web = WEB.format(owner=owner, repo=nombre)
     hoy = date.today().strftime("%d/%m/%Y")
     partes = []
+    if senales:
+        partes.append(f"{len(senales)} señal de empresa" if len(senales) == 1 else f"{len(senales)} señales de empresas")
     if publico:
         partes.append(f"{len(publico)} convocatoria pública" if len(publico) == 1 else f"{len(publico)} convocatorias públicas")
     if empleos:
@@ -67,6 +70,11 @@ def main():
     titulo = f"Radar {hoy}: " + ", ".join(partes[:-1]) + (" y " if len(partes) > 1 else "") + partes[-1]
 
     lineas = [f"@{owner}, esto es lo nuevo del radar hoy. Todo está en la web: {web}", ""]
+    if senales:
+        lineas += ["## Señales de empresas (BORME): no son vacantes", ""]
+        for g in sorted(senales, key=lambda g: -g["puntuacion"])[:8]:
+            lineas.append(f"- **{g['empresa']}** · {g['titulo']} · {g.get('municipio') or g.get('provincia', '')} · [BORME]({g['fuente']['url']})")
+        lineas.append("")
     if publico:
         lineas += ["## Empleo público", ""]
         for o in sorted(publico, key=lambda o: -o["puntuacion"])[:10]:

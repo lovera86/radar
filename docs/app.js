@@ -16,13 +16,15 @@ const SUBTIPOS = {
   contrato_publico: { nombre: 'Contrato público', clase: 't-publico' },
   licitacion_abierta: { nombre: 'Licitación abierta', clase: 't-licitacion' },
   adjudicacion: { nombre: 'Proyecto adjudicado', clase: 't-adjudicacion' },
+  senal_empresa: { nombre: 'Señal de empresa', clase: 't-empresa' },
 };
 const VERIF = {
   vacante_confirmada: 'Vacante publicada',
   proyecto_en_licitacion: 'Oportunidad potencial · no publicada. Licitación abierta: nadie ha ofrecido todavía un puesto.',
   proyecto_adjudicado: 'Oportunidad potencial · no publicada. Proyecto adjudicado: puede necesitar dirección, pero no es una vacante.',
+  necesidad_potencial: 'Oportunidad potencial · no publicada. Señal del Registro Mercantil (BORME): es un hecho sobre la empresa, no una vacante.',
 };
-const NATURALEZA = { vacante_confirmada: 'Vacante publicada', proyecto_en_licitacion: 'Potencial · no publicada', proyecto_adjudicado: 'Potencial · no publicada' };
+const NATURALEZA = { vacante_confirmada: 'Vacante publicada', proyecto_en_licitacion: 'Potencial · no publicada', proyecto_adjudicado: 'Potencial · no publicada', necesidad_potencial: 'Potencial · no publicada' };
 const ESTADOS = [
   ['interes', 'Me interesa'], ['pendiente', 'Pendiente de revisar'], ['borrador', 'Borrador preparado'], ['enviada', 'Enviada / contactada'],
   ['respuesta', 'Respuesta recibida'], ['entrevista', 'Entrevista'], ['descartada', 'Descartada'], ['cerrada', 'Cerrada'],
@@ -98,7 +100,7 @@ function toggleFav(id) {
 }
 
 /* ---------- datos ---------- */
-const D = { ops: [], meta: {}, porId: new Map() };
+const D = { ops: [], meta: {}, porId: new Map(), senales: [] };
 
 /* Ajustes según tu perfil: se aplican sobre los criterios calculados en origen y se explican. */
 function ajustados(o) {
@@ -155,11 +157,12 @@ function migrarAntiguas() {
 
 async function cargar() {
   try {
-    const [ops, meta] = await Promise.all([
+    const [ops, meta, senales] = await Promise.all([
       fetch('data/oportunidades.json', { cache: 'no-store' }).then((r) => r.json()),
       fetch('data/meta.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => ({})),
+      fetch('data/empresas.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => []),
     ]);
-    D.ops = ops; D.meta = meta;
+    D.ops = ops; D.meta = meta; D.senales = senales;
     ops.forEach((o) => D.porId.set(o.id, o));
     migrarAntiguas();
     $('#actualizado').textContent = meta.actualizado ? 'Actualizado ' + new Date(meta.actualizado).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : '';
@@ -513,12 +516,25 @@ function pintarEmpresas() {
       });
     }
   });
+  const claveE = (n) => norm(n).replace(/\b(sociedad limitada( unipersonal)?|sociedad anonima|s\.?l\.?u?|s\.?a\.?u?)\.?$/g, '').replace(/[^a-z0-9]/g, '');
+  const porNombre = new Map([...emp.values()].map((e) => [claveE(e.nombre), e]));
+  D.senales.forEach((g) => {
+    const k = claveE(g.empresa_radar || g.empresa);
+    let e = porNombre.get(k);
+    if (!e) {
+      if (g.tipo !== 'constitucion') return;
+      e = { nombre: g.empresa, ciudad: [g.municipio, g.provincia].filter(Boolean).join(', '), contacto: null, ganados: [], candidata: [], importe: 0, nueva: true };
+      emp.set('borme:' + g.id, e); porNombre.set(k, e);
+    }
+    (e.borme = e.borme || []).push(g);
+  });
   const t = norm(F.que);
   const lista = [...emp.values()]
     .filter((e) => !t || norm(e.nombre + ' ' + e.ganados.map((g) => g.titulo).join(' ')).includes(t))
     .filter((e) => !F.rapidos.has('contacto') || e.contacto?.email)
     .filter((e) => !F.rapidos.has('asturias') && F.donde !== 'asturias' || e.ganados.some((g) => g.ubicacion.comunidad === 'Asturias'))
-    .sort((a, b) => (b.ganados.length * 2 + b.candidata.length + (b.contacto?.email ? 1 : 0)) - (a.ganados.length * 2 + a.candidata.length + (a.contacto?.email ? 1 : 0)));
+    .sort((a, b) => peso(b) - peso(a));
+  function peso(e) { return e.ganados.length * 2 + e.candidata.length + (e.contacto?.email ? 1 : 0) + (e.borme || []).filter((g) => g.categoria === 'crecimiento').length * 2 + (e.nueva ? Math.max(...e.borme.map((g) => g.puntuacion)) / 40 : 0); }
   $('#res-n').textContent = `${lista.length} empresas con señales`;
   $('#rejilla').replaceChildren(...lista.slice(0, 60).map(tarjetaEmpresa));
 }
@@ -536,9 +552,10 @@ function tarjetaEmpresa(e) {
   const ul = el('ul', 'senales');
   if (e.ganados.length) ul.append(el('li', 'hecho', `Ha ganado ${e.ganados.length} contrato${e.ganados.length > 1 ? 's' : ''} de tu perfil${e.importe ? ` (${eur(e.importe)})` : ''}`));
   if (e.candidata.length) ul.append(el('li', 'inferido', `Suele ganar contratos como ${e.candidata.length} licitación${e.candidata.length > 1 ? 'es' : ''} abierta${e.candidata.length > 1 ? 's' : ''} ahora`));
+  (e.borme || []).slice(0, 3).forEach((g) => ul.append(el('li', g.categoria === 'aviso' ? 'aviso' : 'hecho', g.tipo === 'constitucion' ? `Empresa constituida (BORME, ${fecha(g.fecha)})` : `${g.titulo} (BORME, ${fecha(g.fecha)})`)));
   ul.append(el('li', e.contacto?.email ? 'hecho' : 'desconocido', e.contacto?.email ? 'Correo verificado en su web oficial' : 'Sin correo verificado'));
   c.append(ul);
-  c.append(el('p', 'hipotesis', 'Hipótesis: podría necesitar dirección de proyecto para ejecutarlos.'));
+  c.append(el('p', 'hipotesis', e.nueva ? 'Hipótesis: al empezar podría necesitar perfiles como el tuyo.' : 'Hipótesis: podría necesitar dirección de proyecto para ejecutarlos.'));
   a.append(vis, c);
   const abrir = () => abrirEmpresa(e);
   a.addEventListener('click', abrir);
@@ -712,6 +729,11 @@ function abrirFicha(id) {
     acc.append(enlace(cvUrl(o.origen.lista, o.origen.clave), 'CV adaptado (PDF)'));
     acc.append(boton('Ver mi propuesta de valor', 'btn sec', () => $('#fi-propuesta')?.scrollIntoView({ behavior: 'smooth', block: 'start' })));
     acc.append(el('p', 'nota', 'Cuando te inscribas, marca abajo «Enviada». RADAR no lo marca solo.'));
+  } else if (o.subtipo === 'senal_empresa') {
+    acc.append(boton('Preparar presentación espontánea', 'btn grande', () => abrirContacto(o)));
+    acc.append(enlace('https://www.linkedin.com/search/results/people/?keywords=' + encodeURIComponent(o.organizacion.nombre.replace(/,?\s*(SOCIEDAD LIMITADA|S\.?L\.?U?|S\.?A\.?)\.?$/i, '')), 'Buscar responsables en LinkedIn'));
+    acc.append(enlace('https://www.google.com/search?q=' + encodeURIComponent(o.organizacion.nombre + ' ' + (o.ubicacion.texto || '')), 'Buscar su web'));
+    if (o.accion.url) acc.append(enlace(o.accion.url, 'Ver el BORME'));
   } else if (o.subtipo === 'adjudicacion') {
     acc.append(boton('Preparar contacto con la empresa', 'btn grande', () => abrirContacto(o)));
     acc.append(enlace(cvUrl('adj', o.origen.clave), 'CV adaptado (PDF)'));
@@ -769,11 +791,17 @@ function abrirEmpresa(e) {
   const ul = el('ul', 'senales grande');
   e.ganados.forEach((o) => { const li = el('li', 'hecho'); li.append(boton(`Ganó «${o.titulo.slice(0, 90)}»${o.importe ? ' · ' + eur(o.importe) : ''} · ${fecha(o.fechas.publicada)}`, 'enlace', () => abrirFicha(o.id))); ul.append(li); });
   e.candidata.forEach((o) => { const li = el('li', 'inferido'); li.append(boton(`Podría presentarse a «${o.titulo.slice(0, 90)}» (inferido)`, 'enlace', () => abrirFicha(o.id))); ul.append(li); });
+  (e.borme || []).forEach((g) => {
+    const li = el('li', g.categoria === 'aviso' ? 'aviso' : 'hecho');
+    const txt = g.tipo === 'constitucion' ? `Constituida el ${fecha(g.fecha)} en ${g.municipio || g.provincia}. Objeto: ${(g.objeto || '').slice(0, 220)}` : `${g.titulo} inscrita el ${fecha(g.fecha)}${g.ampliacion ? ' (capital ' + g.ampliacion + ' €)' : ''}`;
+    li.append(enlace(g.fuente.url, txt + ' · BORME', 'enlace'));
+    ul.append(li);
+  });
   izq.append(ul);
   izq.append(el('p', 'hipotesis', 'Hipótesis de RADAR, no un hecho: con estos proyectos podría necesitar reforzar la dirección de proyectos. No hay ninguna vacante confirmada.'));
   der.append(el('p', 'verif v-proyecto_adjudicado', 'Señal de empresa: no es una vacante'));
   const acc = el('div', 'panel-acc');
-  const ref = e.ganados[0] || e.candidata[0];
+  const ref = e.ganados[0] || e.candidata[0] || (e.borme && D.ops.find((o) => o.origen.lista === 'senal' && e.borme.some((g) => g.id === o.origen.clave)));
   if (ref) acc.append(boton('Preparar presentación espontánea', 'btn grande', () => abrirContacto(ref, e.ganados[0] ? null : { empresa: e.nombre, email: e.contacto?.email, web: e.contacto?.web, ciudad_empresa: e.ciudad })));
   if (e.contacto?.web) acc.append(enlace(e.contacto.web, 'Web oficial'));
   acc.append(enlace('https://www.linkedin.com/search/results/people/?keywords=' + encodeURIComponent(e.nombre.replace(/,?\s*(S\.?L\.?U?|S\.?A\.?|UTE)\.?$/i, '') + ' proyectos'), 'Buscar responsables en LinkedIn'));
@@ -802,6 +830,14 @@ function extraPropuesta(o) {
 
 function correo(o, empresa) {
   const extra = extraPropuesta(o);
+  if (o.subtipo === 'senal_empresa') {
+    const nueva = /^Empresa nueva/.test(o.titulo);
+    const temas = (o.etiquetas || []).slice(0, 2).join(' y ');
+    return {
+      asunto: `Project Manager para ${nueva ? 'vuestros primeros proyectos' : 'vuestra nueva etapa'}`,
+      cuerpo: `Hola, equipo de ${empresa}:\n\n${nueva ? `He visto en el BORME que acabáis de poner en marcha la empresa${temas ? `, con actividad en ${temas}` : ''}. ¡Enhorabuena por el arranque!` : `He visto en el BORME que ${empresa} sigue creciendo y me alegro mucho.`}\n\nSoy Project Manager, con formación en Ingeniería Técnica Industrial (Mecánica), Máster en Project Management por la Universitat Politècnica de València y certificación CAPM. En Gárgola Lab dirijo ${tema(o)}, coordinando alcance, plazos, costes, proveedores y relación con el cliente.${extra}\n\nNo sé si ahora mismo buscáis a alguien, pero si en esta etapa necesitáis a una persona que coordine vuestros proyectos de principio a fin, me encantaría conoceros. Os adjunto mi CV.\n\n${firma()}`,
+    };
+  }
   if (o.subtipo === 'licitacion_abierta') {
     const crit = (o.criterios_adjudicacion || []).find((c) => /jefe|direc|coordin|responsable|equipo|experiencia/i.test(c.texto));
     const valora = crit ? `Entre los criterios de adjudicación se valora «${crit.texto}»${crit.peso ? ` (${crit.peso.toLocaleString('es-ES')} puntos)` : ''}. ` : '';
@@ -828,7 +864,8 @@ function abrirContacto(o, cand) {
   const web = cand ? cand.web : o.contacto?.web;
   const tel = cand ? '' : o.contacto?.telefono;
   const ciudad = cand ? cand.ciudad_empresa : o.ciudad_empresa;
-  const { asunto, cuerpo } = correo(o, empresa);
+  const nombreCorto = empresa.replace(/,?\s*(SOCIEDAD LIMITADA( UNIPERSONAL| LABORAL| PROFESIONAL)?|SOCIEDAD ANONIMA|S\.?L\.?U?|S\.?A\.?U?|SLU|SL|SA)\.?\s*$/i, '').replace(/\b([A-ZÁÉÍÓÚÑ])([A-ZÁÉÍÓÚÑ]+)\b/g, (m, a, b) => (m.length > 3 ? a + b.toLowerCase() : m));
+  const { asunto, cuerpo } = correo(o, nombreCorto);
   $('#ap-eyebrow').textContent = o.subtipo === 'licitacion_abierta' ? 'Ofrecerte para su oferta' : 'Preparar contacto';
   $('#ap-titulo').textContent = empresa;
   $('#ap-proyecto').textContent = o.titulo;
@@ -963,6 +1000,19 @@ function indicadores(ids) {
     box.append(el('h4', null, 'Qué canal te funciona'), t);
     const total = filas.reduce((a, [, c]) => a + c.enviadas, 0);
     box.append(el('p', 'nota', total < 10 ? `Con ${total} envío${total === 1 ? '' : 's'} todavía no se pueden sacar conclusiones: hacen falta al menos 10 por canal.` : 'Compara los canales con prudencia: son tus propios datos, no una estadística general.'));
+    const validos = filas.filter(([, c]) => c.enviadas >= 10);
+    if (validos.length >= 2) {
+      const tasa = ([, c]) => c.respuestas / c.enviadas;
+      const orden = validos.sort((x, y) => tasa(y) - tasa(x));
+      const [mejor, peor] = [orden[0], orden.at(-1)];
+      if (tasa(mejor) > tasa(peor) * 1.5) {
+        const sug = el('div', 'sugerencia');
+        sug.append(el('b', null, 'Propuesta de RADAR'), el('p', null, `«${SUBTIPOS[mejor[0]]?.nombre || mejor[0]}» te responde más (${mejor[1].respuestas} de ${mejor[1].enviadas}) que «${SUBTIPOS[peor[0]]?.nombre || peor[0]}» (${peor[1].respuestas} de ${peor[1].enviadas}). Podrías dedicarle más tiempo filtrando por ese tipo en Explorar.`),
+          el('p', 'nota', 'Es una sugerencia con tus datos; RADAR no cambia nada solo.'),
+          boton('Ver solo ' + (SUBTIPOS[mejor[0]]?.nombre || mejor[0]), 'btn sec mini', () => { limpiar(); F.subtipos.add(mejor[0]); sincronizarChips(); location.hash = 'explorar'; }));
+        box.append(sug);
+      }
+    }
   } else box.append(el('p', 'nota', 'Cuando marques candidaturas como «Enviada» y luego «Respuesta» o «Entrevista», aquí verás qué canal te da mejores resultados.'));
   return box;
 }

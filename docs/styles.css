@@ -371,3 +371,9 @@ dialog::backdrop { background: rgba(10, 16, 22, .5); backdrop-filter: blur(2px);
 .perfil > .p-sec:last-child { grid-column: 1 / -1; }
 body[data-vista="perfil"] .buscador-zona, body[data-vista="guardados"] .buscador-zona,
 body[data-vista="perfil"] .res-ctl, body[data-vista="guardados"] .res-ctl, body[data-vista="empresas"] .vista-btns { display: none; }
+
+.senales .aviso::before { content: "!"; color: var(--bad); }
+.senales .aviso { color: var(--bad); }
+.v-necesidad_potencial { background: color-mix(in srgb, var(--c-empresa) 12%, transparent); }
+.sugerencia { margin-top: 12px; border: 1px solid var(--accent); border-radius: 12px; padding: 10px 12px; background: var(--accent-soft); display: grid; gap: 6px; }
+.sugerencia p { margin: 0; font-size: 13.5px; }

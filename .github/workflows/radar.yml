@@ -50,6 +50,10 @@ jobs:
         run: python publico.py
       - name: Preparar datos de la web
         run: python exportar.py
+      - name: Señales de empresas (BORME)
+        run: |
+          pip install --quiet pypdf
+          python empresas.py
       - name: Unificar oportunidades (modelo común)
         run: python unificar.py
       - name: Guardar cambios
