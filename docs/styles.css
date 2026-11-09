@@ -39,6 +39,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--body); }
 .wrap { max-width: 1240px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
@@ -178,3 +179,22 @@ dialog pre { white-space: pre-wrap; font: 400 14px/1.6 var(--body); margin: 0 0 
 .intro-emp .etq { display: block; margin-bottom: 8px; }
 .atajos { gap: 6px; }
 .fuente { color: var(--accent); font-weight: 500; }
+
+/* Mapa */
+.mapa-cab { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 10px; }
+.chip.tipo { border-color: var(--tipo); }
+.chip.tipo::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--tipo); margin-right: 6px; vertical-align: 1px; }
+.chip.tipo:not(.on) { opacity: .5; }
+.chip.tipo.on { background: var(--surface); color: var(--ink); font-weight: 500; }
+.mapa { height: min(68vh, 620px); min-height: 380px; border-radius: 16px; border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; background: var(--surface); }
+.mapa-sin { margin-top: 10px; }
+.mapa-sin a { color: var(--accent); }
+.pin span { display: grid; place-items: center; border-radius: 50%; color: #fff; font: 600 12px var(--body); border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, .35); }
+.leaflet-popup-content { margin: 12px 14px; font: 13px/1.4 var(--body); }
+.pop-lugar { font: 600 14px var(--display); margin: 0 0 8px !important; }
+.pop ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 260px; overflow: auto; }
+.pop li { display: flex; gap: 8px; align-items: baseline; }
+.pop li a { color: #1d5f8a; }
+.pop-chip { flex-shrink: 0; color: #fff; border-radius: 6px; padding: 0 6px; font: 600 11px var(--mono); }
+.pop-cv { flex-shrink: 0; font: 600 11px var(--mono); color: #1d7c72 !important; }
+.pop-mas { margin: 8px 0 0 !important; color: #5b7186; }

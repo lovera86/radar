@@ -7,7 +7,7 @@ const PERFIL = {
 };
 const NORTE = ['Asturias', 'Galicia', 'Cantabria', 'País Vasco', 'Navarra', 'Castilla y León'];
 
-const estado = { filas: [], abiertas: [], empleos: [], publico: [], pestana: 'emp', zona: '', minimo: 0, texto: '', vista: '' };
+const estado = { filas: [], abiertas: [], empleos: [], publico: [], pestana: 'emp', tiposMapa: { emp: true, pub: true, ab: true, adj: true }, zona: '', minimo: 0, texto: '', vista: '' };
 
 /* Candidaturas enviadas: se guardan en este navegador (clave del contrato -> fecha). */
 const CLAVE_APLICADAS = 'radar-aplicadas';
@@ -41,6 +41,7 @@ async function cargar() {
     estado.filas = filas;
     estado.abiertas = abiertas;
     pestanas();
+    chipsMapa();
     resumen(meta);
     chipsZona();
     chipsVista();
@@ -80,7 +81,7 @@ function chipsZona() {
 function chipsVista() {
   const lista = listaActual();
   const n = lista.filter((r) => aplicadas[r.clave]).length;
-  const hechas = { ab: 'Ofrecidas', emp: 'Inscritas', pub: 'Presentadas', adj: 'Aplicadas' }[estado.pestana];
+  const hechas = { ab: 'Ofrecidas', emp: 'Inscritas', pub: 'Presentadas', adj: 'Aplicadas', mapa: 'Hechas' }[estado.pestana];
   const ops = [['', 'Todas', lista.length], ['no', 'Pendientes', lista.length - n], ['si', hechas, n]];
   $('#f-vista').replaceChildren(...ops.map(([v, t, c]) => {
     const b = el('button', 'chip' + (v === estado.vista ? ' on' : ''), t);
@@ -144,6 +145,7 @@ function tarjeta(r) {
 
 function pestanas() {
   const n = { emp: estado.empleos.length, pub: estado.publico.length, adj: estado.filas.length, ab: estado.abiertas.length };
+  n.mapa = n.emp + n.pub + n.adj + n.ab;
   $('#pestanas').querySelectorAll('button').forEach((b) => {
     const on = b.dataset.v === estado.pestana;
     b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
@@ -152,13 +154,50 @@ function pestanas() {
   $('#intro-ab').hidden = estado.pestana !== 'ab';
   $('#intro-emp').hidden = estado.pestana !== 'emp';
   $('#intro-pub').hidden = estado.pestana !== 'pub';
+  const enMapa = estado.pestana === 'mapa';
+  $('#mapa-zona').hidden = !enMapa;
+  $('#lista').hidden = enMapa;
 }
 
 function listaActual() {
+  if (estado.pestana === 'mapa') return [...estado.empleos, ...estado.publico, ...estado.abiertas, ...estado.filas];
   return { ab: estado.abiertas, emp: estado.empleos, pub: estado.publico }[estado.pestana] || estado.filas;
 }
 
+function chipsMapa() {
+  const cont = $('#mapa-tipos');
+  cont.replaceChildren(...Object.entries(TIPOS).map(([k, t]) => {
+    const b = el('button', 'chip tipo' + (estado.tiposMapa[k] ? ' on' : ''), t.nombre);
+    b.type = 'button'; b.dataset.v = k; b.setAttribute('aria-pressed', estado.tiposMapa[k] ? 'true' : 'false');
+    b.style.setProperty('--tipo', t.color);
+    return b;
+  }));
+}
+
+function pintarVistaMapa() {
+  const fuentes = { emp: estado.empleos, pub: estado.publico, ab: estado.abiertas, adj: estado.filas };
+  const listas = {};
+  let total = 0;
+  Object.entries(fuentes).forEach(([k, l]) => { if (estado.tiposMapa[k]) { listas[k] = filtradas(l); total += listas[k].length; } });
+  $('#cuenta').textContent = `${total} en el mapa`;
+  pintarMapa(listas, (sin) => {
+    const p = $('#mapa-sin');
+    p.replaceChildren();
+    if (!sin.length) return;
+    p.append(el('b', null, `${sin.length} sin ubicación concreta`), ' (remoto, ámbito estatal o sin provincia): ');
+    sin.slice(0, 8).forEach(({ tipo, r }, i) => {
+      if (i) p.append(' · ');
+      const url = /^https:\/\//.test(r.url || '') ? r.url : '';
+      const t = (tipo === 'emp' ? r.titulo + ' (' + (r.empresa || r.fuente) + ')' : tipo === 'pub' ? (r.titulo.split(' — ')[1] || r.organismo) : tipo === 'ab' ? r.contrato : r.empresa).slice(0, 70);
+      p.append(url ? enlace(url, t, 'sin-lugar') : t);
+    });
+    if (sin.length > 8) p.append(` · y ${sin.length - 8} más`);
+  });
+  empresas(filtradas(estado.filas));
+}
+
 function pintar() {
+  if (estado.pestana === 'mapa') { pintarVistaMapa(); return; }
   const ab = estado.pestana === 'ab';
   const emp = estado.pestana === 'emp';
   const pub = estado.pestana === 'pub';
@@ -396,6 +435,12 @@ $('#pestanas').addEventListener('click', (e) => {
   const b = e.target.closest('button'); if (!b) return;
   estado.pestana = b.dataset.v; estado.vista = ''; pestanas(); chipsVista(); pintar();
 });
+$('#mapa-tipos').addEventListener('click', (e) => {
+  const b = e.target.closest('.chip'); if (!b) return;
+  estado.tiposMapa[b.dataset.v] = !estado.tiposMapa[b.dataset.v]; chipsMapa(); pintar();
+});
+$('#m-ast').addEventListener('click', () => centrarAsturias());
+$('#m-esp').addEventListener('click', () => centrarEspana());
 $('#f-vista').addEventListener('click', (e) => {
   const b = e.target.closest('.chip'); if (!b) return;
   estado.vista = b.dataset.v; chipsVista(); pintar();
