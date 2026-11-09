@@ -144,3 +144,9 @@ dialog pre { white-space: pre-wrap; font: 400 14px/1.6 var(--body); margin: 0 0 
   .op { animation: aparece .35s ease-out both; }
   @keyframes aparece { from { opacity: .001; transform: translateY(6px); } }
 }
+
+/* Candidaturas */
+.btn.marca.on { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.op.hecha { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); background: color-mix(in srgb, var(--accent) 4%, var(--surface)); }
+.op.hecha .proyecto, .op.hecha .cliente { opacity: .8; }
+.insistir { font: 500 12.5px var(--mono); color: var(--warn); }

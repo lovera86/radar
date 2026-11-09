@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
 <header class="hero">
@@ -40,6 +40,10 @@
         <button type="button" class="chip" data-v="60">Bueno · 60+</button>
         <button type="button" class="chip" data-v="80">Muy alto · 80+</button>
       </div>
+    </div>
+    <div class="grupo">
+      <span class="etq">Candidatura</span>
+      <div class="chips" id="f-vista" role="group" aria-label="Candidatura"></div>
     </div>
     <div class="grupo crece">
       <label class="etq" for="f-texto">Buscar</label>
@@ -88,7 +92,7 @@
       <ol class="pasos">
         <li>Pulsa <b>Abrir en Gmail</b>: el correo se abre ya escrito.</li>
         <li>Adjunta tu CV en PDF.</li>
-        <li>Revisa el texto y envíalo.</li>
+        <li>Revisa el texto y envíalo. Al abrir Gmail la oportunidad queda marcada como <b>aplicada</b>.</li>
       </ol>
     </section>
     <section>
@@ -102,6 +106,6 @@
   </div>
 </dialog>
 
-<script src="app.js"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

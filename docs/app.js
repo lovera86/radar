@@ -7,7 +7,17 @@ const PERFIL = {
 };
 const NORTE = ['Asturias', 'Galicia', 'Cantabria', 'País Vasco', 'Navarra', 'Castilla y León'];
 
-const estado = { filas: [], zona: '', minimo: 0, texto: '' };
+const estado = { filas: [], zona: '', minimo: 0, texto: '', vista: '' };
+
+/* Candidaturas enviadas: se guardan en este navegador (clave del contrato -> fecha). */
+const CLAVE_APLICADAS = 'radar-aplicadas';
+const aplicadas = (() => { try { return JSON.parse(localStorage.getItem(CLAVE_APLICADAS)) || {}; } catch (e) { return {}; } })();
+function guardarAplicadas() { try { localStorage.setItem(CLAVE_APLICADAS, JSON.stringify(aplicadas)); } catch (e) { /* sin almacenamiento */ } }
+function marcar(r, si) {
+  if (si) aplicadas[r.clave] = new Date().toISOString().slice(0, 10); else delete aplicadas[r.clave];
+  guardarAplicadas(); chipsVista(); pintar();
+}
+const diasDesde = (iso) => Math.floor((Date.now() - new Date(iso + 'T00:00:00').getTime()) / 864e5);
 const $ = (s) => document.querySelector(s);
 const norm = (s) => String(s || '').normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const eur = (v) => (v == null ? '—' : new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(v));
@@ -25,6 +35,7 @@ async function cargar() {
     estado.filas = filas;
     resumen(meta);
     chipsZona();
+    chipsVista();
     pintar();
   } catch (e) {
     $('#lista').replaceChildren(el('p', 'vacio', 'No se han podido cargar las oportunidades. Vuelve a intentarlo en unos minutos.'));
@@ -57,11 +68,22 @@ function chipsZona() {
   }));
 }
 
+function chipsVista() {
+  const n = estado.filas.filter((r) => aplicadas[r.clave]).length;
+  const ops = [['', 'Todas', estado.filas.length], ['no', 'Pendientes', estado.filas.length - n], ['si', 'Aplicadas', n]];
+  $('#f-vista').replaceChildren(...ops.map(([v, t, c]) => {
+    const b = el('button', 'chip' + (v === estado.vista ? ' on' : ''), t);
+    b.type = 'button'; b.dataset.v = v; b.append(el('span', null, ' · ' + c));
+    return b;
+  }));
+}
+
 function filtradas() {
   const t = norm(estado.texto);
   return estado.filas.filter((r) =>
     r.puntuacion >= estado.minimo
     && (!estado.zona || (estado.zona === '__norte' ? NORTE.includes(r.comunidad) : r.comunidad === estado.zona))
+    && (!estado.vista || (estado.vista === 'si') === Boolean(aplicadas[r.clave]))
     && (!t || norm([r.empresa, r.contrato, r.cliente, r.region].join(' ')).includes(t)))
     .sort((a, b) => b.puntuacion - a.puntuacion || String(b.fecha).localeCompare(String(a.fecha)));
 }
@@ -78,7 +100,8 @@ function anillo(p) {
 }
 
 function tarjeta(r) {
-  const art = el('article', 'op ' + (r.puntuacion >= 80 ? 'alto' : r.puntuacion >= 60 ? 'medio' : 'bajo'));
+  const hecha = aplicadas[r.clave];
+  const art = el('article', 'op ' + (r.puntuacion >= 80 ? 'alto' : r.puntuacion >= 60 ? 'medio' : 'bajo') + (hecha ? ' hecha' : ''));
   const cuerpo = el('div');
   const h = el('h3', null, r.empresa);
   cuerpo.append(h);
@@ -95,7 +118,12 @@ function tarjeta(r) {
   }
   const acc = el('div', 'acciones');
   const b = el('button', 'btn', 'Aplicar'); b.type = 'button'; b.onclick = () => abrirFicha(r);
-  acc.append(b);
+  const bH = el('button', 'btn sec marca' + (hecha ? ' on' : ''), hecha ? '✓ Aplicado · ' + fecha(hecha) : 'Marcar aplicado');
+  bH.type = 'button'; bH.setAttribute('aria-pressed', hecha ? 'true' : 'false');
+  bH.title = hecha ? 'Pulsa para desmarcar' : 'Marca que ya has enviado tu candidatura';
+  bH.onclick = () => marcar(r, !hecha);
+  acc.append(b, bH);
+  if (hecha && diasDesde(hecha) >= 7) acc.append(el('span', 'insistir', 'Han pasado ' + diasDesde(hecha) + ' días: toca insistir'));
   if (/^https:\/\//.test(r.url || '')) acc.append(enlace(r.url, 'Ver licitación'));
   if (r.email) acc.append(el('span', 'contacto-ok', '✓ contacto verificado'));
   cuerpo.append(acc);
@@ -181,7 +209,9 @@ function abrirFicha(r) {
   const gmail = 'https://mail.google.com/mail/?view=cm&fs=1' + (r.email ? '&to=' + encodeURIComponent(r.email) : '') + '&su=' + encodeURIComponent(asunto) + '&body=' + encodeURIComponent(cuerpo);
   const bM = el('button', 'btn sec', 'Copiar mensaje'); bM.type = 'button'; bM.onclick = () => copiar(bM, cuerpo);
   const bA = el('button', 'btn sec', 'Copiar asunto'); bA.type = 'button'; bA.onclick = () => copiar(bA, asunto);
-  acc.replaceChildren(enlace(gmail, 'Abrir en Gmail', 'btn'), bM, bA);
+  const bG = enlace(gmail, 'Abrir en Gmail', 'btn');
+  bG.addEventListener('click', () => { if (!aplicadas[r.clave]) { marcar(r, true); bG.after(el('span', 'contacto-ok', '✓ Marcada como aplicada')); } });
+  acc.replaceChildren(bG, bM, bA);
   if (r.email) { const bE = el('button', 'btn sec', 'Copiar email'); bE.type = 'button'; bE.onclick = () => copiar(bE, r.email); acc.append(bE); }
   const d = $('#aplicar');
   if (typeof d.showModal === 'function') d.showModal(); else d.setAttribute('open', '');
@@ -197,6 +227,10 @@ $('#f-encaje').addEventListener('click', (e) => {
   estado.minimo = +b.dataset.v;
   $('#f-encaje').querySelectorAll('.chip').forEach((x) => x.classList.toggle('on', x === b));
   pintar();
+});
+$('#f-vista').addEventListener('click', (e) => {
+  const b = e.target.closest('.chip'); if (!b) return;
+  estado.vista = b.dataset.v; chipsVista(); pintar();
 });
 $('#f-texto').addEventListener('input', (e) => { estado.texto = e.target.value; pintar(); });
 $('#aplicar').addEventListener('click', (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
