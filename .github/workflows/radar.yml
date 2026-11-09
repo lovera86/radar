@@ -38,6 +38,14 @@ jobs:
         env:
           DIAS: ${{ inputs.dias }}
         run: python radar.py ${DIAS:+--dias "$DIAS"}
+      - name: Buscar ofertas de empleo
+        env:
+          INFOJOBS_ID: ${{ secrets.INFOJOBS_ID }}
+          INFOJOBS_SECRET: ${{ secrets.INFOJOBS_SECRET }}
+          JOOBLE_KEY: ${{ secrets.JOOBLE_KEY }}
+          ADZUNA_ID: ${{ secrets.ADZUNA_ID }}
+          ADZUNA_KEY: ${{ secrets.ADZUNA_KEY }}
+        run: python empleos.py
       - name: Preparar datos de la web
         run: python exportar.py
       - name: Guardar cambios

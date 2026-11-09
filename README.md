@@ -25,6 +25,20 @@ contratos parecidos para ofrecerse a ir en su oferta.
 Para lanzarlo a mano: pestaña **Actions → Radar diario → Run workflow** (con
 «Días hacia atrás» se puede rellenar un periodo).
 
+## Ofertas de empleo
+
+`empleos.py` reúne ofertas de Project Manager, jefa de proyecto, PMO o Product
+Owner de los últimos 30 días y las puntúa (más si son en Asturias, en remoto o
+de IA, gemelos digitales, BIM, patrimonio…). Ajustes en `config.json → empleo`.
+
+- Sin clave: Tecnoempleo (RSS oficial) y Remotive.
+- Con clave gratuita, se activan al añadirla en **Settings → Secrets and
+  variables → Actions**: `INFOJOBS_ID` + `INFOJOBS_SECRET` (developer.infojobs.net),
+  `JOOBLE_KEY` (es.jooble.org/api/about), `ADZUNA_ID` + `ADZUNA_KEY`
+  (developer.adzuna.com).
+- LinkedIn e Indeed no permiten leer sus ofertas de forma automática: la web
+  enlaza sus búsquedas de las últimas 24 horas.
+
 ## Ajustar qué busca
 
 Todo está en `config.json`:

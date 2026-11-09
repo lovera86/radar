@@ -46,7 +46,8 @@ def api(metodo, ruta, datos=None):
 def main():
     nuevas = [c for c in leer("nuevas.json")]
     abiertas = leer("abiertas_nuevas.json")
-    if not nuevas and not abiertas:
+    empleos = leer("empleos_nuevos.json")
+    if not nuevas and not abiertas and not empleos:
         print("Nada nuevo hoy: no se abre resumen.")
         return
     repo = os.environ.get("GITHUB_REPOSITORY", "usuaria/radar")
@@ -54,13 +55,20 @@ def main():
     web = WEB.format(owner=owner, repo=nombre)
     hoy = date.today().strftime("%d/%m/%Y")
     partes = []
+    if empleos:
+        partes.append(f"{len(empleos)} oferta de empleo" if len(empleos) == 1 else f"{len(empleos)} ofertas de empleo")
     if abiertas:
         partes.append(f"{len(abiertas)} licitación abierta" if len(abiertas) == 1 else f"{len(abiertas)} licitaciones abiertas")
     if nuevas:
         partes.append(f"{len(nuevas)} adjudicación" if len(nuevas) == 1 else f"{len(nuevas)} adjudicaciones")
-    titulo = f"Radar {hoy}: " + " y ".join(partes)
+    titulo = f"Radar {hoy}: " + ", ".join(partes[:-1]) + (" y " if len(partes) > 1 else "") + partes[-1]
 
     lineas = [f"@{owner}, esto es lo nuevo del radar hoy. Todo está en la web: {web}", ""]
+    if empleos:
+        lineas += ["## Ofertas de empleo", ""]
+        for o in sorted(empleos, key=lambda o: -o["puntuacion"])[:10]:
+            lineas.append(f"- **{o['puntuacion']}** · [{o['titulo'][:100]}]({o['url']}) · {o.get('empresa', '')} · {o.get('ubicacion', '')} · {o['fuente']}")
+        lineas.append("")
     if abiertas:
         lineas += ["## Licitaciones abiertas: ofrécete para ir en la oferta", ""]
         for a in sorted(abiertas, key=lambda a: (-a.get("pide_pm", False), -a["puntuacion"]))[:8]:

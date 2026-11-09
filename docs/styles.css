@@ -171,3 +171,10 @@ dialog pre { white-space: pre-wrap; font: 400 14px/1.6 var(--body); margin: 0 0 
 .cand-n { font-weight: 500; font-size: 14px; min-width: 0; }
 .cand-n small { color: var(--muted); font-weight: 400; }
 .btn.mini { padding: 6px 12px; font-size: 13px; flex-shrink: 0; }
+
+/* Ofertas de empleo */
+.intro-emp { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+.intro-emp p { margin: 0 0 10px; max-width: 72ch; }
+.intro-emp .etq { display: block; margin-bottom: 8px; }
+.atajos { gap: 6px; }
+.fuente { color: var(--accent); font-weight: 500; }

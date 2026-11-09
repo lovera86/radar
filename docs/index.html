@@ -9,15 +9,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="styles.css?v=3">
+<link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
 <header class="hero">
   <canvas id="nube" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
     <p class="eyebrow">Radar de oportunidades · Rocío Lovera</p>
-    <h1>Proyectos que acaban de adjudicarse<br><span>y van a necesitar quien los dirija</span></h1>
-    <p class="lead">Cada mañana el radar revisa los contratos adjudicados en la Plataforma de Contratación del Sector Público y se queda con los de musealización, gemelos digitales, LiDAR, fotogrametría, batimetría e IA. La empresa que gana tiene que ejecutar el proyecto: ese es el momento de escribirle.</p>
+    <h1>Empresas y proyectos<br><span>que necesitan quien los dirija</span></h1>
+    <p class="lead">Cada mañana el radar reúne ofertas de empleo de Project Manager y revisa la Plataforma de Contratación del Sector Público: concursos abiertos donde puntúa el jefe de proyecto y contratos recién adjudicados en musealización, gemelos digitales, LiDAR, fotogrametría, batimetría e IA. Todo puntuado según tu perfil.</p>
     <dl class="stats" aria-live="polite">
       <div><dt>Oportunidades</dt><dd id="st-n">—</dd></div>
       <div><dt>En el norte</dt><dd id="st-norte">—</dd></div>
@@ -56,10 +56,23 @@
       <div class="cab">
         <h2 id="t-lista" class="sr-only">Oportunidades</h2>
         <div class="pestanas" id="pestanas" role="tablist" aria-label="Tipo de oportunidad">
-          <button type="button" role="tab" data-v="adj" class="on" aria-selected="true">Adjudicados <span>—</span></button>
+          <button type="button" role="tab" data-v="emp" class="on" aria-selected="true">Ofertas de empleo <span>—</span></button>
+          <button type="button" role="tab" data-v="adj" aria-selected="false">Adjudicados <span>—</span></button>
           <button type="button" role="tab" data-v="ab" aria-selected="false">Licitaciones abiertas <span>—</span></button>
         </div>
         <span class="cuenta" id="cuenta"></span>
+      </div>
+      <div class="intro-emp" id="intro-emp">
+        <p>Ofertas de los últimos 30 días que encajan con tu perfil: puestos de Project Manager, jefa de proyecto, PMO o Product Owner, con más puntos si son en Asturias, en remoto o de IA, gemelos digitales, BIM o patrimonio.</p>
+        <p class="etq">Buscar también en (últimas 24 horas)</p>
+        <div class="acciones atajos">
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.linkedin.com/jobs/search/?keywords=project%20manager&location=Asturias%2C%20Espa%C3%B1a&f_TPR=r86400">LinkedIn · Asturias</a>
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.linkedin.com/jobs/search/?keywords=project%20manager&location=Espa%C3%B1a&f_WT=2&f_TPR=r86400">LinkedIn · remoto</a>
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://es.indeed.com/jobs?q=project+manager&l=Asturias&fromage=1">Indeed · Asturias</a>
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://es.indeed.com/jobs?q=project+manager+teletrabajo&l=Espa%C3%B1a&fromage=1">Indeed · teletrabajo</a>
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.infojobs.net/jobsearch/search-results/list.xhtml?keyword=project%20manager&sinceDate=_24_HOURS">InfoJobs</a>
+          <a class="btn sec mini" target="_blank" rel="noopener" href="https://www.tecnoempleo.com/ofertas-trabajo/?te=project+manager">Tecnoempleo</a>
+        </div>
       </div>
       <p class="intro-ab" id="intro-ab" hidden>Concursos que aún no se han adjudicado. Muchos puntúan la experiencia del jefe de proyecto: ofrécete a las empresas que suelen ganarlos para ir en su oferta. Tu CV les suma puntos y, si ganan, el puesto es tuyo.</p>
       <div id="lista" class="lista" aria-live="polite">
@@ -111,6 +124,6 @@
   </div>
 </dialog>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
