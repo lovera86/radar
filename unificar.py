@@ -75,7 +75,9 @@ def geografia(comunidad, mod):
     if comunidad in NORTE:
         return crit(0.6 if mod != "hibrido" else 0.7, [f"en {comunidad} (norte)"] + (["híbrido"] if mod == "hibrido" else []))
     if mod == "hibrido":
-        return crit(0.5, ["híbrido" + (f" en {comunidad}" if comunidad and comunidad not in ("Sin especificar", "Remoto") else "")])
+        if comunidad and comunidad not in ("Sin especificar", "Remoto"):
+            return crit(0.5, [f"híbrido en {comunidad}: habría que ir a la oficina algunos días"])
+        return crit(0.5, ["híbrido sin ciudad indicada: confirma dónde está la oficina"])
     if comunidad and comunidad not in ("Sin especificar", "Estatal / otras"):
         return crit(0.25, [f"presencial fuera de Asturias ({comunidad})"])
     if comunidad == "Estatal / otras":

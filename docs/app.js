@@ -57,6 +57,7 @@ const iniciales = (s) => (String(s || '').replace(/\b(S\.?L\.?U?|S\.?A\.?|UTE|DE
 
 /* ---------- estado personal (solo este navegador) ---------- */
 const ST = leer('radar-v2', { fav: {}, est: {}, busq: [], migrado: false });
+ST.prop = ST.prop || {};
 const PESOS = { ...PESOS_BASE, ...leer('radar-pesos', {}) };
 const guardarST = () => { escribir('radar-v2', ST); contadorGuardados(); };
 
@@ -532,6 +533,61 @@ function analisis(o) {
   return box;
 }
 
+function seccionPropuesta(o) {
+  const s = el('section', 'propuesta'); s.id = 'fi-propuesta';
+  const cab = el('div', 'prop-cab');
+  cab.append(el('h3', null, 'Tu propuesta de valor'));
+  const estadoP = el('span', 'prop-estado');
+  cab.append(estadoP);
+  s.append(cab);
+  s.append(el('p', 'nota', 'Hecha solo con datos de tu CV: cada aportación indica de qué experiencia sale, y si no hay experiencia que la respalde no aparece. No se comparte con nadie: revísala, edítala y apruébala antes de usarla.'));
+  const cuerpo = el('div', 'prop-cuerpo');
+  const area = el('textarea', 'prop-texto'); area.rows = 16; area.hidden = true;
+  area.setAttribute('aria-label', 'Editar la propuesta de valor');
+  s.append(cuerpo, area);
+  const acc = el('div', 'acciones');
+  s.append(acc);
+
+  const generada = () => construirPropuesta(o);
+  const pintarP = () => {
+    const g = ST.prop[o.id];
+    cuerpo.replaceChildren();
+    estadoP.textContent = g?.aprobada ? 'Aprobada el ' + new Date(g.f).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : g ? 'Editada · sin aprobar' : 'Borrador · sin aprobar';
+    estadoP.className = 'prop-estado ' + (g?.aprobada ? 'ok' : 'pend');
+    if (g) { cuerpo.append(el('pre', 'prop-pre', g.texto)); return; }
+    const p = generada();
+    const bloque = (titulo, items, f) => {
+      const d = el('div', 'prop-b'); d.append(el('h4', null, titulo));
+      const ul = el('ul'); items.forEach((x) => ul.append(f(x))); d.append(ul); return d;
+    };
+    cuerpo.append(el('p', 'prop-resumen', p.resumen));
+    if (p.aportaciones.length) cuerpo.append(bloque('Qué podría aportar', p.aportaciones, (a) => { const li = el('li', null, a.t + ' '); const c = el('span', 'cita', a.cita); c.title = 'Del CV: ' + a.evidencia; li.append(c); return li; }));
+    cuerpo.append(bloque('Capacidades transferibles', p.transferibles, ([t, d]) => { const li = el('li', null, t + ' '); li.append(el('span', 'cita', d)); return li; }));
+    cuerpo.append(bloque('Desde el primer día', p.inicio, (t) => el('li', null, t)));
+    cuerpo.append(bloque('A validar en una conversación', p.validar.length ? p.validar : ['Nada destacable con los datos disponibles'], (t) => el('li', null, t)));
+  };
+  const editar = boton('Editar', 'btn sec mini', () => {
+    if (area.hidden) {
+      area.value = ST.prop[o.id]?.texto || propuestaATexto(generada());
+      area.hidden = false; cuerpo.hidden = true; editar.textContent = 'Guardar cambios';
+      area.focus();
+    } else {
+      ST.prop[o.id] = { texto: area.value, f: new Date().toISOString(), aprobada: false };
+      guardarST(); area.hidden = true; cuerpo.hidden = false; editar.textContent = 'Editar'; pintarP();
+    }
+  });
+  const aprobar = boton('Aprobar esta versión', 'btn mini', () => {
+    const texto = !area.hidden ? area.value : ST.prop[o.id]?.texto || propuestaATexto(generada());
+    ST.prop[o.id] = { texto, f: new Date().toISOString(), aprobada: true };
+    guardarST(); area.hidden = true; cuerpo.hidden = false; editar.textContent = 'Editar'; pintarP();
+  });
+  const copiarB = boton('Copiar', 'btn sec mini', function () { copiar(this, ST.prop[o.id]?.texto || propuestaATexto(generada())); });
+  const rehacer = boton('Volver a generar', 'enlace', () => { delete ST.prop[o.id]; guardarST(); area.hidden = true; cuerpo.hidden = false; editar.textContent = 'Editar'; pintarP(); });
+  acc.append(aprobar, editar, copiarB, rehacer);
+  pintarP();
+  return s;
+}
+
 function abrirFicha(id) {
   const o = D.porId.get(id);
   if (!o) return;
@@ -556,8 +612,14 @@ function abrirFicha(id) {
   o.datos.forEach((d) => tbody.append(filaDato(d)));
   tb.append(tbody); izq.append(tb);
 
+  if (o.descripcion) {
+    izq.append(el('h3', null, 'Descripción'));
+    const d = el('p', 'descripcion', o.descripcion.length >= 590 ? o.descripcion + '…' : o.descripcion);
+    izq.append(d, el('p', 'nota', 'Extracto publicado en ' + (o.fuentes[0]?.nombre || 'la fuente') + '. La oferta completa está en el enlace.'));
+  }
   izq.append(el('h3', null, 'Análisis de encaje'));
   izq.append(analisis(o));
+  izq.append(seccionPropuesta(o));
   izq.append(el('h3', null, 'Por qué RADAR la puntúa así'));
   izq.append(desglose(o));
   const faltan = p.partes.filter((x) => x.valor == null).map((x) => CRITERIOS[x.k].toLowerCase());
@@ -592,6 +654,7 @@ function abrirFicha(id) {
   if (o.tipo === 'empleo') {
     if (o.accion.url) acc.append(enlace(o.accion.url, o.subtipo === 'oferta' ? 'Ver oferta e inscribirme' : 'Ver convocatoria y requisitos', 'btn grande'));
     acc.append(enlace(cvUrl(o.origen.lista, o.origen.clave), 'CV adaptado (PDF)'));
+    acc.append(boton('Ver mi propuesta de valor', 'btn sec', () => $('#fi-propuesta')?.scrollIntoView({ behavior: 'smooth', block: 'start' })));
     acc.append(el('p', 'nota', 'Cuando te inscribas, marca abajo «Enviada». RADAR no lo marca solo.'));
   } else if (o.subtipo === 'adjudicacion') {
     acc.append(boton('Preparar contacto con la empresa', 'btn grande', () => abrirContacto(o)));
@@ -672,18 +735,26 @@ function tema(o) {
 const firma = () => `Un saludo,\n${PERFIL.nombre}\n${PERFIL.email}\n${PERFIL.linkedin}`;
 const corto = (s, n) => (s.length > n ? s.slice(0, n - 2).replace(/\s+\S*$/, '') + '…' : s);
 
+function extraPropuesta(o) {
+  const g = ST.prop[o.id];
+  if (!g?.aprobada) return '';
+  const a = aportacionesParaCorreo(g.texto);
+  return a ? `\n\nEn concreto, podría aportar:\n${a}` : '';
+}
+
 function correo(o, empresa) {
+  const extra = extraPropuesta(o);
   if (o.subtipo === 'licitacion_abierta') {
     const crit = (o.criterios_adjudicacion || []).find((c) => /jefe|direc|coordin|responsable|equipo|experiencia/i.test(c.texto));
     const valora = crit ? `Entre los criterios de adjudicación se valora «${crit.texto}»${crit.peso ? ` (${crit.peso.toLocaleString('es-ES')} puntos)` : ''}. ` : '';
     return {
       asunto: `Jefa de proyecto para vuestra oferta: «${corto(o.titulo, 60)}»`,
-      cuerpo: `Hola, equipo de ${empresa}:\n\nEstá abierta la licitación «${o.titulo}»${o.cliente ? ' de ' + o.cliente : ''}, con plazo de ofertas hasta el ${fecha(o.fechas.plazo)}. Por vuestra trayectoria imagino que podéis estar preparando oferta.\n\n${valora}Si os presentáis, me gustaría formar parte de vuestra propuesta como Project Manager o jefa de proyecto. Puedo aportar CV, títulos y certificados para que cuenten en la valoración.\n\nSoy Ingeniera Técnica Industrial (Mecánica), con Máster en Project Management por la Universitat Politècnica de València y certificación CAPM. En Gárgola Lab dirijo ${tema(o)}, coordinando alcance, plazos, costes, proveedores y relación con el cliente.\n\nSi os encaja, hablamos cuando queráis. Os adjunto mi CV.\n\n${firma()}`,
+      cuerpo: `Hola, equipo de ${empresa}:\n\nEstá abierta la licitación «${o.titulo}»${o.cliente ? ' de ' + o.cliente : ''}, con plazo de ofertas hasta el ${fecha(o.fechas.plazo)}. Por vuestra trayectoria imagino que podéis estar preparando oferta.\n\n${valora}Si os presentáis, me gustaría formar parte de vuestra propuesta como Project Manager o jefa de proyecto. Puedo aportar CV, títulos y certificados para que cuenten en la valoración.\n\nSoy Ingeniera Técnica Industrial (Mecánica), con Máster en Project Management por la Universitat Politècnica de València y certificación CAPM. En Gárgola Lab dirijo ${tema(o)}, coordinando alcance, plazos, costes, proveedores y relación con el cliente.${extra}\n\nSi os encaja, hablamos cuando queráis. Os adjunto mi CV.\n\n${firma()}`,
     };
   }
   return {
     asunto: `Project Manager para el proyecto «${corto(o.titulo, 70)}»`,
-    cuerpo: `Hola, equipo de ${empresa}:\n\nHe visto que habéis resultado adjudicatarios del contrato «${o.titulo}»${o.cliente ? ' para ' + o.cliente : ''}. ¡Enhorabuena!\n\nSoy Project Manager, con formación en Ingeniería Técnica Industrial (Mecánica), Máster en Project Management por la Universitat Politècnica de València y certificación CAPM. En Gárgola Lab dirijo ${tema(o)}, coordinando alcance, plazos, costes, proveedores y relación con el cliente.\n\nSi para ejecutar este proyecto, o los que vengan, necesitáis reforzar el equipo con alguien que lo coordine de principio a fin, me encantaría hablar con vosotros. Os adjunto mi CV.\n\n${firma()}`,
+    cuerpo: `Hola, equipo de ${empresa}:\n\nHe visto que habéis resultado adjudicatarios del contrato «${o.titulo}»${o.cliente ? ' para ' + o.cliente : ''}. ¡Enhorabuena!\n\nSoy Project Manager, con formación en Ingeniería Técnica Industrial (Mecánica), Máster en Project Management por la Universitat Politècnica de València y certificación CAPM. En Gárgola Lab dirijo ${tema(o)}, coordinando alcance, plazos, costes, proveedores y relación con el cliente.${extra}\n\nSi para ejecutar este proyecto, o los que vengan, necesitáis reforzar el equipo con alguien que lo coordine de principio a fin, me encantaría hablar con vosotros. Os adjunto mi CV.\n\n${firma()}`,
   };
 }
 
@@ -712,6 +783,7 @@ function abrirContacto(o, cand) {
     web ? enlace(web, 'Web de la empresa') : enlace('https://www.google.com/search?q=' + encodeURIComponent(empresa + ' ' + (ciudad || '') + ' contacto'), 'Buscar su web'));
   $('#ap-asunto').textContent = asunto;
   $('#ap-mensaje').textContent = cuerpo;
+  $('#ap-prop').textContent = ST.prop[o.id]?.aprobada ? '✓ Incluye las aportaciones de tu propuesta de valor aprobada.' : 'Si apruebas tu propuesta de valor en la ficha, sus aportaciones se añaden a este mensaje.';
   const gmail = 'https://mail.google.com/mail/?view=cm&fs=1' + (email ? '&to=' + encodeURIComponent(email) : '') + '&su=' + encodeURIComponent(asunto) + '&body=' + encodeURIComponent(cuerpo);
   const bG = enlace(gmail, 'Abrir en Gmail', 'btn');
   bG.addEventListener('click', () => {

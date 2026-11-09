@@ -293,3 +293,20 @@ dialog::backdrop { background: rgba(10, 16, 22, .5); backdrop-filter: blur(2px);
 .pie-acc { display: flex; gap: 8px; align-items: center; }
 
 @media (prefers-reduced-motion: reduce) { .tarjeta, .fav svg { transition: none; } .esqueleto { animation: none; } }
+
+/* Descripción y propuesta de valor */
+.descripcion { margin: 0 0 6px; font-size: 14.5px; line-height: 1.6; }
+.propuesta { margin-top: 26px; border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; background: var(--soft); }
+.prop-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.prop-cab h3 { margin: 0 !important; }
+.prop-estado { font: 500 12px var(--mono); border-radius: 6px; padding: 2px 8px; }
+.prop-estado.ok { background: var(--accent-soft); color: var(--ok); }
+.prop-estado.pend { background: color-mix(in srgb, var(--warn) 14%, transparent); color: var(--warn); }
+.propuesta > .nota { margin: 6px 0 12px; }
+.prop-resumen { margin: 0 0 10px; font-size: 14px; }
+.prop-b h4 { margin: 10px 0 4px; font: 600 13.5px var(--display); }
+.prop-b ul { margin: 0; padding-left: 18px; font-size: 14px; display: grid; gap: 3px; }
+.cita { display: inline-block; font: 500 11px var(--mono); color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; cursor: help; }
+.prop-pre { white-space: pre-wrap; font: 400 14px/1.55 var(--body); margin: 0; }
+.prop-texto { width: 100%; border: 1px solid var(--line2); border-radius: 12px; padding: 12px; font: 400 14px/1.5 var(--body); background: var(--surface); color: var(--ink); resize: vertical; }
+.propuesta .acciones { margin-top: 12px; }
