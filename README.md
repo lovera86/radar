@@ -80,6 +80,13 @@ La web tiene cuatro espacios:
 - **Seguimiento**: candidaturas con su siguiente paso, guardadas y colecciones,
   notas y la actividad por canal (plegada).
 
+**Analizar oferta** (botón de la barra): pegas el enlace y el texto de una oferta
+de cualquier portal (LinkedIn, Indeed, webs de empresa…). Si el portal lo permite,
+la web lee la oferta sola; si no (LinkedIn, Indeed), pide pegar el texto. La puntúa
+con los mismos criterios que las ofertas diarias (`docs/data/perfil-busqueda.json`,
+generado desde `config.json` por `exportar.py`) y ofrece CV adaptado, propuesta de
+valor y carta de motivación. Se guarda solo en el navegador y aparece con el resto.
+
 «Mi perfil y ajustes» está en el icono de la barra. La ficha se abre como panel
 lateral: resumen, por qué encaja, puntos a comprobar, condiciones y notas; la
 propuesta de valor, la descripción, todos los datos, el cálculo de la prioridad

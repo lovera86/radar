@@ -183,6 +183,7 @@ async function cargar() {
     ]);
     D.ops = ops; D.meta = meta; D.senales = senales;
     ops.forEach((o) => D.porId.set(o.id, o));
+    if (typeof cargarExternas === 'function') cargarExternas();
     migrarAntiguas();
     $('#actualizado').textContent = meta.actualizado ? 'Actualizado ' + new Date(meta.actualizado).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : '';
     sugerencias();
@@ -813,6 +814,7 @@ function abrirFicha(id) {
   // 5. Detalles bajo demanda
   const capas = el('div', 'capas');
   capas.append(capaFicha('Tu propuesta de valor', seccionPropuesta(o)));
+  if (o.tipo === 'empleo' && typeof seccionCarta === 'function') capas.append(capaFicha('Carta de motivación', seccionCarta(o)));
   if (o.descripcion) capas.append(capaFicha('Descripción publicada', [el('p', 'descripcion', o.descripcion.length >= 590 ? o.descripcion + '…' : o.descripcion),
     el('p', 'nota', 'Extracto publicado en ' + (o.fuentes[0]?.nombre || 'la fuente') + '. La publicación completa está en el enlace.')]));
   const tb = el('table', 'datos'); const tbody = el('tbody');
@@ -844,6 +846,7 @@ function abrirFicha(id) {
     if (o.accion.url) acc.append(enlace(o.accion.url, o.subtipo === 'oferta' ? 'Ver oferta e inscribirme' : 'Ver convocatoria y requisitos', 'btn grande'));
     acc.append(enlace(cvUrl(o.origen.lista, o.origen.clave), 'CV adaptado (PDF)'));
     acc.append(boton('Ver mi propuesta de valor', 'btn sec', () => { const s = $('#fi-propuesta'); if (!s) return; s.closest('details').open = true; s.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
+    acc.append(boton('Carta de motivación', 'btn sec', () => { const s = $('#fi-carta'); if (!s) return; s.closest('details').open = true; s.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
     acc.append(el('p', 'nota', 'Cuando te inscribas, marca abajo «Enviada». RADAR no lo marca solo.'));
   } else if (o.subtipo === 'noticia_empresa') {
     if (o.accion.url) acc.append(enlace(o.accion.url, 'Leer la noticia', 'btn grande'));
@@ -890,6 +893,13 @@ function abrirFicha(id) {
   historial();
   est.append(hist);
   der.append(est);
+  if (o.externa) {
+    der.append(boton('Eliminar esta oferta analizada', 'enlace quitar', () => {
+      if (!confirm('¿Eliminar esta oferta analizada? Se borran también su estado, notas y carta. No se puede deshacer.')) return;
+      quitarGuardado(o.id); delete ST.ocultas[o.id]; delete ST.notas[o.id]; delete ST.cartas[o.id]; delete ST.prop[o.id];
+      eliminarExterna(o.id); $('#ficha').close(); pintar();
+    }));
+  }
 
   g.append(izq, der);
   cuerpo.append(g);
@@ -1459,7 +1469,7 @@ $('#importar').addEventListener('change', async (e) => {
   const f = e.target.files[0]; if (!f) return;
   try {
     const d = JSON.parse(await f.text());
-    if (d.radar && d.radar.fav && d.radar.est) { Object.assign(ST, d.radar); ST.notas = ST.notas || {}; guardarST(); if (d.perfil) { Object.assign(PREF, d.perfil); guardarPref(); } pintar(); alert('Copia importada.'); } else alert('Ese archivo no es una copia de RADAR.');
+    if (d.radar && d.radar.fav && d.radar.est) { Object.assign(ST, d.radar); ST.notas = ST.notas || {}; ST.externas = ST.externas || {}; ST.cartas = ST.cartas || {}; cargarExternas(); guardarST(); if (d.perfil) { Object.assign(PREF, d.perfil); guardarPref(); } pintar(); alert('Copia importada.'); } else alert('Ese archivo no es una copia de RADAR.');
   } catch (err) { alert('No se ha podido leer el archivo.'); }
 });
 window.abrirFicha = abrirFicha;

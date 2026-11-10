@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="styles.css?v=46">
+<link rel="stylesheet" href="styles.css?v=47">
 </head>
 <body>
 <header class="barra">
@@ -25,6 +25,10 @@
       <a href="#guardados" data-v="guardados">Seguimiento <span class="contador" id="n-guardados"></span></a>
     </nav>
     <p class="actualizado" id="actualizado"></p>
+    <button type="button" class="analizar-btn" id="abrir-analizar" title="Analizar una oferta de cualquier portal">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2M8.5 11h5M11 8.5v5"/></svg>
+      <span>Analizar oferta</span>
+    </button>
     <a class="ajustes" href="#perfil" data-v="perfil" title="Mi perfil y ajustes">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
       <span>Mi perfil</span>
@@ -193,6 +197,29 @@
   </div>
 </dialog>
 
+<!-- Analizar una oferta externa -->
+<dialog id="analizar" class="panel-dialogo lateral" aria-labelledby="an-t">
+  <form method="dialog" class="cerrar"><button aria-label="Cerrar">✕</button></form>
+  <h2 id="an-t">Analizar una oferta</h2>
+  <p class="nota">Pega el enlace y el texto de una oferta de cualquier portal. RADAR la compara con tu perfil y te prepara el CV adaptado, la propuesta de valor y la carta de motivación. Todo se queda en este navegador.</p>
+  <form id="an-form" class="an-form" novalidate>
+    <label class="p-campo"><span>Enlace de la oferta</span>
+      <span class="an-url"><input id="an-url" type="url" inputmode="url" placeholder="https://…" autocomplete="off"><button type="button" class="btn sec mini" id="an-leer">Leer</button></span>
+    </label>
+    <p class="nota an-aviso" id="an-aviso" aria-live="polite"></p>
+    <label class="p-campo"><span>Texto de la oferta</span>
+      <textarea id="an-texto" rows="9" placeholder="Copia aquí la descripción completa: funciones, requisitos y condiciones."></textarea>
+    </label>
+    <div class="an-2">
+      <label class="p-campo"><span>Puesto</span><input id="an-puesto" placeholder="p. ej. Project Manager"></label>
+      <label class="p-campo"><span>Empresa</span><input id="an-empresa" placeholder="Si la conoces"></label>
+    </div>
+    <label class="p-campo"><span>Ubicación y modalidad</span><input id="an-lugar" placeholder="p. ej. Gijón · híbrido, o Remoto"></label>
+    <div class="pie-dialogo"><span></span><button type="submit" class="btn">Analizar oferta</button></div>
+  </form>
+  <div id="an-res" class="an-res" hidden></div>
+</dialog>
+
 <!-- Ficha de oportunidad -->
 <dialog id="ficha" class="ficha-dialogo" aria-labelledby="fi-titulo">
   <form method="dialog" class="cerrar"><button aria-label="Cerrar">✕</button></form>
@@ -233,8 +260,9 @@
 <script src="cv-datos.js?v=3"></script>
 <script src="propuesta.js?v=2"></script>
 <script src="mapa.js?v=23"></script>
-<script src="app.js?v=46"></script>
+<script src="app.js?v=47"></script>
 <script src="descubrir.js?v=2"></script>
+<script src="analizar.js?v=1"></script>
 <script src="radar-diario.js?v=8"></script>
 </body>
 </html>

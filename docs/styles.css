@@ -894,3 +894,44 @@ html, body { overflow-x: clip; }
 .tarjeta.t2 { border-top: 4px solid var(--turq-line); }
 .tarjeta.t2:hover { border-top-color: var(--turq); }
 @media (max-width: 480px) { .subnav { display: flex; width: 100%; } .subnav a { flex: 1; text-align: center; padding: 7px 6px; font-size: 13.5px; } }
+
+/* Analizar oferta */
+.analizar-btn { display: inline-flex; align-items: center; gap: 7px; border: 0; border-radius: 999px; padding: 8px 14px; background: linear-gradient(110deg, var(--turq), var(--rosa)); color: #fff; font: 600 14px var(--body); cursor: pointer; white-space: nowrap; margin-left: auto; }
+.analizar-btn:hover { filter: brightness(1.07); }
+.analizar-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.barra-in .ajustes { margin-left: 0; }
+.panel-dialogo.lateral { margin: 0 0 0 auto; height: 100%; max-height: 100vh; width: min(560px, 100vw); border-radius: 18px 0 0 18px; overflow: auto; }
+.panel-dialogo.lateral[open] { animation: lateral .2s ease-out; }
+.an-form { display: grid; gap: 12px; margin-top: 14px; }
+.an-form .p-campo > span:first-child { font: 600 13.5px var(--display); color: var(--ink); }
+.an-form input, .an-form textarea { border: 1px solid var(--line2); border-radius: 10px; padding: 9px 11px; background: var(--surface); color: var(--ink); font: 400 14px/1.45 var(--body); width: 100%; }
+.an-form textarea { resize: vertical; min-height: 150px; }
+.an-url { display: flex; gap: 8px; }
+.an-url input { flex: 1; min-width: 0; }
+.an-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.an-aviso { margin: -4px 0 0; }
+.an-aviso:empty { display: none; }
+.an-res { display: grid; gap: 14px; margin-top: 14px; }
+.an-cab { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; background: linear-gradient(120deg, var(--turq-soft), var(--rosa-soft)); }
+.an-cab h3 { margin: 0; font: 700 19px/1.25 var(--display); }
+.an-cab .eyebrow { margin-bottom: 4px; }
+.an-cab .ficha-sub { margin-top: 4px; font-size: 13.5px; }
+.an-cab .panel-nota { flex-direction: column; align-items: flex-end; gap: 0; text-align: right; flex-shrink: 0; }
+.an-cab .panel-nota b { font-size: 34px; }
+.an-cab .panel-nota span { font-size: 12px; }
+.an-res .analisis { grid-template-columns: minmax(0, 1fr); }
+.an-acc { display: grid; gap: 10px; }
+.an-boton { display: flex; align-items: center; gap: 14px; text-align: left; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 14px; padding: 14px 16px; cursor: pointer; font: inherit; transition: border-color .15s, box-shadow .15s; }
+.an-boton:hover { box-shadow: var(--shadow); }
+.an-boton:nth-child(1) { border-left: 5px solid var(--turq); }
+.an-boton:nth-child(2) { border-left: 5px solid var(--rosa); }
+.an-boton:nth-child(3) { border-left: 5px solid var(--accent); }
+.an-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--soft); font-size: 20px; flex-shrink: 0; }
+.an-tx { display: grid; gap: 2px; }
+.an-tx b { font: 600 15.5px var(--display); }
+.an-tx small { color: var(--muted); font-size: 13px; }
+.an-pie { justify-content: flex-start; }
+.carta .nota { margin-bottom: 8px; }
+.carta .prop-texto { margin-bottom: 6px; }
+@media (max-width: 820px) { .analizar-btn { margin-left: auto; padding: 7px 10px; } .analizar-btn span { display: none; } .ajustes { margin-left: 0; } }
+@media (max-width: 640px) { .panel-dialogo.lateral { margin: auto 0 0; width: 100vw; height: auto; max-height: 92vh; border-radius: 18px 18px 0 0; } .an-2 { grid-template-columns: 1fr; } }

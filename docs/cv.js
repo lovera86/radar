@@ -16,6 +16,11 @@ const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* s
 function describir(o) {
   if (!o) return { puesto: '', empresa: empresaParam, texto: '', objetivo: '' };
   const corto = (s) => (s.length > 90 ? s.slice(0, 88).replace(/\s+\S*$/, '') + '…' : s);
+  if (lista === 'ext') {
+    const empresa = o.organizacion?.nombre || '';
+    return { puesto: o.titulo, empresa, texto: [o.titulo, o.encaje, o.descripcion].join(' '),
+      objetivo: `Incorporarme como ${o.titulo}${empresa ? ' en ' + sinPunto(empresa) : ''}.` };
+  }
   if (lista === 'emp') {
     return { puesto: o.titulo, empresa: o.empresa, texto: [o.titulo, o.encaje, o.empresa].join(' '),
       objetivo: `Incorporarme como ${o.titulo}${o.empresa ? ' en ' + sinPunto(o.empresa) : ''}.` };
@@ -101,7 +106,9 @@ function pintar(o, info, tema) {
 
 async function iniciar() {
   let o = null;
-  if (ARCHIVOS[lista] && clave) {
+  if (lista === 'ext' && clave) {
+    try { o = (JSON.parse(localStorage.getItem('radar-v2')) || {}).externas?.[clave] || null; } catch (e) { o = null; }
+  } else if (ARCHIVOS[lista] && clave) {
     try {
       const filas = await fetch(`data/${ARCHIVOS[lista]}.json`, { cache: 'no-store' }).then((r) => r.json());
       o = filas.find((r) => r.clave === clave) || null;

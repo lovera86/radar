@@ -107,5 +107,14 @@ def main():
     print(f"{len(rows)} filas -> data/panel.json y docs/data/")
 
 
+def perfil_busqueda():
+    """Criterios de búsqueda (sin datos personales) para analizar en la web ofertas que pegue la usuaria."""
+    cfg = json.loads((DATA.parent / "config.json").read_text(encoding="utf-8")).get("empleo", {})
+    web = DATA.parent / "docs" / "data"
+    web.mkdir(parents=True, exist_ok=True)
+    (web / "perfil-busqueda.json").write_text(json.dumps({k: cfg.get(k) for k in ("puestos", "temas", "lugares", "excluir")}, ensure_ascii=False), encoding="utf-8")
+
+
 if __name__ == "__main__":
     main()
+    perfil_busqueda()
