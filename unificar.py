@@ -366,6 +366,35 @@ def desde_senales(filas, consultada):
     return out
 
 
+def desde_noticias(filas, consultada):
+    """Noticias de expansión o proyectos: el titular es un hecho; lo demás, hipótesis."""
+    out = []
+    for n in filas:
+        out.append({
+            "id": n["id"], "origen": {"lista": "noticia", "clave": n["id"]},
+            "tipo": "empresa", "subtipo": "noticia_empresa", "verificacion": "necesidad_potencial",
+            "titulo": n["titulo"], "organizacion": {"nombre": "", "nif": ""},
+            "ubicacion": {"texto": "", "comunidad": "Asturias" if "en tu zona" in n.get("motivos", []) and re.search(r"asturias|gijon|oviedo|aviles", norm(n["titulo"])) else ""},
+            "modalidad": "desconocida", "salario": {"texto": None}, "importe": None,
+            "fechas": {"publicada": n["fecha"], "plazo": None, "consultada": n.get("consultada", consultada)},
+            "fuentes": [{"nombre": n.get("medio") or "Noticia", "url": n["url"], "consultada": n.get("consultada", consultada)}],
+            "datos": [{"campo": "Titular", "valor": n["titulo"], "origen": "confirmado"},
+                      {"campo": "Medio", "valor": n.get("medio") or None, "origen": "confirmado"},
+                      {"campo": "Necesidad de perfiles", "valor": "posible", "origen": "inferido"}],
+            "etiquetas": [m for m in n.get("motivos", []) if m != "en tu zona"],
+            "criterios": {
+                "encaje": crit(0.35 + 0.1 * len([m for m in n.get("motivos", []) if re.search(r"ingenier|tecnolog|digital|software|ia|3d|gemelo|museo|patrimonio|dron|lidar|fotogram|innovacion|datos", m)]), n.get("motivos", [])[:4]),
+                "necesidad": crit(0.3, ["noticia de crecimiento o de un proyecto nuevo: posible necesidad, no es una vacante"]),
+                "geografia": geografia("Asturias", "desconocida") if "en tu zona" in n.get("motivos", []) else crit(0, [], sin_info=True),
+                "calidad": calidad(n["fecha"], n["url"], 2),
+                "salario": crit(0, [], sin_info=True),
+                "acceso": crit(0.25, ["hay que identificar la empresa y su contacto a partir de la noticia"]),
+            },
+            "accion": {"tipo": "investigar_senal", "url": n["url"]},
+        })
+    return out
+
+
 # ------------------------------------------------------------ ticket 04: inteligencia
 
 PESOS_BASE = {"encaje": 30, "necesidad": 20, "geografia": 15, "calidad": 15, "salario": 10, "acceso": 10}
@@ -435,6 +464,8 @@ def hipotesis(o):
         plazo = o["fechas"].get("plazo")
         rec = (f"Escribe antes del {'/'.join(reversed(plazo.split('-')))} a las empresas que suelen ganar contratos así"
                + (f" (hay {len(con)} con correo verificado)" if con else "") + ": ofrécete como jefa de proyecto para su oferta.")
+    elif o["subtipo"] == "noticia_empresa":
+        rec = "Lee la noticia, identifica la empresa y a la persona responsable del proyecto en LinkedIn, y escríbele mencionando la noticia."
     elif o["subtipo"] == "senal_empresa":
         rec = ("Felicita el arranque de la empresa y ofrece tu experiencia para poner en marcha sus primeros proyectos. "
                "Busca su web y a la persona fundadora en LinkedIn.") if o["titulo"].startswith("Empresa nueva") else \
@@ -494,7 +525,7 @@ def main():
     consultada = (meta.get("actualizado") or datetime.now().isoformat())[:10]
     todas = (desde_empleos(leer("empleos"), consultada) + desde_publico(leer("publico"), consultada)
              + desde_abiertas(leer("abiertas"), consultada) + desde_adjudicados(leer("panel"), consultada)
-             + desde_senales(leer("empresas"), consultada))
+             + desde_senales(leer("empresas"), consultada) + desde_noticias(leer("noticias"), consultada))
     # Deduplicación: mismo tipo, mismo título y misma organización -> se juntan las fuentes.
     unicas, vistas, duplicadas = [], {}, 0
     for o in todas:

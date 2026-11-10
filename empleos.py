@@ -188,7 +188,30 @@ def alertas(cfg):
     return leer_alertas(dias)
 
 
-FUENTES = [tecnoempleo, remotive, infojobs, jooble, adzuna, alertas]
+def corporativos(cfg):
+    """Portales de empleo de empresas que publican sus ofertas en una API pública (Greenhouse, Lever)."""
+    out = []
+    for p in cfg.get("portales_corporativos", []):
+        try:
+            if p["ats"] == "greenhouse":
+                d = json.loads(get(f"https://boards-api.greenhouse.io/v1/boards/{p['id']}/jobs"))
+                for j in d.get("jobs", []):
+                    out.append({"fuente": f"Web de {p['empresa']}", "titulo": j.get("title", ""), "empresa": p["empresa"],
+                                "ubicacion": (j.get("location") or {}).get("name", ""), "descripcion": "", "url": j.get("absolute_url", ""),
+                                "fecha": (j.get("updated_at") or "")[:10], "salario": ""})
+            elif p["ats"] == "lever":
+                d = json.loads(get(f"https://api.lever.co/v0/postings/{p['id']}?mode=json"))
+                for j in d:
+                    cat = j.get("categories") or {}
+                    out.append({"fuente": f"Web de {p['empresa']}", "titulo": j.get("text", ""), "empresa": p["empresa"],
+                                "ubicacion": cat.get("location", "") + (" · " + j.get("workplaceType", "") if j.get("workplaceType") else ""),
+                                "descripcion": limpio(j.get("descriptionPlain", ""))[:600], "url": j.get("hostedUrl", ""), "fecha": "", "salario": ""})
+        except Exception as ex:
+            aviso("Corporativos " + p.get("empresa", "?"), ex)
+    return out
+
+
+FUENTES = [tecnoempleo, remotive, infojobs, jooble, adzuna, alertas, corporativos]
 
 
 # ---------------------------------------------------------------- puntuación
@@ -252,14 +275,14 @@ def main():
     hoy = datetime.now(timezone.utc).date()
     nuevas, vistas = [], 0
     from fuentes_estado import registrar
-    NOMBRES = {"tecnoempleo": "Tecnoempleo", "remotive": "Remotive", "infojobs": "InfoJobs (API)", "jooble": "Jooble", "adzuna": "Adzuna", "alertas": "Alertas de LinkedIn e InfoJobs (correo)"}
+    NOMBRES = {"tecnoempleo": "Tecnoempleo", "remotive": "Remotive", "infojobs": "InfoJobs (API)", "jooble": "Jooble", "adzuna": "Adzuna", "alertas": "Alertas de LinkedIn e InfoJobs (correo)", "corporativos": "Portales corporativos (Greenhouse, Lever)"}
     CLAVES = {"infojobs": ("INFOJOBS_ID", "INFOJOBS_SECRET"), "jooble": ("JOOBLE_KEY",), "adzuna": ("ADZUNA_ID", "ADZUNA_KEY"), "alertas": ("ALERTAS_EMAIL", "ALERTAS_APP_PASSWORD")}
     for fuente in FUENTES:
         lote = fuente(cfg)
         vistas += len(lote)
         print(f"{fuente.__name__}: {len(lote)} ofertas", flush=True)
         n = fuente.__name__
-        sin_conf = n in CLAVES and not all(os.environ.get(k) for k in CLAVES[n])
+        sin_conf = (n in CLAVES and not all(os.environ.get(k) for k in CLAVES[n])) or (n == "corporativos" and not cfg.get("portales_corporativos"))
         errs = ERRORES.get(NOMBRES[n].split(" ")[0], [])
         if n == "alertas" and not sin_conf:
             try:

@@ -56,6 +56,8 @@ jobs:
         run: |
           pip install --quiet pypdf
           python empresas.py
+      - name: Noticias de expansión y proyectos
+        run: python noticias.py
       - name: Unificar oportunidades (modelo común)
         run: python unificar.py
       - name: Guardar cambios

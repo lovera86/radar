@@ -72,6 +72,25 @@ de empresas que ya están en el radar (ampliaciones de capital, sucursales,
 fusiones, cambios; y avisos como concursos). Una señal nunca es una vacante.
 Necesita `pypdf`.
 
+## Inteligencia (ticket 04)
+
+- `fuentes_estado.py`: cada recolector registra en `docs/data/fuentes.json` su
+  última consulta correcta, resultados y errores. La web los muestra en
+  «Mi Radar Diario»: un error no se confunde con «no hay oportunidades».
+- `unificar.py` añade fecha de detección (`data/detectadas.json`), novedad,
+  deduplicación tolerante, *señal de empresa*, hipótesis de necesidades y
+  recomendación de contacto, y genera `docs/data/informe.json` (mejores
+  oportunidades, novedades, empresas, adjudicaciones, candidatura espontánea y
+  3 acciones prioritarias).
+- `noticias.py`: titulares de expansión y nuevos proyectos (Google News RSS)
+  que combinan crecimiento + sector + zona.
+- Portales corporativos: `config.json → empleo.portales_corporativos`, lista de
+  `{"empresa": "...", "ats": "greenhouse" | "lever", "id": "..."}`.
+
+Indicadores en la web: **prioridad** (dónde invertir tu tiempo, con tus pesos),
+**encaje** (tu compatibilidad con el puesto) y **señal** (lo claro que es que la
+empresa necesita talento). Ninguno es una probabilidad de contratación.
+
 ## Ajustar qué busca
 
 Todo está en `config.json`:

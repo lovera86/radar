@@ -17,6 +17,7 @@ const SUBTIPOS = {
   licitacion_abierta: { nombre: 'Licitación abierta', clase: 't-licitacion' },
   adjudicacion: { nombre: 'Proyecto adjudicado', clase: 't-adjudicacion' },
   senal_empresa: { nombre: 'Señal de empresa', clase: 't-empresa' },
+  noticia_empresa: { nombre: 'Noticia de expansión', clase: 't-empresa' },
 };
 const VERIF = {
   vacante_confirmada: 'Vacante publicada',
@@ -787,6 +788,10 @@ function abrirFicha(id) {
     acc.append(enlace(cvUrl(o.origen.lista, o.origen.clave), 'CV adaptado (PDF)'));
     acc.append(boton('Ver mi propuesta de valor', 'btn sec', () => $('#fi-propuesta')?.scrollIntoView({ behavior: 'smooth', block: 'start' })));
     acc.append(el('p', 'nota', 'Cuando te inscribas, marca abajo «Enviada». RADAR no lo marca solo.'));
+  } else if (o.subtipo === 'noticia_empresa') {
+    if (o.accion.url) acc.append(enlace(o.accion.url, 'Leer la noticia', 'btn grande'));
+    acc.append(enlace('https://www.google.com/search?q=' + encodeURIComponent(o.titulo), 'Buscar más sobre esto'));
+    acc.append(el('p', 'nota', 'Identifica la empresa en la noticia y busca a la persona responsable del proyecto en LinkedIn.'));
   } else if (o.subtipo === 'senal_empresa') {
     acc.append(boton('Preparar presentación espontánea', 'btn grande', () => abrirContacto(o)));
     acc.append(enlace('https://www.linkedin.com/search/results/people/?keywords=' + encodeURIComponent(o.organizacion.nombre.replace(/,?\s*(SOCIEDAD LIMITADA|S\.?L\.?U?|S\.?A\.?)\.?$/i, '')), 'Buscar responsables en LinkedIn'));
