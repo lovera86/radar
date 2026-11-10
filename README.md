@@ -59,9 +59,25 @@ criterios (encaje, necesidad, ubicación, calidad, salario, acceso). La web
 calcula la compatibilidad con los pesos del perfil; los criterios sin información
 no restan, pero bajan la confianza.
 
-La web: Explorar (buscador, filtros, mejores matches), Empleo, Proyectos,
-Empresas, Mapa y Guardados. Favoritos, «Me interesa», estados de candidatura e
-historial se guardan solo en el navegador (con exportar/importar).
+La web tiene cuatro espacios:
+
+- **Hoy**: saludo, tres indicadores (nuevas, encaje alto, acciones pendientes),
+  tu mejor oportunidad, próximos movimientos y una selección breve. Las cifras
+  secundarias, el insight y el estado de las fuentes van plegados al final.
+- **Oportunidades**: Todas / Empleo / Proyectos, con buscador compacto, tres
+  atajos visibles y «Más filtros» en un panel lateral. Vistas Lista, Mapa y
+  Una a una (tarjetas para deslizar). Los filtros se recuerdan durante la sesión.
+- **Empresas**: señales verificables, hipótesis y acción recomendada.
+- **Seguimiento**: candidaturas con su siguiente paso, guardadas y colecciones,
+  notas y la actividad por canal (plegada).
+
+«Mi perfil y ajustes» está en el icono de la barra. La ficha se abre como panel
+lateral: resumen, por qué encaja, puntos a comprobar, condiciones y notas; la
+propuesta de valor, la descripción, todos los datos, el cálculo de la prioridad
+y las fuentes quedan en secciones desplegables.
+
+Favoritos, estados, historial, colecciones y notas se guardan solo en el
+navegador (con exportar/importar en el pie de página).
 
 ## Señales de empresas (BORME)
 

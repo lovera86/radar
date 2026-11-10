@@ -136,128 +136,111 @@ function tarjetaPrincipal(o) {
   const ind = indicadores3(o);
   const c = el('article', 'r-mejor');
   c.tabIndex = 0;
-  const vis = visual(o, true); vis.classList.add('r-mejor-vis');
   const cu = el('div', 'r-mejor-c');
   const badge = el('span', 'r-badge'); badge.append(icoR('rayo'), 'Tu mejor oportunidad'); cu.append(badge);
   cu.append(el('h2', null, o.titulo));
-  cu.append(el('p', 'r-mejor-org', [o.organizacion.nombre, lugarCorto(o)].filter(Boolean).join(' · ')));
+  cu.append(el('p', 'r-mejor-org', [o.organizacion.nombre, lugarYModalidad(o)].filter(Boolean).join(' · ')));
   cu.append(el('p', 'r-mejor-exp', explicacion(o)));
   const chips = el('div', 'r-chips');
-  chips.append(el('span', 'r-chip', `Encaje ${ind.fit}`), el('span', 'r-chip', `Señal ${ind.senal}`));
-  if (o.modalidad !== 'desconocida') chips.append(el('span', 'r-chip', MODALIDAD[o.modalidad]));
-  const sec = sectoresDe(o).find((s) => s !== 'gestion' && s !== 'publico'); if (sec) chips.append(el('span', 'r-chip', SECTORES[sec][0]));
+  chips.append(el('span', 'r-chip', 'Encaje ' + nivelEncaje(o)));
+  const sec = sectoresDe(o).find((x) => x !== 'gestion' && x !== 'publico'); if (sec) chips.append(el('span', 'r-chip', SECTORES[sec][0]));
+  if (o.nueva) chips.append(el('span', 'r-chip', 'Nueva'));
   cu.append(chips);
   const pie = el('div', 'r-mejor-pie');
   const det = el('span', 'r-det'); det.append(icoR('calendario'), 'Detectada ' + relativo((o.fechas.detectada || o.fechas.consultada) + 'T08:00:00Z'));
-  const cta = boton('', 'btn grande r-cta', () => abrirFicha(o.id)); cta.append(icoR('externo'), el('span', null, 'Ver oportunidad y preparar candidatura'));
+  const cta = boton('', 'btn grande r-cta', () => abrirFicha(o.id)); cta.append(el('span', null, 'Ver oportunidad'), icoR('flecha'));
   pie.append(det, cta);
   cu.append(pie);
   const nota = el('div', 'r-nota'); nota.append(el('b', null, String(ind.prioridad)), el('span', null, '/ 100 prioridad'));
   nota.title = 'Prioridad: dónde invertir tu tiempo. No es una probabilidad de contratación.';
-  c.append(cu, vis, nota);
+  c.append(cu, nota);
   c.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target === c) abrirFicha(o.id); });
   return c;
 }
 
-function tarjetaMini(o) {
-  const ind = indicadores3(o);
-  const a = el('article', 'r-mini');
-  const cab = el('div', 'r-mini-cab');
-  cab.append(boton(o.titulo, 'r-mini-t', () => abrirFicha(o.id)), botonFav(o));
-  a.append(cab, el('p', 'r-mini-org', [o.organizacion.nombre, lugarCorto(o)].filter(Boolean).join(' · ')));
-  const b = el('div', 'r-mini-barra'); const bar = el('div', 'barra'); const i = el('i'); i.style.width = ind.fit + '%'; bar.append(i);
-  b.append(bar, el('span', null, 'Encaje '), el('b', null, String(ind.fit)));
-  a.append(b);
-  const pie = el('p', 'r-mini-pie');
-  pie.append(el('b', null, '★ Prioridad ' + ind.prioridad), ' · Detectada el ' + fecha(o.fechas.detectada || o.fechas.consultada));
-  if (o.nueva) pie.append(' ', el('span', 'badge-nueva', 'Nueva'));
-  a.append(pie);
-  return a;
-}
-
+/* Hoy: qué ha aparecido, qué encaja mejor y qué hacer ahora. */
 function pintarRadarDiario() {
   const cont = el('div', 'r2');
-  // El panel no depende de los filtros de otras vistas: muestra todo lo vigente (sin descartadas ni quitadas).
+  // No depende de los filtros de otras vistas: muestra todo lo vigente (sin descartadas ni quitadas).
   const lista = D.ops.filter((o) => ST.est[o.id]?.estado !== 'descartada' && !ST.ocultas?.[o.id]);
   const vacantes = ordenar(lista.filter((o) => o.verificacion === 'vacante_confirmada'));
   const pendientes = vacantes.filter((o) => !decidida(o));
   const principal = pendientes[0] || ordenar(lista.filter((o) => !decidida(o)))[0];
-  const hoy = hoyISO();
-  const nuevas = lista.filter((o) => o.fechas.detectada === hoy);
-  const compatibles = vacantes.filter((o) => puntuar(o).total >= 60);
-  const empresasObj = lista.filter((o) => o.subtipo === 'senal_empresa' || o.subtipo === 'noticia_empresa' || (o.subtipo === 'adjudicacion' && (o.senal?.valor ?? 0) >= 50));
-  const remotas = vacantes.filter((o) => o.modalidad === 'remoto');
+  const nuevas = lista.filter((o) => o.nueva);
+  const alto = lista.filter((o) => puntuar(o).total >= 70 && !decidida(o));
+  const PEND = ['interes', 'pendiente', 'borrador', 'respuesta', 'entrevista'];
+  const accionesPend = Object.values(ST.est).filter((e) => PEND.includes(e.estado) || (e.estado === 'enviada' && Date.now() - Date.parse(e.hist.at(-1).f) >= 7 * 864e5)).length;
 
-  // Cabecera
+  // Cabecera breve
   const h = new Date().getHours();
-  const hero = el('section', 'r2-hero');
-  const hi = el('div', 'r2-hero-in');
-  hi.append(el('h1', null, `${h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches'}, Rocío.`));
-  hi.append(el('p', 'r2-sub', nuevas.length
-    ? `RADAR ha detectado ${nuevas.length} oportunidad${nuevas.length === 1 ? '' : 'es'} nueva${nuevas.length === 1 ? '' : 's'} desde ayer. Esta es la que más te conviene ahora.`
-    : 'Sin novedades desde la última actualización. Estas son tus prioridades vigentes.'));
-  const act = el('p', 'r2-fecha'); act.append(icoR('calendario'), D.meta.actualizado ? 'Actualizado ' + new Date(D.meta.actualizado).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Sin fecha de actualización');
-  hi.append(act);
+  const cab = el('section', 'r2-cab');
+  const ct = el('div', 'r2-cab-t');
+  ct.append(el('h1', null, `${h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches'}, Rocío`));
+  ct.append(el('p', 'r2-sub', 'Estas son las oportunidades que merecen tu atención.'));
+  cab.append(ct);
+  const act = el('p', 'r2-fecha'); act.append(icoR('calendario'), D.meta.actualizado ? 'Actualizado ' + new Date(D.meta.actualizado).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Sin fecha de actualización');
+  cab.append(act);
+  cont.append(cab);
+
+  // Tres indicadores accionables
   const kpis = el('div', 'r2-kpis');
-  const kpi = (ic, n, txt, fn) => { const b = boton('', 'r2-kpi', fn); const t = el('span', 'r2-kpi-t'); t.append(el('b', null, String(n)), el('span', null, txt)); b.append(icoR(ic), t, icoR('flecha')); return b; };
+  const kpi = (ic, n, txt, ayuda, fn) => { const b = boton('', 'r2-kpi', fn); b.title = ayuda; const t = el('span', 'r2-kpi-t'); t.append(el('b', null, String(n)), el('span', null, txt)); b.append(icoR(ic), t, icoR('flecha')); return b; };
   const ir = (hash, f) => () => { limpiar(); if (f) f(); sincronizarChips(); location.hash = hash; };
-  kpis.append(kpi('maleta', compatibles.length, 'Ofertas compatibles', ir('empleo', () => { F.minimo = 60; })),
-    kpi('edificio', empresasObj.length, 'Empresas objetivo', ir('empresas')),
-    kpi('portatil', remotas.length, '100% remoto', ir('empleo', () => F.rapidos.add('remoto'))));
-  hi.append(kpis);
-  hero.append(hi);
-  cont.append(hero);
+  kpis.append(kpi('rayo', nuevas.length, nuevas.length === 1 ? 'Nueva desde ayer' : 'Nuevas desde ayer', 'Oportunidades que RADAR ha visto por primera vez en la última actualización', ir('explorar', () => F.rapidos.add('hoy'))),
+    kpi('maleta', alto.length, 'Con encaje alto', 'Prioridad 70 o más y aún sin decidir', ir('explorar', () => F.rapidos.add('alto'))),
+    kpi('calendario', accionesPend, accionesPend === 1 ? 'Acción pendiente' : 'Acciones pendientes', 'Candidaturas con un siguiente paso por dar', () => { location.hash = 'guardados'; }));
+  cont.append(kpis);
 
-  // Cuerpo
-  const grid = el('div', 'r2-grid');
-  const izq = el('div', 'r2-izq');
-  const der = el('div', 'r2-der');
-  if (principal) izq.append(tarjetaPrincipal(principal));
-  else izq.append(el('div', 'vacio', 'No hay oportunidades que cumplan tus filtros ahora mismo. Revisa «Mi perfil» o vuelve mañana.'));
+  const grid = el('div', 'r2-grid2');
+  const pr = el('div', 'r2-p');
+  if (principal) pr.append(tarjetaPrincipal(principal));
+  else { const v = el('div', 'vacio'); v.append(el('p', null, 'Has revisado todo lo prioritario. Vuelve mañana o amplía tus preferencias.'), boton('Ver todas las oportunidades', 'btn', () => { location.hash = 'explorar'; })); pr.append(v); }
+  grid.append(pr);
 
-  const otras = el('section', 'r2-otras');
-  const oc = el('div', 'r2-sec-cab');
-  oc.append(el('h3', null, 'Otras oportunidades compatibles'));
-  const ver = el('a', 'enlace r2-ver', 'Ver todas las ofertas →'); ver.href = '#empleo'; oc.append(ver);
-  otras.append(oc);
-  const grid2 = el('div', 'r2-minis');
-  const resto = pendientes.filter((o) => o !== principal).slice(0, 4);
-  if (resto.length) resto.forEach((o) => grid2.append(tarjetaMini(o)));
-  else grid2.append(el('p', 'vacio-r', 'No hay más vacantes pendientes con estos filtros.'));
-  otras.append(grid2);
-  izq.append(otras);
-
+  // Próximos movimientos (máximo tres)
   const mov = el('section', 'r2-mov');
-  const mc = el('h3'); mc.append(icoR('rayo'), 'Tu siguiente movimiento'); mov.append(mc);
+  const mc = el('h3'); mc.append(icoR('rayo'), 'Próximos movimientos'); mov.append(mc);
   const ol = el('ol');
   const movs = siguientesMovimientos(lista, principal);
   movs.forEach((m, i) => {
     const li = el('li');
     const b = boton('', 'r2-mov-b', () => abrirFicha(m.o.id));
     const t = el('span', 'r2-mov-t'); t.append(el('b', null, m.titulo), el('small', null, m.motivo));
-    b.append(el('span', 'r2-mov-n', String(i + 1)), icoR(m.ico), t, icoR('flecha'));
+    b.append(el('span', 'r2-mov-n', String(i + 1)), t, icoR('flecha'));
     li.append(b); ol.append(li);
   });
   if (!movs.length) ol.append(el('li', 'vacio-r', 'No hay acciones pendientes: has revisado todo lo prioritario.'));
   mov.append(ol);
-  der.append(mov);
+  grid.append(mov);
 
-  const ins = insight(lista);
-  if (ins) {
-    const s = el('section', 'r2-insight');
-    const hh = el('h3'); hh.append(icoR('bombilla'), 'Insight de RADAR'); s.append(hh);
-    s.append(el('p', null, ins.texto), boton(ins.enlace + ' →', 'enlace', ins.fn));
-    der.append(s);
-  }
+  // Selección breve
+  const otras = el('section', 'r2-otras');
+  const oc = el('div', 'r2-sec-cab');
+  oc.append(el('h3', null, 'Más oportunidades para ti'));
+  const links = el('div', 'r2-links');
+  const una = el('a', 'enlace', 'Revisar una a una'); una.href = '#descubrir';
+  const ver = el('a', 'enlace', 'Ver todas →'); ver.href = '#explorar';
+  ver.addEventListener('click', () => { limpiar(); });
+  links.append(una, ver); oc.append(links);
+  otras.append(oc);
+  const minis = el('div', 'r2-minis');
+  const resto = pendientes.filter((o) => o !== principal).slice(0, 4);
+  if (resto.length) resto.forEach((o) => minis.append(tarjeta(o)));
+  else minis.append(el('p', 'vacio-r', 'No hay más vacantes pendientes de revisar.'));
+  otras.append(minis);
+  grid.append(otras);
 
-  // Vista secundaria: más cifras y estado de las fuentes
+  // Más datos, bajo demanda
   const mas = el('details', 'r2-mas');
-  mas.append(el('summary', null, 'Más cifras y estado de las fuentes'));
+  mas.append(el('summary', null, 'Más datos de RADAR y estado de las fuentes'));
+  const ins = insight(lista);
+  if (ins) { const pi = el('p', 'r2-ins'); pi.append(icoR('bombilla'), el('span', null, ins.texto + ' '), boton(ins.enlace + ' →', 'enlace', ins.fn)); mas.append(pi); }
   const pend = Object.values(ST.est).filter((e) => ['interes', 'pendiente', 'borrador'].includes(e.estado)).length;
   const siete = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
   const ul = el('ul', 'r2-cifras');
-  [[nuevas.length, 'nuevas hoy'], [lista.filter((o) => o.subtipo === 'adjudicacion' && (o.fechas.publicada || '') >= siete).length, 'adjudicaciones en 7 días'],
-    [lista.filter((o) => o.ubicacion.comunidad === 'Asturias').length, 'en Asturias'], [pend, 'candidaturas pendientes'], [lista.length, 'oportunidades vigentes']]
+  [[lista.filter((o) => o.subtipo === 'adjudicacion' && (o.fechas.publicada || '') >= siete).length, 'adjudicaciones en 7 días'],
+    [lista.filter((o) => o.ubicacion.comunidad === 'Asturias').length, 'en Asturias'], [vacantes.filter((o) => o.modalidad === 'remoto').length, 'vacantes en remoto'],
+    [pend, 'candidaturas por preparar'], [lista.length, 'oportunidades vigentes']]
     .forEach(([n, t]) => { const li = el('li'); li.append(el('b', null, String(n)), ' ' + t); ul.append(li); });
   mas.append(ul);
   const t = el('table', 'tabla-fuentes');
@@ -273,11 +256,11 @@ function pintarRadarDiario() {
   });
   if (!tb.childNodes.length) { const tr = el('tr'); const td = el('td', null, 'El registro de fuentes aparecerá tras la próxima ejecución diaria.'); td.colSpan = 4; tr.append(td); tb.append(tr); }
   t.append(thead, tb);
+  const errores = Object.values(D.fuentes || {}).filter((f) => f.estado === 'error').length;
   mas.append(el('p', 'nota', 'Un error en una fuente no significa que no haya oportunidades: solo que hoy no se ha podido consultar.'), t);
-  if (Object.values(D.fuentes || {}).some((f) => f.estado === 'error')) mas.open = true;
-  der.append(mas);
+  if (errores) mas.querySelector('summary').append(el('span', 'r2-err', ` · ${errores} fuente${errores === 1 ? '' : 's'} con error`));
+  grid.append(mas);
 
-  grid.append(izq, der);
   cont.append(grid);
   $('#res-n').textContent = '';
   $('#rejilla').replaceChildren(cont);

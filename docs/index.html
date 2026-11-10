@@ -9,31 +9,41 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="styles.css?v=43">
+<link rel="stylesheet" href="styles.css?v=44">
 </head>
 <body>
 <header class="barra">
   <div class="wrap barra-in">
-    <a class="marca" href="#explorar" aria-label="RADAR, inicio">
+    <a class="marca" href="#radar" aria-label="RADAR, ir a Hoy">
       <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="16" r="8.5" fill="none" stroke="currentColor" stroke-width="2" opacity=".55"/><path d="M16 16 L27 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="22" cy="20" r="2.4" fill="currentColor"/></svg>
       <span>RADAR</span>
     </a>
     <nav class="nav" aria-label="Secciones">
-      <a href="#radar" data-v="radar">Mi radar</a>
-      <a href="#descubrir" data-v="descubrir">Descubrir</a>
-      <a href="#explorar" data-v="explorar">Explorar</a>
-      <a href="#empleo" data-v="empleo">Empleo</a>
-      <a href="#proyectos" data-v="proyectos">Proyectos</a>
+      <a href="#radar" data-v="radar">Hoy</a>
+      <a href="#explorar" data-v="explorar">Oportunidades</a>
       <a href="#empresas" data-v="empresas">Empresas</a>
-      <a href="#mapa" data-v="mapa">Mapa</a>
-      <a href="#perfil" data-v="perfil">Mi perfil</a>
-      <a href="#guardados" data-v="guardados">Guardados y candidaturas <span class="contador" id="n-guardados"></span></a>
+      <a href="#guardados" data-v="guardados">Seguimiento <span class="contador" id="n-guardados"></span></a>
     </nav>
     <p class="actualizado" id="actualizado"></p>
+    <a class="ajustes" href="#perfil" data-v="perfil" title="Mi perfil y ajustes">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      <span>Mi perfil</span>
+    </a>
   </div>
 </header>
 
 <main id="principal">
+  <div class="wrap cab-vista" id="cab-vista">
+    <div class="cab-t">
+      <h1 id="titulo-pagina">Oportunidades</h1>
+      <p id="sub-pagina"></p>
+    </div>
+    <nav class="subnav" id="subnav" aria-label="Tipo de oportunidad">
+      <a href="#explorar" data-v="explorar">Todas</a>
+      <a href="#empleo" data-v="empleo">Empleo</a>
+      <a href="#proyectos" data-v="proyectos">Proyectos</a>
+    </nav>
+  </div>
   <section class="buscador-zona" id="buscador-zona" aria-label="Buscar oportunidades">
     <div class="wrap">
       <h1 class="lema" id="lema">Descubre dónde puede llegar tu talento</h1>
@@ -54,19 +64,10 @@
         <label class="campo-b">
           <span>Modalidad</span>
           <select id="q-modalidad">
-            <option value="">Cualquiera</option>
+            <option value="">Cualquier modalidad</option>
             <option value="remoto">Remoto</option>
             <option value="hibrido">Híbrido</option>
             <option value="presencial">Presencial</option>
-          </select>
-        </label>
-        <label class="campo-b" id="campo-tipo">
-          <span>Tipo</span>
-          <select id="q-tipo">
-            <option value="">Todas</option>
-            <option value="empleo">Empleo (ofertas y oposiciones)</option>
-            <option value="proyecto">Proyectos (licitaciones y adjudicaciones)</option>
-            <option value="empresa">Empresas (señales del BORME)</option>
           </select>
         </label>
         <button class="buscar" type="submit" aria-label="Buscar">
@@ -77,13 +78,9 @@
       <datalist id="sugerencias"></datalist>
 
       <div class="rapidos" id="rapidos" role="group" aria-label="Filtros rápidos">
-        <button type="button" class="chip" data-f="remoto">Remoto</button>
-        <button type="button" class="chip" data-f="asturias">Asturias</button>
         <button type="button" class="chip" data-f="alto">Encaje alto</button>
-        <button type="button" class="chip" data-f="contacto">Con contacto</button>
+        <button type="button" class="chip" data-f="remoto">Remoto</button>
         <button type="button" class="chip" data-f="nuevas">Últimos 7 días</button>
-        <button type="button" class="chip" data-f="plazo">Plazo abierto</button>
-        <button type="button" class="chip" data-f="salario">Con salario</button>
         <button type="button" class="chip mas" id="abrir-filtros">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
           Más filtros
@@ -109,8 +106,9 @@
           </select>
         </label>
         <div class="vista-btns" role="group" aria-label="Vista">
-          <button type="button" data-vista="rejilla" class="on" aria-pressed="true">Cuadrícula</button>
+          <button type="button" data-vista="rejilla" class="on" aria-pressed="true">Lista</button>
           <button type="button" data-vista="mapa" aria-pressed="false">Mapa</button>
+          <button type="button" data-vista="descubrir" aria-pressed="false">Una a una</button>
         </div>
       </div>
     </div>
@@ -142,6 +140,28 @@
 <dialog id="filtros" class="panel-dialogo" aria-labelledby="filtros-t">
   <form method="dialog" class="cerrar"><button aria-label="Cerrar">✕</button></form>
   <h2 id="filtros-t">Más filtros</h2>
+  <p class="nota">Los cambios se aplican al momento. Los filtros activos aparecen como etiquetas sobre los resultados.</p>
+  <div class="grupo-f">
+    <h3>Atajos</h3>
+    <div class="chips-f">
+      <button type="button" class="chip" data-f="asturias">Asturias</button>
+      <button type="button" class="chip" data-f="contacto">Con contacto</button>
+      <button type="button" class="chip" data-f="plazo">Plazo abierto</button>
+      <button type="button" class="chip" data-f="salario">Con salario</button>
+      <button type="button" class="chip" data-f="hoy">Nuevas de hoy</button>
+    </div>
+  </div>
+  <div class="grupo-f">
+    <label class="p-campo" id="campo-tipo">
+      <span>Qué tipo de oportunidad</span>
+      <select id="q-tipo">
+        <option value="">Todas</option>
+        <option value="empleo">Empleo (ofertas y oposiciones)</option>
+        <option value="proyecto">Proyectos (licitaciones y adjudicaciones)</option>
+        <option value="empresa">Empresas (señales del BORME)</option>
+      </select>
+    </label>
+  </div>
   <div class="grupo-f">
     <h3>Tipo de oportunidad</h3>
     <div class="opciones" id="f-subtipo"></div>
@@ -212,8 +232,8 @@
 <script src="cv-datos.js?v=3"></script>
 <script src="propuesta.js?v=2"></script>
 <script src="mapa.js?v=23"></script>
-<script src="app.js?v=43"></script>
+<script src="app.js?v=44"></script>
 <script src="descubrir.js?v=2"></script>
-<script src="radar-diario.js?v=7"></script>
+<script src="radar-diario.js?v=8"></script>
 </body>
 </html>

@@ -33,16 +33,18 @@ const ESTADOS = [
 const NOMBRE_ESTADO = Object.fromEntries(ESTADOS);
 const MODALIDAD = { remoto: 'Remoto', hibrido: 'Híbrido', presencial: 'Presencial', desconocida: 'Modalidad sin indicar' };
 const VISTAS = {
-  explorar: { titulo: 'Explorar', intro: 'Todas las oportunidades juntas, ordenadas por lo bien que encajan contigo.' },
-  empleo: { titulo: 'Empleo', intro: 'Ofertas publicadas y plazas públicas: vacantes confirmadas a las que te puedes inscribir.', tipo: 'empleo' },
-  proyectos: { titulo: 'Proyectos', intro: 'Licitaciones abiertas y contratos recién adjudicados: no son vacantes, son proyectos que alguien tendrá que dirigir.', tipo: 'proyecto' },
-  empresas: { titulo: 'Empresas', intro: 'Empresas con señales verificables de actividad en tu sector. Una señal no es una vacante: es un buen motivo para escribirles.' },
-  mapa: { titulo: 'Mapa', intro: 'Dónde están las oportunidades. Las remotas o sin ubicación fiable aparecen aparte, sin marcador.' },
-  guardados: { titulo: 'Guardados y candidaturas', intro: 'Lo que has guardado y en qué punto está cada candidatura o contacto.' },
-  radar: { titulo: 'Mi Radar Diario', intro: '' },
-  descubrir: { titulo: 'Descubrir', intro: 'Una oportunidad cada vez, de la que más encaja a la que menos. Solo salen las que aún no has revisado.' },
-  perfil: { titulo: 'Mi perfil', intro: 'Lo que RADAR sabe de ti y cómo lo usa. Tus preferencias y pesos cambian la compatibilidad de todas las oportunidades al momento. Se guarda solo en este navegador.' },
+  explorar: { titulo: 'Oportunidades', intro: 'Empleo, proyectos, licitaciones y adjudicaciones, ordenados por lo que más te conviene.' },
+  empleo: { titulo: 'Oportunidades', intro: 'Ofertas publicadas y plazas públicas: vacantes confirmadas a las que puedes inscribirte.', tipo: 'empleo' },
+  proyectos: { titulo: 'Oportunidades', intro: 'Licitaciones abiertas y contratos adjudicados: no son vacantes, son proyectos que alguien tendrá que dirigir.', tipo: 'proyecto' },
+  empresas: { titulo: 'Empresas', intro: 'Empresas con actividad verificable en tu sector. Una señal no es una vacante: es un buen motivo para escribirles.' },
+  mapa: { titulo: 'Oportunidades', intro: 'Dónde están. Las remotas o sin ubicación fiable aparecen en la lista, sin marcador.' },
+  guardados: { titulo: 'Seguimiento', intro: 'Tus candidaturas, guardadas y notas, con el siguiente paso de cada una.' },
+  radar: { titulo: 'Hoy', intro: '' },
+  descubrir: { titulo: 'Oportunidades', intro: 'Una cada vez, de la que más encaja a la que menos. Solo salen las que aún no has revisado.' },
+  perfil: { titulo: 'Mi perfil y ajustes', intro: 'Lo que RADAR sabe de ti y cómo lo usa. Los cambios se aplican al momento y se guardan solo en este navegador.' },
 };
+/* Cuatro espacios principales; el resto vive dentro de ellos. */
+const SECCION = { radar: 'radar', explorar: 'explorar', empleo: 'explorar', proyectos: 'explorar', mapa: 'explorar', descubrir: 'explorar', empresas: 'empresas', guardados: 'guardados', perfil: 'perfil' };
 
 /* ---------- utilidades ---------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -67,6 +69,7 @@ ST.prop = ST.prop || {};
 ST.vistas = ST.vistas || {};
 ST.ocultas = ST.ocultas || {};
 ST.snap = ST.snap || {};
+ST.notas = ST.notas || {};
 if (!ST.col) {
   ST.col = {};
   [['mejores', 'Mis mejores oportunidades'], ['remoto', 'Trabajo remoto'], ['empresas', 'Empresas para contactar'], ['proyectos', 'Proyectos interesantes'], ['pendientes', 'Candidaturas pendientes']]
@@ -183,10 +186,13 @@ async function cargar() {
     $('#actualizado').textContent = meta.actualizado ? 'Actualizado ' + new Date(meta.actualizado).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : '';
     sugerencias();
     opcionesAvanzadas();
+    restaurarFiltros();
     contadorGuardados();
     ruta();
   } catch (e) {
-    $('#rejilla').replaceChildren(el('p', 'vacio', 'No se han podido cargar las oportunidades. Recarga la página en unos minutos.'));
+    const v = el('div', 'vacio');
+    v.append(el('p', null, 'No se han podido cargar las oportunidades. Puede ser un fallo puntual de conexión: tus datos guardados no se han perdido.'), boton('Reintentar', 'btn', () => location.reload()));
+    $('#rejilla').replaceChildren(v);
   }
 }
 
@@ -233,6 +239,7 @@ function pasa(o, sinTipo) {
     if (r === 'nuevas' && !(dias(o.fechas.publicada) != null && dias(o.fechas.publicada) <= 7)) return false;
     if (r === 'plazo' && !(o.fechas.plazo && o.fechas.plazo >= hoyISO())) return false;
     if (r === 'salario' && !o.salario?.texto) return false;
+    if (r === 'hoy' && !o.nueva) return false;
   }
   if (F.subtipos.size && !F.subtipos.has(o.subtipo)) return false;
   if (F.fuentes.size && !o.fuentes.some((f) => F.fuentes.has(f.nombre))) return false;
@@ -259,7 +266,7 @@ function ordenar(lista) {
   return lista.sort(cmp);
 }
 
-const RAPIDOS = { remoto: 'Remoto', asturias: 'Asturias', alto: 'Encaje alto (70+)', contacto: 'Con contacto', nuevas: 'Últimos 7 días', plazo: 'Plazo abierto', salario: 'Con salario' };
+const RAPIDOS = { remoto: 'Remoto', asturias: 'Asturias', alto: 'Encaje alto (70+)', contacto: 'Con contacto', nuevas: 'Últimos 7 días', plazo: 'Plazo abierto', salario: 'Con salario', hoy: 'Nuevas de hoy' };
 const DONDE = { asturias: 'Asturias', norte: 'Norte de España', remoto: 'En remoto' };
 
 function etiquetasActivas() {
@@ -311,6 +318,19 @@ function pintarActivos() {
 function volcar() {
   return { que: F.que, donde: F.donde, modalidad: F.modalidad, tipo: F.tipo, rapidos: [...F.rapidos], subtipos: [...F.subtipos], fuentes: [...F.fuentes], confianza: [...F.confianza], estados: [...F.estados], sectores: [...F.sectores], minimo: F.minimo };
 }
+function guardarFiltros() {
+  try { sessionStorage.setItem('radar-filtros', JSON.stringify({ ...volcar(), orden: ORDEN, modo: MODO })); } catch (e) { /* sin almacenamiento */ }
+}
+function restaurarFiltros() {
+  let b = null;
+  try { b = JSON.parse(sessionStorage.getItem('radar-filtros')); } catch (e) { b = null; }
+  if (!b) return;
+  Object.assign(F, { que: b.que || '', donde: b.donde || '', modalidad: b.modalidad || '', tipo: b.tipo || '', minimo: b.minimo || 0,
+    rapidos: new Set(b.rapidos || []), subtipos: new Set(b.subtipos || []), fuentes: new Set(b.fuentes || []), confianza: new Set(b.confianza || []), estados: new Set(b.estados || []), sectores: new Set(b.sectores || []) });
+  ORDEN = b.orden || ORDEN; MODO = b.modo === 'mapa' ? 'mapa' : 'rejilla';
+  $('#q-que').value = F.que; $('#q-donde').value = F.donde; $('#q-modalidad').value = F.modalidad; $('#q-tipo').value = F.tipo; $('#orden').value = ORDEN;
+  sincronizarChips();
+}
 function aplicarBusqueda(b) {
   limpiar();
   Object.assign(F, { que: b.que, donde: b.donde, modalidad: b.modalidad, tipo: b.tipo, minimo: b.minimo, rapidos: new Set(b.rapidos), subtipos: new Set(b.subtipos), fuentes: new Set(b.fuentes), confianza: new Set(b.confianza), estados: new Set(b.estados), sectores: new Set(b.sectores || []) });
@@ -324,10 +344,11 @@ function limpiar() {
   sincronizarChips();
 }
 function sincronizarChips() {
-  $$('#rapidos .chip[data-f]').forEach((c) => { const on = F.rapidos.has(c.dataset.f); c.classList.toggle('on', on); c.setAttribute('aria-pressed', on); });
+  $$('.chip[data-f]').forEach((c) => { const on = F.rapidos.has(c.dataset.f); c.classList.toggle('on', on); c.setAttribute('aria-pressed', on); });
   $$('#filtros input[type=checkbox]').forEach((i) => { i.checked = F[i.name].has(i.value); });
   $('#f-minimo').value = F.minimo; $('#f-minimo-v').textContent = F.minimo;
-  const n = F.subtipos.size + F.fuentes.size + F.confianza.size + F.estados.size + F.sectores.size + (F.minimo ? 1 : 0);
+  const n = F.subtipos.size + F.fuentes.size + F.confianza.size + F.estados.size + F.sectores.size + (F.minimo ? 1 : 0) + (F.tipo ? 1 : 0)
+    + [...F.rapidos].filter((r) => !$(`#rapidos .chip[data-f="${r}"]`)).length;
   $('#abrir-filtros').classList.toggle('on', n > 0);
 }
 
@@ -402,53 +423,57 @@ function lugarCorto(o) {
   return [t, mod].filter(Boolean).join(' · ');
 }
 
+function lugarYModalidad(o) {
+  const l = lugarCorto(o);
+  const m = o.modalidad && o.modalidad !== 'desconocida' && !norm(l).includes(norm(MODALIDAD[o.modalidad])) ? MODALIDAD[o.modalidad] : '';
+  return [l, m].filter(Boolean).join(' · ');
+}
+function nivelEncaje(o) {
+  const f = indicadores3(o).fit;
+  return f >= 70 ? 'alto' : f >= 45 ? 'medio' : 'bajo';
+}
+
+/* Tarjeta compacta: qué es, dónde, por qué encaja, como mucho tres etiquetas y una acción principal. */
 function tarjeta(o) {
   const p = puntuar(o);
-  const a = el('article', 'tarjeta');
+  const a = el('article', 'tarjeta t2 ' + (SUBTIPOS[o.subtipo]?.clase || ''));
   a.tabIndex = 0;
   a.setAttribute('role', 'button');
-  a.setAttribute('aria-label', `${SUBTIPOS[o.subtipo]?.nombre}: ${o.titulo}. ${o.organizacion.nombre}. Encaje ${p.total}.`);
-  const vis = visual(o);
-  vis.append(botonFav(o));
-  const c = el('div', 'cuerpo');
-  c.append(el('h3', null, o.titulo));
-  if (o.organizacion.nombre) c.append(el('p', 'org', o.organizacion.nombre));
-  const lugar = lugarCorto(o);
-  if (lugar) c.append(el('p', 'lugar', lugar));
-  const extra = o.salario?.texto || (o.importe ? eur(o.importe) + (o.subtipo === 'adjudicacion' ? ' adjudicados' : ' de licitación') : o.subtipo === 'oferta' ? 'Salario no especificado' : '');
-  if (extra) c.append(el('p', 'extra', extra));
-  const raz = razones(o);
-  if (raz.length) { const ul = el('ul', 'razones'); raz.forEach((r) => ul.append(el('li', null, r))); c.append(ul); }
-  const pie = el('div', 'pie-t');
-  const ind = indicadores3(o);
-  const nota = el('span', 'nota-encaje ' + (p.total >= 75 ? 'alta' : p.total >= 60 ? 'media' : 'baja'));
-  nota.title = 'Prioridad: dónde merece la pena invertir tu tiempo. No es una probabilidad de contratación.';
-  nota.append(el('b', null, String(p.total)), ' prioridad');
-  const sub = el('span', 'ind-sub', `encaje ${ind.fit} · señal ${ind.senal}`);
-  sub.title = 'Encaje: tu compatibilidad con el puesto o proyecto. Señal: lo claro que es que la empresa necesita talento.';
-  pie.append(nota, sub, el('span', 'conf conf-' + o.confianza, 'confianza ' + o.confianza));
-  if (o.nueva) pie.append(el('span', 'badge-nueva', 'Nueva'));
-  const fr = frescura(o);
-  if (fr) pie.append(el('span', 'fresco' + (/cierra (hoy|en [1-3] )/.test(fr) ? ' urge' : ''), fr));
-  c.append(pie);
-  c.append(el('span', 'naturaleza' + (o.verificacion === 'vacante_confirmada' ? '' : ' potencial'), [NATURALEZA[o.verificacion], o.fuentes[0]?.nombre].filter(Boolean).join(' · ')));
+  a.setAttribute('aria-label', `${SUBTIPOS[o.subtipo]?.nombre}: ${o.titulo}. ${o.organizacion.nombre}. Prioridad ${p.total}.`);
+  const top = el('div', 't2-top');
+  top.append(el('span', 't2-tipo', SUBTIPOS[o.subtipo]?.nombre || o.tipo), botonFav(o));
+  a.append(top, el('h3', null, o.titulo));
+  const org = [o.organizacion.nombre, lugarYModalidad(o)].filter(Boolean).join(' · ');
+  if (org) a.append(el('p', 't2-org', org));
+  const raz = razones(o).slice(0, 2);
+  if (raz.length) a.append(el('p', 't2-por', raz.join(' · ')));
+  const tags = [];
   const est = ST.est[o.id];
-  if (est) c.append(el('span', 'estado-chip e-' + est.estado, NOMBRE_ESTADO[est.estado]));
-  const acc = el('div', 'acc-t');
-  const bI = boton(est?.estado === 'interes' ? '✓ Me interesa' : 'Me interesa', 'b-int' + (est?.estado === 'interes' ? ' on' : ''), (e) => {
-    e.stopPropagation();
-    if (ST.est[o.id]?.estado === 'interes') { delete ST.est[o.id]; guardarST(); } else setEstado(o.id, 'interes', 'Solo queda registrado en RADAR: la empresa no recibe nada.');
-    pintar();
-  });
-  bI.title = 'Lo apunta en tus candidaturas. No se comunica a la empresa.';
-  const bN = boton('No me interesa', 'b-no', (e) => { e.stopPropagation(); setEstado(o.id, 'descartada', 'Descartada desde la tarjeta'); pintar(); });
-  bN.title = 'La oculta de Explorar. La recuperas en Guardados.';
-  acc.append(bI, bN);
-  c.append(acc);
-  a.append(vis, c);
+  if (est) tags.push([NOMBRE_ESTADO[est.estado], 'estado e-' + est.estado]);
+  if (o.nueva) tags.push(['Nueva', 'nueva']);
+  const fr = frescura(o);
+  if (fr && o.fechas.plazo) tags.push([fr, /cierra (hoy|en [1-3] )/.test(fr) ? 'urge' : '']);
+  if (o.verificacion !== 'vacante_confirmada') tags.push(['Oportunidad potencial', 'pot']);
+  const extra = o.salario?.texto || (o.importe ? eur(o.importe) : '');
+  if (extra) tags.push([extra, '']);
+  if (ST.notas[o.id]) tags.push(['Con nota', '']);
+  if (tags.length) { const t = el('div', 't2-tags'); tags.slice(0, 3).forEach(([x, c]) => t.append(el('span', 't2-tag ' + c, x))); a.append(t); }
+  const pie = el('div', 't2-pie');
+  const n = el('span', 't2-enc ' + (p.total >= 75 ? 'alta' : p.total >= 60 ? 'media' : 'baja'));
+  n.title = 'Prioridad: dónde merece la pena invertir tu tiempo, según encaje, señal, zona y datos disponibles. No es una probabilidad de contratación.';
+  n.append(el('b', null, String(p.total)), el('span', null, 'prioridad · encaje ' + nivelEncaje(o)));
+  pie.append(n, boton('Ver oportunidad', 'btn mini', (e) => { e.stopPropagation(); abrirFicha(o.id); }));
+  if (!est || est.estado !== 'descartada') {
+    const d = boton('', 't2-desc', (e) => { e.stopPropagation(); setEstado(o.id, 'descartada', 'Descartada desde la tarjeta'); pintar(); });
+    d.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+    d.setAttribute('aria-label', 'No me interesa: ' + o.titulo);
+    d.title = 'No me interesa (la recuperas en Seguimiento)';
+    pie.append(d);
+  }
+  a.append(pie);
   const abrir = () => abrirFicha(o.id);
   a.addEventListener('click', abrir);
-  a.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
+  a.addEventListener('keydown', (e) => { if (e.target === a && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); abrir(); } });
   return a;
 }
 
@@ -469,10 +494,19 @@ function pintar() {
   const v = VISTAS[VISTA];
   $('#titulo-vista').textContent = v.titulo;
   $('#intro').textContent = v.intro;
+  $('#titulo-pagina').textContent = v.titulo;
+  $('#sub-pagina').textContent = v.intro;
+  $$('#subnav a').forEach((a) => { const on = a.dataset.v === (v.tipo ? VISTA : 'explorar'); a.classList.toggle('on', on); if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  const modoAct = VISTA === 'descubrir' ? 'descubrir' : MODO === 'mapa' || VISTA === 'mapa' ? 'mapa' : 'rejilla';
+  $$('.vista-btns button').forEach((b) => { const on = b.dataset.vista === modoAct; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  guardarFiltros();
   $('#campo-tipo').hidden = Boolean(v.tipo) || VISTA === 'empresas';
   $('#atajos').hidden = VISTA !== 'empleo';
   if (VISTA === 'empleo' && !$('#atajos').childNodes.length) {
-    $('#atajos').append(el('span', 'etq', 'Buscar también en (24 h)'),
+    const det = el('details', 'atajos-d'); const fila = el('div', 'atajos-fila');
+    det.append(el('summary', null, 'Buscar también en LinkedIn, Indeed, InfoJobs y Tecnoempleo (últimas 24 h)'), fila);
+    $('#atajos').append(det);
+    fila.append(
       enlace('https://www.linkedin.com/jobs/search/?keywords=project%20manager&location=Asturias%2C%20Espa%C3%B1a&f_TPR=r86400', 'LinkedIn · Asturias', 'btn sec mini'),
       enlace('https://www.linkedin.com/jobs/search/?keywords=project%20manager&location=Espa%C3%B1a&f_WT=2&f_TPR=r86400', 'LinkedIn · remoto', 'btn sec mini'),
       enlace('https://es.indeed.com/jobs?q=project+manager&l=Asturias&fromage=1', 'Indeed · Asturias', 'btn sec mini'),
@@ -495,30 +529,14 @@ function pintar() {
   const rej = $('#rejilla');
   if (!lista.length) {
     const vacio = el('div', 'vacio');
-    vacio.append(el('p', null, VISTA === 'guardados' ? 'Todavía no has guardado nada. Pulsa el corazón de una tarjeta para guardarla.' : 'Ninguna oportunidad cumple todos estos filtros.'));
+    vacio.append(el('p', null, VISTA === 'guardados' ? 'Todavía no has guardado nada. Pulsa el corazón de una tarjeta para guardarla.' : 'Ninguna oportunidad cumple estos filtros. Prueba a quitar alguno.'));
     if (etiquetasActivas().length) vacio.append(boton('Quitar todos los filtros', 'btn', () => { limpiar(); pintar(); }));
     rej.replaceChildren(vacio);
     return void total;
   }
   rej.replaceChildren(...lista.map(tarjeta));
-  const mej = $('#mejores');
-  const sinFiltros = !etiquetasActivas().length;
-  if (VISTA === 'explorar' && sinFiltros && ORDEN === 'relevancia') {
-    const top = lista.filter((o) => puntuar(o).total >= 70 && o.verificacion === 'vacante_confirmada').slice(0, 4);
-    const pot = lista.filter((o) => puntuar(o).total >= 70 && o.verificacion !== 'vacante_confirmada').slice(0, 4);
-    mej.replaceChildren();
-    if (top.length) {
-      mej.append(el('h3', null, 'Tus mejores matches'), el('p', null, 'Vacantes publicadas con mayor compatibilidad estimada. Abre una para ver por qué encaja y qué falta.'));
-      const r = el('div', 'rejilla'); top.forEach((o) => r.append(tarjeta(o))); mej.append(r);
-    }
-    if (pot.length) {
-      const h = el('h3', null, 'Oportunidades potenciales · no publicadas'); h.style.marginTop = '26px';
-      mej.append(h, el('p', null, 'Proyectos que alguien tendrá que dirigir. No son vacantes: son un buen motivo para presentarte.'));
-      const r = el('div', 'rejilla'); pot.forEach((o) => r.append(tarjeta(o))); mej.append(r);
-    }
-    if (mej.childNodes.length) { const h = el('h3', null, 'Todas las oportunidades'); h.style.marginTop = '30px'; mej.append(h); }
-    mej.hidden = !mej.childNodes.length;
-  } else mej.hidden = true;
+  // Sin bloques destacados que repitan las mismas tarjetas: la lista ya va ordenada por prioridad.
+  $('#mejores').hidden = true;
 }
 
 function pintarVistaMapa(lista) {
@@ -581,13 +599,13 @@ function pintarEmpresas() {
 }
 
 function tarjetaEmpresa(e) {
-  const a = el('article', 'tarjeta empresa');
+  const a = el('article', 'tarjeta t2 empresa t-empresa');
   a.tabIndex = 0; a.setAttribute('role', 'button');
-  const pseudo = { subtipo: 'empresa', organizacion: { nombre: e.nombre }, titulo: e.nombre };
-  const vis = visual(pseudo);
-  vis.className = 'visual t-empresa';
-  vis.querySelector('.tipo-badge').textContent = 'Empresa';
   const c = el('div', 'cuerpo');
+  const top = el('div', 't2-top');
+  top.append(el('span', 't2-tipo', e.nueva ? 'Empresa nueva' : 'Empresa'));
+  if (ST.notas[claveNota(e.nombre)]) top.append(el('span', 't2-tag', 'Con nota'));
+  c.append(top);
   c.append(el('h3', null, e.nombre));
   if (e.ciudad) c.append(el('p', 'lugar', e.ciudad));
   const ul = el('ul', 'senales');
@@ -600,7 +618,7 @@ function tarjetaEmpresa(e) {
   c.append(el('p', 'hipotesis', e.nueva ? 'Hipótesis: al empezar podría necesitar perfiles como el tuyo.' : 'Hipótesis: podría necesitar dirección de proyecto para ejecutarlos.'));
   const refH = e.ganados.find((g) => g.hipotesis) || D.ops.find((o) => o.origen.lista === 'senal' && (e.borme || []).some((g) => g.id === o.origen.clave)) || e.candidata.find((g) => g.hipotesis);
   if (refH?.hipotesis?.contacto) c.append(el('p', 'accion-rec', 'Acción recomendada: ' + refH.hipotesis.contacto));
-  a.append(vis, c);
+  a.append(c);
   const abrir = () => abrirEmpresa(e);
   a.addEventListener('click', abrir);
   a.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); abrir(); } });
@@ -645,8 +663,8 @@ function analisis(o) {
   const dudas = [...(c.acceso.valor < 0.7 ? c.acceso.motivos : []), ...(c.geografia.valor != null && c.geografia.valor < 0.6 ? c.geografia.motivos : [])];
   const sin = Object.entries(c).filter(([, x]) => x.valor == null).map(([k]) => CRITERIOS[k]);
   box.append(bloque('Por qué encaja', fuertes.map((m) => m.replace(/^./, (x) => x.toUpperCase())), 'No hay coincidencias claras con tu perfil.'));
-  box.append(bloque('Qué conviene comprobar o no coincide', dudas.map((m) => m.replace(/^./, (x) => x.toUpperCase())), 'Nada destacable con los datos disponibles.'));
-  if (sin.length) box.append(bloque('Sin información', sin, ''));
+  const comprobar = [...dudas.map((m) => m.replace(/^./, (x) => x.toUpperCase())), ...sin.map((x) => 'Sin información sobre ' + x.toLowerCase())];
+  box.append(bloque('Puntos a comprobar', comprobar, 'Nada destacable con los datos disponibles.'));
   return box;
 }
 
@@ -705,54 +723,74 @@ function seccionPropuesta(o) {
   return s;
 }
 
+function condiciones(o) {
+  const filas = [];
+  const add = (k, v, url) => { if (v) filas.push([k, v, url]); };
+  if (o.tipo === 'empleo') add('Salario', o.salario?.texto || 'No lo indica la publicación');
+  add('Modalidad', o.modalidad && o.modalidad !== 'desconocida' ? MODALIDAD[o.modalidad] : o.tipo === 'empleo' ? 'Sin indicar' : '');
+  add('Ubicación', lugarCorto(o));
+  o.datos.filter((d) => /contrato|jornada|duraci/i.test(d.campo) && d.valor).forEach((d) => add(d.campo, String(d.valor)));
+  if (o.importe) add(o.subtipo === 'adjudicacion' ? 'Importe adjudicado' : 'Importe', eur(o.importe));
+  if (o.fechas.plazo) add('Plazo', fecha(o.fechas.plazo) + (frescura(o) ? ' · ' + frescura(o) : ''));
+  if (o.fechas.publicada) add('Publicada', fecha(o.fechas.publicada));
+  const f0 = o.fuentes[0];
+  if (f0) add('Origen', f0.nombre, f0.url);
+  const dl = el('dl', 'condiciones');
+  filas.forEach(([k, v, url]) => { dl.append(el('dt', null, k)); const dd = el('dd'); if (url) dd.append(enlace(url, v + ' ↗', 'enlace')); else dd.append(v); dl.append(dd); });
+  return dl;
+}
+
+const capaFicha = (titulo, contenido, abierta) => {
+  const d = el('details', 'capa');
+  d.open = Boolean(abierta);
+  d.append(el('summary', null, titulo));
+  [].concat(contenido).filter(Boolean).forEach((x) => d.append(x));
+  return d;
+};
+
 function abrirFicha(id) {
   const o = D.porId.get(id);
   if (!o) return;
   const p = puntuar(o);
   const cuerpo = $('#ficha-cuerpo');
   cuerpo.replaceChildren();
-  const cab = visual(o, true);
-  cab.classList.add('ficha-visual');
-  cuerpo.append(cab);
   const g = el('div', 'ficha-grid');
   const izq = el('div', 'ficha-izq');
   const der = el('aside', 'ficha-der');
 
-  izq.append(el('p', 'eyebrow', SUBTIPOS[o.subtipo]?.nombre));
-  const h = el('h2', null, o.titulo); h.id = 'fi-titulo'; izq.append(h);
+  // 1. Resumen
+  const res = el('div', 'fi-resumen');
+  res.append(el('p', 'eyebrow', SUBTIPOS[o.subtipo]?.nombre));
+  const h = el('h2', null, o.titulo); h.id = 'fi-titulo'; res.append(h);
   const sub = [o.organizacion.nombre, o.cliente && o.cliente !== o.organizacion.nombre ? 'para ' + o.cliente : '', lugarCorto(o)].filter(Boolean).join(' · ');
-  izq.append(el('p', 'ficha-sub', sub));
-  if (o.resolucion) izq.append(el('p', 'ficha-res', o.resolucion));
+  res.append(el('p', 'ficha-sub', sub));
+  const chips = el('div', 'fi-chips');
+  if (NATURALEZA[o.verificacion]) chips.append(el('span', 'fi-chip ' + (o.verificacion === 'vacante_confirmada' ? 'ok' : 'pot'), NATURALEZA[o.verificacion]));
+  if (o.modalidad && o.modalidad !== 'desconocida') chips.append(el('span', 'fi-chip', MODALIDAD[o.modalidad]));
+  const fr = frescura(o);
+  if (fr) chips.append(el('span', 'fi-chip' + (/cierra (hoy|en [1-3] )/.test(fr) ? ' urge' : ''), fr));
+  if (ST.est[o.id]) chips.append(el('span', 'fi-chip e-' + ST.est[o.id].estado, NOMBRE_ESTADO[ST.est[o.id].estado]));
+  if (o.nueva) chips.append(el('span', 'badge-nueva', 'Nueva'));
+  res.append(chips);
+  if (o.resolucion) res.append(el('p', 'ficha-res', o.resolucion));
+  izq.append(res);
 
-  izq.append(el('h3', null, 'Datos'));
-  const tb = el('table', 'datos'); const tbody = el('tbody');
-  o.datos.forEach((d) => tbody.append(filaDato(d)));
-  tb.append(tbody); izq.append(tb);
-
-  if (o.descripcion) {
-    izq.append(el('h3', null, 'Descripción'));
-    const d = el('p', 'descripcion', o.descripcion.length >= 590 ? o.descripcion + '…' : o.descripcion);
-    izq.append(d, el('p', 'nota', 'Extracto publicado en ' + (o.fuentes[0]?.nombre || 'la fuente') + '. La oferta completa está en el enlace.'));
-  }
+  // 2. Por qué encaja y qué comprobar
+  izq.append(analisis(o));
   if (o.hipotesis) {
-    const h = el('section', 'hipo');
-    h.append(el('h3', null, 'Oportunidad oculta: lo que deduce RADAR'));
-    h.append(el('p', 'nota', 'Hipótesis a partir de hechos verificados. No es una vacante: compruébalo al contactar.'));
+    const hp = el('section', 'hipo');
+    hp.append(el('h3', null, 'Oportunidad oculta: lo que deduce RADAR'));
+    hp.append(el('p', 'nota', 'Hipótesis a partir de hechos verificados. No es una vacante: compruébalo al contactar.'));
     const ul = el('ul');
     o.hipotesis.necesidades.forEach((n) => { const li = el('li'); li.append(n, ' ', el('span', 'origen o-inferido', 'hipótesis')); ul.append(li); });
-    h.append(el('h4', null, 'Perfiles que podrían necesitar'), ul, el('h4', null, 'Cómo contactar'));
+    hp.append(el('h4', null, 'Perfiles que podrían necesitar'), ul, el('h4', null, 'Cómo contactar'));
     const rc = el('p'); rc.append(o.hipotesis.contacto, ' ', el('span', 'origen o-inferido', 'recomendación'));
-    h.append(rc);
-    izq.append(h);
+    hp.append(rc);
+    izq.append(hp);
   }
-  izq.append(el('h3', null, 'Análisis de encaje'));
-  izq.append(analisis(o));
-  izq.append(seccionPropuesta(o));
-  izq.append(el('h3', null, 'Por qué RADAR la puntúa así'));
-  izq.append(desglose(o));
-  const faltan = p.partes.filter((x) => x.valor == null).map((x) => CRITERIOS[x.k].toLowerCase());
-  const desconocidos = o.datos.filter((d) => d.origen === 'desconocido' || d.valor == null || d.valor === '').map((d) => d.campo.toLowerCase());
-  if (faltan.length || desconocidos.length) izq.append(el('p', 'falta', 'Falta información sobre: ' + [...new Set([...faltan, ...desconocidos])].join(', ') + '. Por eso la confianza es ' + o.confianza + '.'));
+
+  // 3. Condiciones
+  izq.append(el('h3', null, 'Condiciones'), condiciones(o));
 
   if (o.subtipo === 'licitacion_abierta' && o.candidatas?.length) {
     const s = el('section', 'candidatas'); s.id = 'fi-candidatas';
@@ -767,29 +805,43 @@ function abrirFicha(id) {
     izq.append(s);
   }
 
-  izq.append(el('h3', null, 'Fuentes'));
-  izq.append(el('p', 'nota', `Detectada por RADAR el ${fecha(o.fechas.detectada || o.fechas.consultada)}${o.fechas.publicada ? ' · publicada el ' + fecha(o.fechas.publicada) : ''}.`));
+  // 4. Notas
+  izq.append(bloqueNota(o.id, { titulo: o.titulo, org: o.organizacion.nombre, tipo: 'op' }));
+
+  // 5. Detalles bajo demanda
+  const capas = el('div', 'capas');
+  capas.append(capaFicha('Tu propuesta de valor', seccionPropuesta(o)));
+  if (o.descripcion) capas.append(capaFicha('Descripción publicada', [el('p', 'descripcion', o.descripcion.length >= 590 ? o.descripcion + '…' : o.descripcion),
+    el('p', 'nota', 'Extracto publicado en ' + (o.fuentes[0]?.nombre || 'la fuente') + '. La publicación completa está en el enlace.')]));
+  const tb = el('table', 'datos'); const tbody = el('tbody');
+  o.datos.forEach((d) => tbody.append(filaDato(d)));
+  tb.append(tbody);
+  capas.append(capaFicha('Todos los datos', tb));
+  const faltan = p.partes.filter((x) => x.valor == null).map((x) => CRITERIOS[x.k].toLowerCase());
+  const desconocidos = o.datos.filter((d) => d.origen === 'desconocido' || d.valor == null || d.valor === '').map((d) => d.campo.toLowerCase());
+  capas.append(capaFicha('Cómo se calcula la prioridad', [el('p', 'nota', 'La prioridad combina varios criterios con los pesos de «Mi perfil». Sirve para ordenar, no garantiza una entrevista ni un contrato.'), desglose(o),
+    faltan.length || desconocidos.length ? el('p', 'falta', 'Falta información sobre: ' + [...new Set([...faltan, ...desconocidos])].join(', ') + '. Por eso la confianza es ' + o.confianza + '.') : null]));
   const fu = el('ul', 'fuentes');
   o.fuentes.forEach((f) => { const li = el('li'); li.append(f.url ? enlace(f.url, f.nombre, 'enlace') : el('span', null, f.nombre), el('small', null, ' · consultada el ' + fecha(f.consultada))); fu.append(li); });
-  izq.append(fu);
+  capas.append(capaFicha('Fuentes', [el('p', 'nota', `Detectada por RADAR el ${fecha(o.fechas.detectada || o.fechas.consultada)}${o.fechas.publicada ? ' · publicada el ' + fecha(o.fechas.publicada) : ''}.`), fu]));
+  izq.append(el('h3', null, 'Más información'), capas);
 
   // Panel de acción
   const ind = indicadores3(o);
   const nota = el('div', 'panel-nota');
-  nota.append(el('b', 'n-' + (p.total >= 75 ? 'alta' : p.total >= 60 ? 'media' : 'baja'), String(p.total)), el('span', null, 'prioridad · dónde invertir tu tiempo; no es una probabilidad de contratación'));
+  nota.append(el('b', 'n-' + (p.total >= 75 ? 'alta' : p.total >= 60 ? 'media' : 'baja'), String(p.total)), el('span', null, 'prioridad · dónde invertir tu tiempo, no la probabilidad de conseguirlo'));
   der.append(nota);
   const ind3 = el('div', 'ind3');
   const filaI = (n, v, m, ayuda) => { const d = el('details', 'ind-f'); const s2 = el('summary'); s2.append(el('span', null, n), el('b', null, String(v))); d.append(s2, el('p', 'nota', ayuda), el('p', 'ind-m', m.length ? m.join(' · ') : 'Sin motivos registrados.')); return d; };
   ind3.append(filaI('Encaje profesional', ind.fit, ind.fitM, 'Tu compatibilidad con el puesto o proyecto: experiencia, competencias, sector y nivel.'),
     filaI('Señal de la empresa', ind.senal, ind.senalM, 'Lo claro que es que la empresa necesita talento, según hechos verificados.'));
   der.append(ind3);
-  der.append(el('p', 'conf conf-' + o.confianza, 'Confianza ' + o.confianza));
-  der.append(el('p', 'verif v-' + o.verificacion, VERIF[o.verificacion] || ''));
+  der.append(el('p', 'verif v-' + o.verificacion, (VERIF[o.verificacion] || '') + ' · confianza ' + o.confianza));
   const acc = el('div', 'panel-acc');
   if (o.tipo === 'empleo') {
     if (o.accion.url) acc.append(enlace(o.accion.url, o.subtipo === 'oferta' ? 'Ver oferta e inscribirme' : 'Ver convocatoria y requisitos', 'btn grande'));
     acc.append(enlace(cvUrl(o.origen.lista, o.origen.clave), 'CV adaptado (PDF)'));
-    acc.append(boton('Ver mi propuesta de valor', 'btn sec', () => $('#fi-propuesta')?.scrollIntoView({ behavior: 'smooth', block: 'start' })));
+    acc.append(boton('Ver mi propuesta de valor', 'btn sec', () => { const s = $('#fi-propuesta'); if (!s) return; s.closest('details').open = true; s.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
     acc.append(el('p', 'nota', 'Cuando te inscribas, marca abajo «Enviada». RADAR no lo marca solo.'));
   } else if (o.subtipo === 'noticia_empresa') {
     if (o.accion.url) acc.append(enlace(o.accion.url, 'Leer la noticia', 'btn grande'));
@@ -811,13 +863,17 @@ function abrirFicha(id) {
   const fav = boton(ST.fav[o.id] ? '♥ Guardada' : '♡ Guardar', 'btn sec', () => { toggleFav(o.id); fav.textContent = ST.fav[o.id] ? '♥ Guardada' : '♡ Guardar'; pintar(); });
   const fila2 = el('div', 'acciones');
   fila2.append(fav, boton('Me interesa', 'btn sec', () => { setEstado(o.id, 'interes', 'Solo queda registrado en RADAR: la empresa no recibe nada.'); sel.value = 'interes'; historial(); pintar(); }),
-    boton('No me interesa', 'btn sec', () => { setEstado(o.id, 'descartada', 'Descartada desde la ficha'); sel.value = 'descartada'; historial(); pintar(); }));
+    boton('Descartar', 'btn sec', () => { setEstado(o.id, 'descartada', 'Descartada desde la ficha'); sel.value = 'descartada'; historial(); pintar(); }),
+    boton('Añadir nota', 'btn sec', () => {
+      const t = $('#ficha .nota-b textarea');
+      if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'center' }); t.focus({ preventScroll: true }); } else $('#ficha .nota-editar')?.click();
+    }));
   acc.append(fila2);
   der.append(acc);
   der.append(selectorColecciones(o.id));
 
   const est = el('div', 'panel-est');
-  const lab = el('label', null, 'Estado');
+  const lab = el('label', null, 'Estado de la candidatura');
   const sel = el('select'); sel.append(new Option('Sin estado', ''));
   ESTADOS.forEach(([v, t]) => sel.append(new Option(t, v)));
   sel.value = ST.est[o.id]?.estado || '';
@@ -842,13 +898,76 @@ function abrirFicha(id) {
   if (!ST.vistas[o.id]) { ST.vistas[o.id] = new Date().toISOString(); guardarST(); }
 }
 
+/* ---------- notas ---------- */
+const claveNota = (nombre) => 'emp:' + norm(nombre).replace(/\b(sociedad limitada( unipersonal)?|sociedad anonima|s\.?l\.?u?|s\.?a\.?u?)\.?$/g, '').replace(/[^a-z0-9]/g, '');
+const fechaHora = (iso) => new Date(iso).toLocaleString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+function bloqueNota(id, meta) {
+  const s = el('section', 'nota-b');
+  const pintarN = (editando, aviso) => {
+    s.replaceChildren(el('h3', null, 'Tus notas'));
+    const n = ST.notas[id];
+    if (n && !editando) {
+      s.append(el('p', 'nota-txt', n.texto), el('p', 'nota', 'Última modificación: ' + fechaHora(n.f)));
+      const acc = el('div', 'acciones');
+      acc.append(boton('Editar', 'btn sec mini nota-editar', () => pintarN(true)), boton('Eliminar', 'enlace quitar', () => {
+        const prev = ST.notas[id];
+        delete ST.notas[id]; guardarST();
+        pintarN(false);
+        const u = el('p', 'nota'); u.append('Nota eliminada. ', boton('Deshacer', 'enlace', () => { ST.notas[id] = prev; guardarST(); pintarN(false); }));
+        s.append(u);
+      }));
+      s.append(acc);
+      if (aviso) { const ok = el('p', 'ok', aviso); s.append(ok); setTimeout(() => ok.remove(), 2500); }
+      return;
+    }
+    const t = el('textarea', 'nota-area');
+    t.rows = 3; t.placeholder = 'Añade una nota…'; t.value = n?.texto || '';
+    t.setAttribute('aria-label', 'Nota sobre ' + meta.titulo);
+    const guardar = boton('Guardar nota', 'btn mini', () => {
+      const v = t.value.trim();
+      if (v) {
+        if (meta.tipo === 'op') instantanea(id);
+        ST.notas[id] = { texto: v.slice(0, 4000), f: new Date().toISOString(), titulo: meta.titulo, org: meta.org || '', tipo: meta.tipo };
+      } else delete ST.notas[id];
+      guardarST();
+      pintarN(false, v ? 'Nota guardada.' : '');
+    });
+    t.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) guardar.click(); });
+    const acc = el('div', 'acciones');
+    acc.append(guardar);
+    if (editando) acc.append(boton('Cancelar', 'enlace', () => pintarN(false)));
+    s.append(t, acc);
+    if (!n) s.append(el('p', 'nota', 'Impresiones, nombres de contacto, preguntas para la entrevista o próximos pasos. Se guarda en este navegador y se incluye en «Exportar mis datos».'));
+    if (editando) t.focus();
+  };
+  pintarN(false);
+  return s;
+}
+
+function seccionNotas() {
+  const s = el('section', 'notas-g');
+  s.append(el('h3', null, 'Notas'));
+  const lista = Object.entries(ST.notas).sort((a, b) => b[1].f.localeCompare(a[1].f));
+  if (!lista.length) { s.append(el('p', 'nota', 'Aún no tienes notas. Añádelas desde la ficha de una oportunidad o de una empresa.')); return s; }
+  const ul = el('ul', 'lista-g');
+  lista.forEach(([id, n]) => {
+    const li = el('li', 'fila-n');
+    const abrir = n.tipo === 'emp' ? () => { limpiar(); F.que = n.titulo; $('#q-que').value = n.titulo; location.hash = 'empresas'; } : () => abrirFicha(id);
+    const puede = n.tipo === 'emp' || D.porId.has(id);
+    const cab = el('div', 'fila-n-cab');
+    cab.append(puede ? boton(n.titulo, 'enlace titulo-g', abrir) : el('span', 'titulo-g', n.titulo));
+    cab.append(boton('Eliminar', 'enlace quitar', () => { if (confirm('¿Eliminar esta nota? No se puede deshacer.')) { delete ST.notas[id]; guardarST(); pintar(); } }));
+    li.append(cab, el('small', null, [n.tipo === 'emp' ? 'Empresa' : n.org, 'editada el ' + fechaCorta(n.f)].filter(Boolean).join(' · ')), el('p', 'nota-txt corta', n.texto));
+    ul.append(li);
+  });
+  s.append(ul);
+  return s;
+}
+
 function abrirEmpresa(e) {
   const cuerpo = $('#ficha-cuerpo');
   cuerpo.replaceChildren();
-  const vis = visual({ subtipo: 'empresa', organizacion: { nombre: e.nombre }, titulo: e.nombre }, true);
-  vis.className = 'visual t-empresa ficha-visual';
-  vis.querySelector('.tipo-badge').textContent = 'Empresa';
-  cuerpo.append(vis);
   const g = el('div', 'ficha-grid'); const izq = el('div', 'ficha-izq'); const der = el('aside', 'ficha-der');
   izq.append(el('p', 'eyebrow', 'Empresa con señales'));
   const h = el('h2', null, e.nombre); h.id = 'fi-titulo'; izq.append(h);
@@ -865,6 +984,7 @@ function abrirEmpresa(e) {
   });
   izq.append(ul);
   izq.append(el('p', 'hipotesis', 'Hipótesis de RADAR, no un hecho: con estos proyectos podría necesitar reforzar la dirección de proyectos. No hay ninguna vacante confirmada.'));
+  izq.append(bloqueNota(claveNota(e.nombre), { titulo: e.nombre, org: e.ciudad || '', tipo: 'emp' }));
   der.append(el('p', 'verif v-proyecto_adjudicado', 'Señal de empresa: no es una vacante'));
   const acc = el('div', 'panel-acc');
   const ref = e.ganados[0] || e.candidata[0] || (e.borme && D.ops.find((o) => o.origen.lista === 'senal' && e.borme.some((g) => g.id === o.origen.clave)));
@@ -1023,6 +1143,7 @@ function filaGuardado(id) {
   if (g.aviso) izq.append(el('small', 'aviso-g', g.aviso));
   const paso = siguientePaso(id);
   if (paso) izq.append(el('small', 'paso-g' + (/insistir/.test(paso) ? ' urge' : ''), '→ ' + paso));
+  if (ST.notas[id]) izq.append(el('small', 'nota-g', 'Nota: ' + corto(ST.notas[id].texto.replace(/\s+/g, ' '), 110)));
   const der = el('div', 'fila-g-c');
   const sel = el('select'); sel.setAttribute('aria-label', 'Estado de ' + g.titulo);
   sel.append(new Option('Sin estado', '')); ESTADOS.forEach(([v, n]) => sel.append(new Option(n, v)));
@@ -1061,7 +1182,6 @@ document.addEventListener('click', (e) => {
 
 function indicadores(ids) {
   const box = el('section', 'indicadores');
-  box.append(el('h3', null, 'Tu actividad'));
   const est = (e) => Object.values(ST.est).filter((x) => x.estado === e || x.hist.some((h) => h.e === e)).length;
   const pasos = [
     ['Detectadas', D.ops.length], ['Revisadas', Object.keys(ST.vistas).filter((k) => D.porId.has(k)).length],
@@ -1113,11 +1233,10 @@ function pintarGuardados() {
   const ids = [...new Set([...Object.keys(ST.fav), ...Object.keys(ST.est), ...Object.values(ST.col).flatMap((c) => Object.keys(c.items))])];
   $('#res-n').textContent = `${ids.length} oportunidad${ids.length === 1 ? '' : 'es'} guardada${ids.length === 1 ? '' : 's'} o con estado`;
   const cont = el('div', 'guardados');
-  cont.append(indicadores(ids));
 
   // colecciones
   const cols = el('section', 'cols');
-  const cab = el('div', 'cols-cab'); cab.append(el('h3', null, 'Colecciones'));
+  const cab = el('div', 'cols-cab'); cab.append(el('h3', null, 'Guardadas y colecciones'));
   cab.append(boton('+ Nueva colección', 'btn sec mini', () => {
     const n = prompt('Nombre de la colección'); if (!n || !n.trim()) return;
     const k = 'c' + Date.now().toString(36); ST.col[k] = { nombre: n.trim().slice(0, 60), items: {} }; COL_ACTIVA = k; guardarST(); pintar();
@@ -1145,7 +1264,7 @@ function pintarGuardados() {
 
   // candidaturas por estado
   const cand = el('section', 'candidaturas');
-  cand.append(el('h3', null, 'Candidaturas y contactos'));
+  cand.append(el('h3', null, 'Candidaturas y próximos pasos'));
   const porEstado = {};
   Object.entries(ST.est).forEach(([id, e]) => { (porEstado[e.estado] = porEstado[e.estado] || []).push(id); });
   const orden = ['interes', 'pendiente', 'borrador', 'enviada', 'respuesta', 'entrevista', 'descartada', 'cerrada'];
@@ -1181,7 +1300,11 @@ function pintarGuardados() {
     g.append(ul);
     cand.append(g);
   }
-  cont.append(cand);
+  const act = el('details', 'g-act');
+  act.append(el('summary', null, 'Tu actividad y qué canal te funciona'), indicadores(ids));
+  const izqG = el('div', 'g-col'); izqG.append(cand, cols);
+  const derG = el('div', 'g-col'); derG.append(seccionNotas(), act);
+  cont.replaceChildren(izqG, derG);
 
   $('#rejilla').replaceChildren(cont);
 }
@@ -1289,10 +1412,9 @@ function contadorGuardados() {
 /* ---------- navegación ---------- */
 function ruta() {
   const [v, , id] = location.hash.replace(/^#/, '').split('/');
-  const movil = window.matchMedia('(max-width: 640px)').matches;
-  VISTA = VISTAS[v] ? v : movil ? 'descubrir' : 'radar';
+  VISTA = VISTAS[v] ? v : 'radar';
   if (typeof cerrarHoja === 'function' && VISTA !== 'descubrir') cerrarHoja();
-  $$('.nav a').forEach((a) => { const on = a.dataset.v === VISTA; a.classList.toggle('on', on); if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  $$('.nav a, .ajustes').forEach((a) => { const on = a.dataset.v === SECCION[VISTA]; a.classList.toggle('on', on); if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   document.body.dataset.vista = VISTA;
   pintar();
   if (id) abrirFicha(decodeURIComponent(id));
@@ -1308,7 +1430,7 @@ $('#buscador').addEventListener('submit', (e) => {
 });
 ['#q-donde', '#q-modalidad', '#q-tipo'].forEach((s) => $(s).addEventListener('change', () => { F.donde = $('#q-donde').value; F.modalidad = $('#q-modalidad').value; F.tipo = $('#q-tipo').value; pintar(); }));
 let tq; $('#q-que').addEventListener('input', () => { clearTimeout(tq); tq = setTimeout(() => { F.que = $('#q-que').value.trim(); pintar(); }, 250); });
-$('#rapidos').addEventListener('click', (e) => {
+document.addEventListener('click', (e) => {
   const b = e.target.closest('.chip[data-f]'); if (!b) return;
   const f = b.dataset.f; if (F.rapidos.has(f)) F.rapidos.delete(f); else F.rapidos.add(f);
   sincronizarChips(); pintar();
@@ -1318,18 +1440,24 @@ $('#f-minimo').addEventListener('input', (e) => { F.minimo = +e.target.value; $(
 $('#limpiar-filtros').addEventListener('click', () => { limpiar(); pintar(); });
 $('#ver-resultados').addEventListener('click', () => $('#filtros').close());
 $('#orden').addEventListener('change', (e) => { ORDEN = e.target.value; pintar(); });
-$$('.vista-btns button').forEach((b) => b.addEventListener('click', () => { MODO = b.dataset.vista; if (VISTA === 'mapa' && MODO === 'rejilla') { location.hash = 'explorar'; return; } pintar(); }));
+$$('.vista-btns button').forEach((b) => b.addEventListener('click', () => {
+  const m = b.dataset.vista;
+  if (m === 'descubrir') { location.hash = 'descubrir'; return; }
+  MODO = m;
+  if (VISTA === 'descubrir' || (VISTA === 'mapa' && m === 'rejilla')) { location.hash = 'explorar'; return; }
+  pintar();
+}));
 $$('dialog').forEach((d) => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
 $('#ficha').addEventListener('close', () => { if (/\/o\//.test(location.hash)) history.replaceState(null, '', '#' + VISTA); });
 $('#exportar').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify({ radar: ST, pesos: PESOS, exportado: new Date().toISOString() }, null, 1)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify({ radar: ST, pesos: PESOS, perfil: PREF, exportado: new Date().toISOString() }, null, 1)], { type: 'application/json' });
   const a = el('a'); a.href = URL.createObjectURL(blob); a.download = `radar-mis-datos-${hoyISO()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 });
 $('#importar').addEventListener('change', async (e) => {
   const f = e.target.files[0]; if (!f) return;
   try {
     const d = JSON.parse(await f.text());
-    if (d.radar && d.radar.fav && d.radar.est) { Object.assign(ST, d.radar); guardarST(); pintar(); alert('Copia importada.'); } else alert('Ese archivo no es una copia de RADAR.');
+    if (d.radar && d.radar.fav && d.radar.est) { Object.assign(ST, d.radar); ST.notas = ST.notas || {}; guardarST(); if (d.perfil) { Object.assign(PREF, d.perfil); guardarPref(); } pintar(); alert('Copia importada.'); } else alert('Ese archivo no es una copia de RADAR.');
   } catch (err) { alert('No se ha podido leer el archivo.'); }
 });
 window.abrirFicha = abrirFicha;
