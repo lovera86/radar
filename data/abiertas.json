@@ -1,44 +1,5 @@
 [
  {
-  "id": "20777843",
-  "expediente": "CMAYOR/2026/MUSEO/852",
-  "estado": "PUB",
-  "titulo": "AUXILIARES SOROLLA. Servicio de auxiliares de sala, control de accesos, venta de entradas, tienda y consigna de la exposición «La colección Sorolla de la Hispanic Society» en el Museo de la Ciudad de València.",
-  "tipo": "2",
-  "cpv": [
-   "92521000"
-  ],
-  "region_nuts": "ES523",
-  "region": "Valencia/València",
-  "organo": "Gerencia del Consorcio de Museos de la Comunitat Valenciana",
-  "importe": 1716010.92,
-  "adjudicatario": "",
-  "nif": "",
-  "ciudad_empresa": "",
-  "fecha_adjudicacion": "",
-  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=kuE6C6S145yqb7rCcv76BA%3D%3D",
-  "actualizado": "2026-10-25T12:57:02.945+01:00",
-  "plazo": "2026-11-10",
-  "criterios": [
-   {
-    "texto": "Plan de acogida y experiencia del visitante",
-    "peso": 10.0
-   },
-   {
-    "texto": "Experiencia del COORDINADOR / JEFE DE EQUIPO en el ámbito museístico",
-    "peso": 6.0
-   }
-  ],
-  "pide_pm": true,
-  "puntuacion": 80,
-  "motivos": [
-   "museo",
-   "exposicion",
-   "CPV 92521000",
-   "puntúa el jefe de proyecto"
-  ]
- },
- {
   "id": "20677104",
   "expediente": "SER/2026/0000122251",
   "estado": "PUB",
@@ -1154,49 +1115,6 @@
   "motivos": [
    "museo",
    "CPV 92521000,92000000"
-  ]
- },
- {
-  "id": "20828238",
-  "expediente": "925/2026",
-  "estado": "PUB",
-  "titulo": "Servicios de protocolo, acomodación, información, visitas guiadas y asistencia al público y a los organizadores, artistas, compañías y productoras en los eventos, exposiciones y actividades en cuya organización intervenga la Sociedad Regional de Educación, Cultura y Deporte, S.L",
-  "tipo": "2",
-  "cpv": [
-   "92000000",
-   "79952100",
-   "79956000",
-   "79953000"
-  ],
-  "region_nuts": "ES130",
-  "region": "Cantabria",
-  "organo": "Consejo de Administración de la Sociedad Regional de Educación, Cultura y Deporte S.L.",
-  "importe": 359400.0,
-  "adjudicatario": "",
-  "nif": "",
-  "ciudad_empresa": "",
-  "fecha_adjudicacion": "",
-  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=t89EFxUbrEu2gkLQ8TeYKA%3D%3D",
-  "actualizado": "2026-11-03T09:27:47.826+01:00",
-  "plazo": "2026-12-03",
-  "criterios": [
-   {
-    "texto": "Equipo de trabajo",
-    "peso": 10.0
-   },
-   {
-    "texto": "Coordinador del servicio",
-    "peso": 15.0
-   }
-  ],
-  "pide_pm": true,
-  "puntuacion": 66,
-  "motivos": [
-   "exposicion",
-   "exposiciones",
-   "CPV 92000000,79952100,79956000",
-   "Cantabria",
-   "puntúa el jefe de proyecto"
   ]
  },
  {

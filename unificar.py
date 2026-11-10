@@ -15,7 +15,7 @@ Uso:
 import json
 import re
 import unicodedata
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent
@@ -366,6 +366,128 @@ def desde_senales(filas, consultada):
     return out
 
 
+# ------------------------------------------------------------ ticket 04: inteligencia
+
+PESOS_BASE = {"encaje": 30, "necesidad": 20, "geografia": 15, "calidad": 15, "salario": 10, "acceso": 10}
+RUIDO_TITULO = re.compile(r"\((h|m|f)\s*/\s*(h|m|f)\)|\b(h|m)\s*/\s*(h|m)\b|\(.*?\)|[^a-z0-9 ]")
+FORMA_JUR = re.compile(r"\b(sociedad limitada( unipersonal)?|sociedad anonima|s ?l ?u?|s ?a ?u?)\b")
+
+
+def clave_dedup(o):
+    t = RUIDO_TITULO.sub(" ", norm(o["titulo"]))
+    org = FORMA_JUR.sub(" ", re.sub(r"[^a-z0-9 ]", " ", norm(o["organizacion"]["nombre"])))
+    return (o["tipo"], re.sub(r"\s+", " ", t).strip()[:100], re.sub(r"\s+", " ", org).strip()[:50])
+
+
+def prioridad_base(o):
+    s = w = 0
+    for k, peso in PESOS_BASE.items():
+        v = o["criterios"].get(k, {}).get("valor")
+        if v is not None:
+            s += v * peso
+            w += peso
+    return round(100 * s / w) if w else 0
+
+
+def senal_empresa(o, recuento):
+    """Employer signal: intensidad de señales verificadas de que la empresa puede necesitar talento."""
+    v = o["criterios"]["necesidad"]["valor"] or 0
+    motivos = list(o["criterios"]["necesidad"]["motivos"])
+    org = norm(o["organizacion"]["nombre"])
+    n = recuento.get(org, {})
+    if n.get("ganados", 0) >= 2:
+        v += 0.1
+        motivos.append(f"ha ganado {n['ganados']} contratos de tu perfil")
+    if n.get("borme"):
+        v += 0.1
+        motivos.append("actividad reciente en el Registro Mercantil (BORME)")
+    if o.get("contacto", {}).get("email") or any(c.get("email") for c in o.get("candidatas", [])):
+        v += 0.05
+        motivos.append("hay un contacto verificado")
+    return {"valor": min(100, round(100 * min(1, v))), "motivos": motivos}
+
+
+TEMAS_NECESIDAD = [
+    (r"fotogram|batimetr|lidar|nube|cartograf|topograf|ortofoto|dron|teledetec|geoespacial",
+     ["Jefe/a de proyecto de captura y procesado de datos 3D", "Coordinación de campañas de campo y entregables"]),
+    (r"musealiz|museograf|exposici|museo|patrimonio|interpretacion|expositiv",
+     ["Project Manager de musealización y producción expositiva", "Coordinación de contenidos, proveedores y montaje"]),
+    (r"inteligencia artificial|\bia\b|machine learning|gemelo|software|plataforma|digital|datos|innovacion|i\+d",
+     ["Project Manager de producto digital o de IA", "Product Owner de plataforma"]),
+    (r"direccion de obra|obras|ingenieria|instalacion|infraestructura|puerto|portuari|asistencia tecnica",
+     ["Jefe/a de proyecto técnico", "Coordinación de contratistas y control de costes y plazos"]),
+]
+
+
+def hipotesis(o):
+    """Necesidades profesionales potenciales y recomendación de contacto (hipótesis, nunca hechos)."""
+    if o["tipo"] == "empleo":
+        return None
+    t = norm(o["titulo"] + " " + " ".join(o.get("etiquetas", [])) + " " + (o.get("cliente") or ""))
+    nec = []
+    for rx, lista_n in TEMAS_NECESIDAD:
+        if re.search(rx, t):
+            nec += [x for x in lista_n if x not in nec]
+    if not nec:
+        nec = ["Coordinación y control del proyecto (alcance, plazos, costes y proveedores)"]
+    if o["subtipo"] == "licitacion_abierta":
+        con = [c for c in o.get("candidatas", []) if c.get("email")]
+        plazo = o["fechas"].get("plazo")
+        rec = (f"Escribe antes del {'/'.join(reversed(plazo.split('-')))} a las empresas que suelen ganar contratos así"
+               + (f" (hay {len(con)} con correo verificado)" if con else "") + ": ofrécete como jefa de proyecto para su oferta.")
+    elif o["subtipo"] == "senal_empresa":
+        rec = ("Felicita el arranque de la empresa y ofrece tu experiencia para poner en marcha sus primeros proyectos. "
+               "Busca su web y a la persona fundadora en LinkedIn.") if o["titulo"].startswith("Empresa nueva") else \
+            "Escribe a la empresa aprovechando su momento de crecimiento; busca a la persona responsable de proyectos en LinkedIn."
+    elif o.get("contacto", {}).get("email"):
+        rec = f"Escribe a {o['contacto']['email']} (verificado en su web) en los próximos días, mientras organizan el equipo del proyecto."
+    elif o.get("contacto", {}).get("web"):
+        rec = "Busca el formulario o correo de contacto en su web y a la persona responsable de proyectos en LinkedIn."
+    else:
+        rec = "No hay correo verificado: busca a la persona responsable de proyectos u operaciones de la empresa en LinkedIn."
+    return {"necesidades": nec[:3], "contacto": rec}
+
+
+def informe(unicas, hoy_iso):
+    """Informe diario: mejores oportunidades, novedades, empresas, adjudicaciones, espontáneas y 3 acciones."""
+    pr = {o["id"]: prioridad_base(o) for o in unicas}
+    orden = sorted(unicas, key=lambda o: -pr[o["id"]])
+    nuevas = [o for o in orden if o["fechas"].get("detectada") == hoy_iso]
+    ids = lambda l, n: [o["id"] for o in l[:n]]
+    vacantes = [o for o in orden if o["verificacion"] == "vacante_confirmada"]
+    adjud = [o for o in orden if o["subtipo"] == "adjudicacion"]
+    empresas = sorted([o for o in unicas if o["subtipo"] in ("adjudicacion", "senal_empresa")], key=lambda o: (-o["senal"]["valor"], -pr[o["id"]]))
+    espont = [o for o in orden if o["subtipo"] in ("adjudicacion", "senal_empresa") and o.get("contacto", {}).get("email")] or \
+             [o for o in orden if o["subtipo"] == "senal_empresa"]
+    acciones = []
+    base_v = [o for o in vacantes if o in nuevas] or vacantes
+    if base_v:
+        o = base_v[0]
+        acciones.append({"id": o["id"], "texto": f"Aplica a «{o['titulo']}»{' en ' + o['organizacion']['nombre'] if o['organizacion']['nombre'] else ''} (prioridad {pr[o['id']]})."})
+    manana = (HOY + timedelta(days=1)).isoformat()
+    lic = sorted([o for o in unicas if o["subtipo"] == "licitacion_abierta" and o.get("pide_pm") and o["fechas"].get("plazo", "") >= manana and pr[o["id"]] >= 55],
+                 key=lambda o: (o["fechas"]["plazo"], -pr[o["id"]]))
+    if lic:
+        o = lic[0]
+        acciones.append({"id": o["id"], "texto": f"Ofrécete como jefa de proyecto a las empresas candidatas de «{o['titulo'][:90]}» antes del {'/'.join(reversed(o['fechas']['plazo'].split('-')))}."})
+    con = [o for o in adjud if o.get("contacto", {}).get("email")]
+    if con:
+        o = con[0]
+        acciones.append({"id": o["id"], "texto": f"Escribe a {o['organizacion']['nombre']}: acaba de ganar «{o['titulo'][:80]}» y tiene correo verificado."})
+    return {
+        "fecha": hoy_iso,
+        "total": len(unicas),
+        "nuevas": len(nuevas),
+        "sin_novedades": not nuevas,
+        "mejores": ids(orden, 10),
+        "nuevas_ofertas": ids([o for o in nuevas if o["tipo"] == "empleo"], 10),
+        "empresas": ids(empresas, 8),
+        "adjudicaciones": ids([o for o in adjud if o in nuevas] or adjud, 8),
+        "espontaneas": ids(espont, 6),
+        "acciones": acciones[:3],
+    }
+
+
 def main():
     meta_f = WEB / "meta.json"
     meta = json.loads(meta_f.read_text(encoding="utf-8")) if meta_f.exists() else {}
@@ -376,7 +498,7 @@ def main():
     # Deduplicación: mismo tipo, mismo título y misma organización -> se juntan las fuentes.
     unicas, vistas, duplicadas = [], {}, 0
     for o in todas:
-        k = (o["tipo"], norm(o["titulo"])[:120], norm(o["organizacion"]["nombre"])[:60])
+        k = clave_dedup(o)
         if k in vistas:
             duplicadas += 1
             previa = vistas[k]
@@ -390,8 +512,40 @@ def main():
         con = sum(1 for c in o["criterios"].values() if not c["sin_info"])
         inferidos = sum(1 for x in o["datos"] if x["origen"] == "inferido")
         o["confianza"] = "baja" if con <= 3 else "media" if (con == 4 or inferidos or o["modalidad"] == "desconocida") else "alta"
+    # Fecha de detección (primera vez que RADAR vio cada oportunidad)
+    hoy_iso = HOY.isoformat()
+    reg_f = BASE / "data" / "detectadas.json"
+    reg = json.loads(reg_f.read_text(encoding="utf-8")) if reg_f.exists() else {}
+    primera_vez = not reg
+    for o in unicas:
+        if o["id"] not in reg:
+            if primera_vez:  # primera ejecución del registro: nada se marca como nuevo de hoy
+                reg[o["id"]] = min(o["fechas"].get("publicada") or "9999", (HOY - timedelta(days=1)).isoformat())
+            else:
+                reg[o["id"]] = hoy_iso
+        o["fechas"]["detectada"] = reg[o["id"]]
+        o["nueva"] = reg[o["id"]] == hoy_iso
+    vivos = {o["id"] for o in unicas}
+    reg = {k: v for k, v in reg.items() if k in vivos or v >= (HOY.replace(day=1).isoformat())}
+    reg_f.write_text(json.dumps(reg, ensure_ascii=False), encoding="utf-8")
+    # Señal de empresa e hipótesis
+    recuento = {}
+    for o in unicas:
+        org = norm(o["organizacion"]["nombre"])
+        r = recuento.setdefault(org, {"ganados": 0, "borme": False})
+        if o["subtipo"] == "adjudicacion":
+            r["ganados"] += 1
+        if o["subtipo"] == "senal_empresa":
+            r["borme"] = True
+    for o in unicas:
+        o["senal"] = senal_empresa(o, recuento)
+        h = hipotesis(o)
+        if h:
+            o["hipotesis"] = h
     (WEB / "oportunidades.json").write_text(json.dumps(unicas, ensure_ascii=False), encoding="utf-8")
-    meta.update(oportunidades_total=len(unicas), duplicadas=duplicadas)
+    inf = informe(unicas, hoy_iso)
+    (WEB / "informe.json").write_text(json.dumps(inf, ensure_ascii=False), encoding="utf-8")
+    meta.update(oportunidades_total=len(unicas), duplicadas=duplicadas, nuevas_hoy=inf["nuevas"])
     meta_f.write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
     por_tipo = {}
     for o in unicas:

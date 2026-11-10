@@ -145,6 +145,9 @@ def minimo(c, cfg):
     return cfg["puntuacion_minima"]
 
 
+ERRORES = []
+
+
 def recorrer(feed, desde):
     url = feed
     while url:
@@ -153,6 +156,7 @@ def recorrer(feed, desde):
             raiz = ET.fromstring(fetch(url))
         except Exception as ex:  # una página caída no debe parar el resto
             print(f"[aviso] {url}: {ex}", file=sys.stderr)
+            ERRORES.append(f"{url.rsplit('/', 1)[-1]}: {type(ex).__name__}")
             return
         entradas = raiz.findall("a:entry", NS)
         mas_antigua = None
@@ -238,6 +242,11 @@ def main():
     estado_f.write_text(json.dumps(estado, ensure_ascii=False), encoding="utf-8")
     print(f"Revisados {revisados} contratos desde {desde:%Y-%m-%d}; {len(nuevas)} oportunidades nuevas -> data/nuevas.json")
     print(f"Licitaciones abiertas que encajan: {len(vivas)} ({len(nuevas_vivas)} nuevas) -> data/abiertas.json")
+    from fuentes_estado import registrar
+    registrar("Plataforma de Contratación del Sector Público", resultados=revisados,
+              error="; ".join(ERRORES[:3]) if ERRORES and not revisados else "",
+              detalle=f"{revisados} contratos revisados; {len(nuevas)} adjudicaciones y {len(nuevas_vivas)} licitaciones nuevas que encajan"
+              + (f"; {len(ERRORES)} páginas no se pudieron leer" if ERRORES else ""))
 
 
 if __name__ == "__main__":

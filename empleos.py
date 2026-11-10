@@ -55,8 +55,12 @@ def get(url, headers=None, data=None):
         return r.read()
 
 
+ERRORES = {}
+
+
 def aviso(fuente, ex):
     print(f"[aviso] {fuente}: {ex}", file=sys.stderr)
+    ERRORES.setdefault(fuente.split(" ")[0], []).append(f"{type(ex).__name__}: {str(ex)[:80]}")
 
 
 # ---------------------------------------------------------------- fuentes
@@ -247,10 +251,28 @@ def main():
     previas = {o["clave"]: o for o in (json.loads(f.read_text(encoding="utf-8")) if f.exists() else [])}
     hoy = datetime.now(timezone.utc).date()
     nuevas, vistas = [], 0
+    from fuentes_estado import registrar
+    NOMBRES = {"tecnoempleo": "Tecnoempleo", "remotive": "Remotive", "infojobs": "InfoJobs (API)", "jooble": "Jooble", "adzuna": "Adzuna", "alertas": "Alertas de LinkedIn e InfoJobs (correo)"}
+    CLAVES = {"infojobs": ("INFOJOBS_ID", "INFOJOBS_SECRET"), "jooble": ("JOOBLE_KEY",), "adzuna": ("ADZUNA_ID", "ADZUNA_KEY"), "alertas": ("ALERTAS_EMAIL", "ALERTAS_APP_PASSWORD")}
     for fuente in FUENTES:
         lote = fuente(cfg)
         vistas += len(lote)
         print(f"{fuente.__name__}: {len(lote)} ofertas", flush=True)
+        n = fuente.__name__
+        sin_conf = n in CLAVES and not all(os.environ.get(k) for k in CLAVES[n])
+        errs = ERRORES.get(NOMBRES[n].split(" ")[0], [])
+        if n == "alertas" and not sin_conf:
+            try:
+                parte = json.loads((DATA / "estado_alertas.json").read_text(encoding="utf-8"))
+                if parte.get("error"):
+                    errs = [parte["error"]]
+                det = "conectado a Gmail; correos: " + ", ".join(f"{k} {v}" for k, v in parte.get("correos", {}).items()) if parte.get("conectado") else ""
+            except (OSError, ValueError):
+                det = ""
+        else:
+            det = f"{len(lote)} ofertas leídas"
+        registrar(NOMBRES[n], resultados=len(lote), error="; ".join(errs[:2]) if errs and not lote else "", sin_configurar=sin_conf,
+                  detalle="falta la clave" if sin_conf else det + (f"; {len(errs)} avisos" if errs and lote else ""))
         for o in lote:
             if not o["titulo"] or not o["url"]:
                 continue

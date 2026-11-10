@@ -142,6 +142,9 @@ def relevancia(datos, provincia):
     return min(100, p), motivos
 
 
+ERRORES = []
+
+
 def leer_dia(dia, known, senales):
     try:
         s = json.loads(get(f"https://www.boe.es/datosabiertos/api/borme/sumario/{dia:%Y%m%d}"))["data"]["sumario"]
@@ -163,6 +166,7 @@ def leer_dia(dia, known, senales):
                     texto = "\n".join((p.extract_text() or "") for p in PdfReader(io.BytesIO(get(url, "application/pdf"))).pages)
                 except Exception as ex:
                     print(f"[aviso] BORME {dia} {prov}: {ex}", file=sys.stderr)
+                    ERRORES.append(f"{dia} {prov}: {type(ex).__name__}")
                     continue
                 leidos += 1
                 for num, empresa, cuerpo in entradas(texto):
@@ -221,6 +225,9 @@ def main():
     WEB.mkdir(parents=True, exist_ok=True)
     (WEB / "empresas.json").write_text(json.dumps(vivas, ensure_ascii=False), encoding="utf-8")
     print(f"{pdfs} PDF del BORME leídos; {len(vivas)} señales vigentes ({len(nuevas)} nuevas) -> data/empresas_senales.json")
+    from fuentes_estado import registrar
+    registrar("BORME (Registro Mercantil)", resultados=pdfs, error="; ".join(ERRORES[:3]) if ERRORES and not pdfs else "",
+              detalle=f"{pdfs} boletines provinciales leídos; {len(nuevas)} señales nuevas" + (f"; {len(ERRORES)} no se pudieron leer" if ERRORES else ""))
 
 
 if __name__ == "__main__":

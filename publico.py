@@ -140,11 +140,16 @@ def fecha_es(s):
     return ""
 
 
+UNIOVI_OK = True
+
+
 def uniovi(desde):
     try:
         raw = get(UNIOVI, "text/html")
     except Exception as ex:
         print(f"[aviso] Universidad de Oviedo: {ex}", file=sys.stderr)
+        global UNIOVI_OK
+        UNIOVI_OK = False
         return []
     try:
         s = raw.decode("utf-8")
@@ -194,7 +199,17 @@ def main():
         desde = hoy - timedelta(days=30)
     minimo = json.loads((BASE / "config.json").read_text(encoding="utf-8")).get("publico", {}).get("puntuacion_minima", 40)
     nuevas = []
-    for o in boe(desde, hoy) + uniovi(desde):
+    from fuentes_estado import registrar
+    res_boe, res_uni = [], []
+    try:
+        res_boe = boe(desde, hoy)
+        registrar("BOE (oposiciones y concursos)", resultados=len(res_boe), detalle=f"{len(res_boe)} convocatorias revisadas desde {desde}")
+    except Exception as ex:
+        registrar("BOE (oposiciones y concursos)", error=f"{type(ex).__name__}: {ex}")
+    res_uni = uniovi(desde)
+    registrar("Universidad de Oviedo", resultados=len(res_uni), error="" if res_uni or UNIOVI_OK else "no se pudo leer la página de convocatorias",
+              detalle=f"{len(res_uni)} plazas desde {desde}")
+    for o in res_boe + res_uni:
         if o["puntuacion"] < minimo:
             continue
         if o["clave"] not in previas:

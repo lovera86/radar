@@ -70,6 +70,12 @@ def main():
     titulo = f"Radar {hoy}: " + ", ".join(partes[:-1]) + (" y " if len(partes) > 1 else "") + partes[-1]
 
     lineas = [f"@{owner}, esto es lo nuevo del radar hoy. Todo está en la web: {web}", ""]
+    try:
+        inf = json.loads((BASE / "docs" / "data" / "informe.json").read_text(encoding="utf-8"))
+        if inf.get("acciones"):
+            lineas += ["## Tus 3 acciones prioritarias de hoy", ""] + [f"{i}. {a['texto']}" for i, a in enumerate(inf["acciones"], 1)] + [""]
+    except (OSError, ValueError):
+        pass
     if senales:
         lineas += ["## Señales de empresas (BORME): no son vacantes", ""]
         for g in sorted(senales, key=lambda g: -g["puntuacion"])[:8]:

@@ -178,7 +178,12 @@
     "ciberseguridad",
     "esquema nacional de seguridad",
     "interfaz urbano",
-    "hce"
+    "hce",
+    "auxiliares de sala",
+    "control de accesos",
+    "venta de entradas",
+    "guias",
+    "visitas guiadas"
   ],
   "importe_minimo": 20000,
   "empleo": {
