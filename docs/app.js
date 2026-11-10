@@ -38,6 +38,7 @@ const VISTAS = {
   empresas: { titulo: 'Empresas', intro: 'Empresas con señales verificables de actividad en tu sector. Una señal no es una vacante: es un buen motivo para escribirles.' },
   mapa: { titulo: 'Mapa', intro: 'Dónde están las oportunidades. Las remotas o sin ubicación fiable aparecen aparte, sin marcador.' },
   guardados: { titulo: 'Guardados y candidaturas', intro: 'Lo que has guardado y en qué punto está cada candidatura o contacto.' },
+  descubrir: { titulo: 'Descubrir', intro: 'Una oportunidad cada vez, de la que más encaja a la que menos. Solo salen las que aún no has revisado.' },
   perfil: { titulo: 'Mi perfil', intro: 'Lo que RADAR sabe de ti y cómo lo usa. Tus preferencias y pesos cambian la compatibilidad de todas las oportunidades al momento. Se guarda solo en este navegador.' },
 };
 
@@ -441,6 +442,7 @@ function pintar() {
       enlace('https://www.tecnoempleo.com/ofertas-trabajo/?te=project+manager', 'Tecnoempleo', 'btn sec mini'));
   }
   if (VISTA === 'empresas') { $('#mejores').hidden = true; return pintarEmpresas(); }
+  if (VISTA === 'descubrir') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarDescubrir(); }
   if (VISTA === 'perfil') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarPerfil(); }
   if (VISTA === 'guardados') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarGuardados(); }
   const lista = ordenar(D.ops.filter((o) => pasa(o)));
@@ -1176,7 +1178,9 @@ function contadorGuardados() {
 /* ---------- navegación ---------- */
 function ruta() {
   const [v, , id] = location.hash.replace(/^#/, '').split('/');
-  VISTA = VISTAS[v] ? v : 'explorar';
+  const movil = window.matchMedia('(max-width: 640px)').matches;
+  VISTA = VISTAS[v] ? v : movil ? 'descubrir' : 'explorar';
+  if (typeof cerrarHoja === 'function' && VISTA !== 'descubrir') cerrarHoja();
   $$('.nav a').forEach((a) => { const on = a.dataset.v === VISTA; a.classList.toggle('on', on); if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   document.body.dataset.vista = VISTA;
   pintar();
