@@ -10,6 +10,8 @@ const params = new URLSearchParams(location.search);
 const lista = params.get('l') || '';
 const clave = params.get('k') || '';
 const empresaParam = params.get('e') || '';
+const idiomaParam = params.get('lang') || '';
+let IDIOMA = 'es';
 const leer = (k) => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
 const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* sin almacenamiento */ } };
 
@@ -19,11 +21,13 @@ function describir(o) {
   if (lista === 'ext') {
     const empresa = o.organizacion?.nombre || '';
     return { puesto: o.titulo, empresa, texto: [o.titulo, o.encaje, o.descripcion].join(' '),
-      objetivo: `Incorporarme como ${o.titulo}${empresa ? ' en ' + sinPunto(empresa) : ''}.` };
+      objetivo: `Incorporarme como ${o.titulo}${empresa ? ' en ' + sinPunto(empresa) : ''}.`,
+      objetivoEn: `To join ${empresa ? sinPunto(empresa) + ' ' : ''}as ${o.titulo}.` };
   }
   if (lista === 'emp') {
-    return { puesto: o.titulo, empresa: o.empresa, texto: [o.titulo, o.encaje, o.empresa].join(' '),
-      objetivo: `Incorporarme como ${o.titulo}${o.empresa ? ' en ' + sinPunto(o.empresa) : ''}.` };
+    return { puesto: o.titulo, empresa: o.empresa, texto: [o.titulo, o.encaje, o.empresa, o.descripcion || ''].join(' '),
+      objetivo: `Incorporarme como ${o.titulo}${o.empresa ? ' en ' + sinPunto(o.empresa) : ''}.`,
+      objetivoEn: `To join ${o.empresa ? sinPunto(o.empresa) + ' ' : ''}as ${o.titulo}.` };
   }
   if (lista === 'adj') {
     return { puesto: 'Project Manager', empresa: o.empresa, texto: [o.contrato, o.encaje, o.cliente].join(' '),
@@ -52,7 +56,16 @@ const LEGIBLE = { museograf: 'Museografía', musealiz: 'Musealización', exposic
   'gemelo digital': 'Gemelo digital', 'digital twin': 'Gemelo digital', digitalizacion: 'Digitalización', 'transformacion digital': 'Transformación digital',
   innovacion: 'Innovación', ingenieria: 'Ingeniería', energia: 'Energía', capm: 'CAPM', 'puntúa el jefe de proyecto': 'Dirección de proyecto',
   'gestión de proyectos': 'Gestión de proyectos', 'ingeniería técnica': 'Ingeniería técnica' };
-const legible = (s) => LEGIBLE[s.toLowerCase()] || s.charAt(0).toUpperCase() + s.slice(1);
+const LEGIBLE_EN = { 'digital twin': 'Digital twin', 'nube de puntos': 'Point clouds', 'nubes de puntos': 'Point clouds', 'inteligencia artificial': 'Artificial intelligence', 'ia generativa': 'Generative AI', 'gemelo digital': 'Digital twin', 'transformacion digital': 'Digital transformation',
+  'transformación digital': 'Digital transformation', digitalizacion: 'Digitalisation', innovacion: 'Innovation', ingenieria: 'Engineering', industria: 'Industry', energia: 'Energy',
+  museo: 'Museums', museograf: 'Museography', musealiz: 'Museum design', patrimonio: 'Heritage', exposici: 'Exhibitions', fotogrametr: 'Photogrammetry', cartograf: 'Cartography',
+  batimetr: 'Bathymetry', topograf: 'Surveying', puerto: 'Ports', naval: 'Naval', 'jefe de proyecto': 'Project management', 'jefa de proyecto': 'Project management',
+  'jefe de proyectos': 'Project management', 'gestión de proyectos': 'Project management', 'director de proyecto': 'Project management', 'i+d': 'R&D' };
+const legible = (s) => (IDIOMA === 'en' && LEGIBLE_EN[s.toLowerCase()]) || LEGIBLE[s.toLowerCase()] || s.charAt(0).toUpperCase() + s.slice(1);
+const TXT = {
+  es: { perfil: 'Perfil', comp: 'Competencias', exp: 'Experiencia', otra: 'Otra experiencia', form: 'Formación y certificaciones', idi: 'Idiomas y otros', obj: 'Objetivo' },
+  en: { perfil: 'Profile', comp: 'Skills', exp: 'Experience', otra: 'Other experience', form: 'Education and certifications', idi: 'Languages and other', obj: 'Objective' },
+};
 
 function palabrasClave(o) {
   if (!o || !o.encaje) return [];
@@ -61,15 +74,19 @@ function palabrasClave(o) {
 }
 
 function pintar(o, info, tema) {
-  const t = CV.temas[tema.principal];
+  const C = IDIOMA === 'en' ? CV_EN : CV;
+  const L = TXT[IDIOMA];
+  document.documentElement.lang = IDIOMA;
+  const t = C.temas[tema.principal];
   const tel = leer('radar-telefono');
-  const conObjetivo = $('#con-objetivo').checked && info.objetivo;
+  const objetivo = IDIOMA === 'en' ? info.objetivoEn : info.objetivo;
+  const conObjetivo = $('#con-objetivo').checked && objetivo;
   const puntua = (v) => (v.temas.includes(tema.principal) ? 2 : 0) + (tema.secundario && v.temas.includes(tema.secundario) ? 1 : 0);
 
   const otras = [];
-  const trabajos = CV.experiencia.map((x, i) => {
+  const trabajos = C.experiencia.map((x, i) => {
     let oc = {}; try { oc = (JSON.parse(localStorage.getItem('radar-perfil')) || {}).ocultos || {}; } catch (e) { oc = {}; }
-    const vin = x.vinetas.map((v, j) => ({ ...v, p: puntua(v), j })).filter((v) => !oc[`${x.empresa}|${v.j}`]);
+    const vin = x.vinetas.map((v, j) => ({ ...v, p: puntua(v), j })).filter((v) => !oc[`${x.clave || x.empresa}|${v.j}`]);
     const utiles = vin.filter((v) => v.p > 0).sort((a, b) => b.p - a.p || a.j - b.j);
     if (!x.siempre && !utiles.length) { otras.push(`${x.puesto} · ${x.empresa} (${x.fechas.replace(/[a-z.]+ /g, '')})`); return ''; }
     const max = i === 0 ? 5 : 2;
@@ -81,27 +98,27 @@ function pintar(o, info, tema) {
 
   const claves = palabrasClave(o);
   const habilidades = [...t.habilidades];
-  if (tema.secundario) CV.temas[tema.secundario].habilidades.slice(0, 3).forEach((h) => { if (!habilidades.includes(h)) habilidades.push(h); });
+  if (tema.secundario) C.temas[tema.secundario].habilidades.slice(0, 3).forEach((h) => { if (!habilidades.includes(h)) habilidades.push(h); });
 
   $('#hoja').innerHTML = `
     <div class="cabecera">
       <h1>${esc(CV.nombre)}</h1>
       <div class="titular" contenteditable="true">${esc(t.titular)}</div>
-      <div class="contacto"><span>${esc(CV.ciudad)}</span>${tel ? `<span>${esc(tel)}</span>` : ''}<span>${esc(CV.email)}</span><span>${esc(CV.linkedin)}</span></div>
+      <div class="contacto"><span>${esc(C.ciudad)}</span>${tel ? `<span>${esc(tel)}</span>` : ''}<span>${esc(CV.email)}</span><span>${esc(CV.linkedin)}</span></div>
     </div>
-    ${conObjetivo ? `<p class="objetivo" contenteditable="true"><b>Objetivo:</b> ${esc(info.objetivo)}</p>` : ''}
-    <h2>Perfil</h2>
+    ${conObjetivo ? `<p class="objetivo" contenteditable="true"><b>${L.obj}:</b> ${esc(objetivo)}</p>` : ''}
+    <h2>${L.perfil}</h2>
     <p contenteditable="true">${esc(t.perfil)}</p>
     <p contenteditable="true">${esc(t.perfil2)}</p>
-    <h2>Competencias</h2>
+    <h2>${L.comp}</h2>
     <div class="chips">${claves.map((c) => `<span class="clave">${esc(c)}</span>`).join('')}${habilidades.map((h) => `<span>${esc(h)}</span>`).join('')}</div>
-    <h2>Experiencia</h2>
+    <h2>${L.exp}</h2>
     ${trabajos}
-    ${otras.length ? `<p class="otra"><b>Otra experiencia:</b> ${otras.map(esc).join(' · ')}</p>` : ''}
-    <h2>Formación y certificaciones</h2>
-    <div class="rejilla">${CV.formacion.map((f) => `<div class="edu"><b>${esc(f.t)}</b><br>${esc(f.d)}</div>`).join('')}</div>
-    <h2>Idiomas y otros</h2>
-    <p>${esc(CV.idiomas)} · ${esc(CV.extra)}</p>`;
+    ${otras.length ? `<p class="otra"><b>${L.otra}:</b> ${otras.map(esc).join(' · ')}</p>` : ''}
+    <h2>${L.form}</h2>
+    <div class="rejilla">${C.formacion.map((f) => `<div class="edu"><b>${esc(f.t)}</b><br>${esc(f.d)}</div>`).join('')}</div>
+    <h2>${L.idi}</h2>
+    <p>${esc(C.idiomas)} · ${esc(C.extra)}</p>`;
 }
 
 async function iniciar() {
@@ -123,14 +140,22 @@ async function iniciar() {
   const sel = $('#tema');
   sel.innerHTML = Object.entries(CV.temas).map(([k, t]) => `<option value="${k}"${k === auto.principal ? ' selected' : ''}>${esc(t.nombre)}${k === auto.principal && o ? ' (recomendado)' : ''}</option>`).join('');
   const tema = { ...auto };
+  IDIOMA = idiomaParam === 'en' || idiomaParam === 'es' ? idiomaParam : (o ? idiomaTexto(info.texto) : 'es');
+  const selIdioma = $('#idioma');
+  selIdioma.value = IDIOMA;
+  if (o && !idiomaParam && IDIOMA === 'en') cab.insertAdjacentHTML('beforeend', '<span> · Oferta en inglés: CV en inglés (puedes cambiarlo).</span>');
+  const nombresTema = () => { const C = IDIOMA === 'en' ? CV_EN : CV; [...sel.options].forEach((op) => { op.textContent = C.temas[op.value].nombre + (op.value === auto.principal && o ? (IDIOMA === 'en' ? ' (recommended)' : ' (recomendado)') : ''); }); };
   const telefono = $('#telefono');
   telefono.value = leer('radar-telefono');
   const repintar = () => pintar(o, info, tema);
   sel.addEventListener('change', () => { tema.principal = sel.value; tema.secundario = auto.principal !== sel.value ? auto.principal : auto.secundario; repintar(); });
   $('#con-objetivo').addEventListener('change', repintar);
+  selIdioma.addEventListener('change', () => { IDIOMA = selIdioma.value; nombresTema(); actualizarTitulo(); repintar(); });
+  nombresTema();
   telefono.addEventListener('change', () => { guardar('radar-telefono', telefono.value.trim()); repintar(); });
   $('#pdf').addEventListener('click', () => window.print());
-  document.title = `CV Rocío Lovera${info.empresa ? ' - ' + info.empresa : ''}`.replace(/[\\/:*?"<>|]/g, '');
+  const actualizarTitulo = () => { document.title = `${IDIOMA === 'en' ? 'CV' : 'CV'} Rocío Lovera${IDIOMA === 'en' ? ' (EN)' : ''}${info.empresa ? ' - ' + info.empresa : ''}`.replace(/[\\/:*?"<>|]/g, ''); };
+  actualizarTitulo();
   repintar();
 }
 

@@ -20,7 +20,7 @@ const CV = {
     },
     museo: {
       nombre: 'Musealización y patrimonio',
-      detectar: /muse[oí]|museogr|musealiz|exposici|patrimonio|interpretaci[oó]n|cultural|expositiv|centro de visitantes|divulgaci/i,
+      detectar: /muse[oí]|museogr|musealiz|exposici|patrimonio|interpretaci[oó]n|cultural|expositiv|centro de visitantes|divulgaci|museum|exhibition|heritage|visitor cent|curator/i,
       titular: 'Project Manager · Musealización, exposiciones y patrimonio con tecnología digital',
       perfil: 'Project Manager especializada en proyectos de musealización y divulgación con tecnología: he dirigido la musealización del Observatorio Marino del Puerto de Vigo (Atlántida) y el museo virtual del Parque Natural de Corrubedo. Ingeniera Técnica Industrial, Máster en Project Management (UPV) y certificación CAPM.',
       perfil2: 'Coordino contenidos, diseño expositivo, producción, montaje, proveedores y cliente público, controlando plazos y presupuesto, e integro recursos digitales (3D, realidad virtual, gemelos digitales) en el discurso expositivo.',
@@ -28,7 +28,7 @@ const CV = {
     },
     geo: {
       nombre: 'Geomática, LiDAR y fotogrametría',
-      detectar: /lidar|fotogram|batimetr|nube[s]? de puntos|cartograf|topogra|gis\b|geoespacial|teledetecci|ortofoto|dron|levantamiento|escaneo|territorio|forestal/i,
+      detectar: /lidar|fotogram|batimetr|nube[s]? de puntos|cartograf|topogra|gis\b|geoespacial|teledetecci|ortofoto|dron|levantamiento|escaneo|territorio|forestal|photogrammetr|bathymetr|point cloud|mapping|survey|geospatial|remote sensing|drone|forestry/i,
       titular: 'Project Manager · Captura de datos del territorio: LiDAR, fotogrametría y batimetría',
       perfil: 'Project Manager en proyectos de captura y análisis de datos del territorio: batimetría, fotogrametría, nubes de puntos y gemelos digitales. Dirijo proyectos desde la planificación de campañas hasta la entrega de modelos y resultados. Ingeniera Técnica Industrial, Máster en Project Management (UPV) y certificación CAPM.',
       perfil2: 'Coordino equipos de campo, procesamiento y desarrollo, proveedores y cliente, y he dirigido plataformas de análisis 3D y machine learning para la gestión forestal (ForestScape 3D Analytics, RURAL IA 3D).',
@@ -36,7 +36,7 @@ const CV = {
     },
     ia: {
       nombre: 'IA, datos y producto digital',
-      detectar: /inteligencia artificial|\bia\b|machine learning|\bml\b|llm|gemelo digital|digital twin|software|plataforma|producto digital|datos|data|anal[ií]tica|innovaci|i\+d|digitalizaci|transformaci[oó]n digital/i,
+      detectar: /inteligencia artificial|\bia\b|machine learning|\bml\b|llm|gemelo digital|digital twin|software|plataforma|producto digital|datos|data|anal[ií]tica|innovaci|i\+d|digitalizaci|transformaci[oó]n digital|artificial intelligence|\bai\b|generative|digital product|digital transformation|innovation|r&d/i,
       titular: 'Project Manager · Inteligencia artificial, gemelos digitales y producto digital',
       perfil: 'Project Manager de proyectos de inteligencia artificial y producto digital: dirijo el desarrollo de plataformas de gemelo digital y análisis 3D con machine learning (RURAL IA 3D, ForestScape 3D Analytics). Ingeniera Técnica Industrial, Máster en Project Management (UPV) y certificación CAPM, con experiencia previa en transformación digital, ecommerce y ERP.',
       perfil2: 'Uso a diario IA generativa (Claude, Claude Code, Cowork, skills y automatización) para definir, prototipar y desarrollar herramientas web, y traduzco necesidades de negocio en requisitos, backlog y entregas.',
@@ -44,7 +44,7 @@ const CV = {
     },
     industrial: {
       nombre: 'Ingeniería e industria',
-      detectar: /industrial|ingenier|instalaci|\bobras?\b|el[eé]ctric|mec[aá]nic|energ[ií]a|naval|puerto|portuari|fabricaci|manufactur|mantenimiento|infraestructura|construcci|bim|revit/i,
+      detectar: /industrial|ingenier|instalaci|\bobras?\b|el[eé]ctric|mec[aá]nic|energ[ií]a|naval|puerto|portuari|fabricaci|manufactur|mantenimiento|infraestructura|construcci|bim|revit|engineering|installation|electrical|mechanical|energy|maritime|port\b|manufacturing|maintenance|infrastructure|construction/i,
       titular: 'Project Manager · Ingeniería, instalaciones e infraestructuras',
       perfil: 'Ingeniera Técnica Industrial (Mecánica) y Project Manager, con Máster en Project Management (UPV) y certificación CAPM. Experiencia en proyectos de instalaciones eléctricas de baja, media y alta tensión, supervisión de obra y, en los últimos años, dirección de proyectos técnicos en entornos portuarios y naturales.',
       perfil2: 'Planifico y controlo alcance, plazos y costes, coordino contratistas y proveedores, elaboro presupuestos (Presto) y planos (AutoCAD), y me estoy formando en BIM con Revit.',

@@ -242,7 +242,9 @@ function pintarResultado(o) {
   const n = el('div', 'panel-nota');
   n.append(el('b', 'n-' + (p.total >= 75 ? 'alta' : p.total >= 60 ? 'media' : 'baja'), String(p.total)), el('span', null, 'prioridad · encaje ' + nivelEncaje(o)));
   cab.append(t, n);
-  res.append(cab, analisis(o));
+  res.append(cab);
+  if (idiomaTexto([o.titulo, o.descripcion].join(' ')) === 'en') res.append(el('p', 'an-idioma', 'Oferta en inglés: el CV adaptado y la carta salen en inglés (puedes cambiarlo).'));
+  res.append(analisis(o));
   const acc = el('div', 'an-acc');
   const bot = (ico, titulo, sub2, fn, href) => {
     const b = href ? el('a', 'an-boton') : el('button', 'an-boton');
@@ -301,7 +303,27 @@ $('#an-form').addEventListener('submit', (e) => {
 /* ---------- carta de motivación ---------- */
 const CARTA_SECTOR = { gestion: 'la dirección de proyectos', museo: 'proyectos de musealización y patrimonio', geo: 'proyectos de datos geoespaciales y 3D', ia: 'proyectos de tecnología e inteligencia artificial', industrial: 'proyectos de ingeniería e instalaciones', marketing: 'proyectos de transformación digital' };
 
-function generarCarta(o) {
+const CARTA_SECTOR_EN = { gestion: 'project management', museo: 'museum and heritage projects', geo: 'geospatial data and 3D projects', ia: 'technology and artificial intelligence projects', industrial: 'engineering and installation projects', marketing: 'digital transformation projects' };
+
+function generarCartaEn(o) {
+  const pr = construirPropuesta(o);
+  const empresa = (o.organizacion.nombre || '').trim();
+  let perfil = CV_EN.temas[pr.tema].perfil;
+  if (/^[A-Z][^.]{0,70} (with|for|specialising)/.test(perfil)) perfil = 'I am a ' + perfil;
+  const partes = [
+    `${empresa ? 'Dear ' + empresa + ' hiring team' : 'Dear Hiring Manager'},`,
+    `I am writing to apply for the ${o.titulo} position.`,
+    perfil,
+  ];
+  if (pr.aportaciones.length) partes.push('Based on the job description, I believe I could contribute from day one:\n' + pr.aportaciones.map((a) => '- ' + a.en).join('\n'));
+  partes.push(`I am motivated by the opportunity to keep developing my career in ${CARTA_SECTOR_EN[pr.tema]}${empresa ? ' at ' + empresa : ''} and to put this experience at the service of your team.`);
+  partes.push('Please find my CV attached. I would welcome the opportunity to discuss my application in an interview.');
+  partes.push(`Kind regards,\n${PERFIL.nombre}\n${PERFIL.email}\n${PERFIL.linkedin}`);
+  return partes.join('\n\n');
+}
+
+function generarCarta(o, idioma) {
+  if (idioma === 'en') return generarCartaEn(o);
   const pr = construirPropuesta(o);
   const empresa = (o.organizacion.nombre || '').trim();
   const aprobada = ST.prop[o.id]?.aprobada ? aportacionesParaCorreo(ST.prop[o.id].texto) : '';
@@ -321,17 +343,18 @@ function generarCarta(o) {
   return partes.join('\n\n');
 }
 
-function imprimirCarta(texto, o) {
+function imprimirCarta(texto, o, idioma) {
+  const en = idioma === 'en';
   const w = window.open('', '_blank');
   if (!w) return;
   const esc2 = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   let tel = ''; try { tel = localStorage.getItem('radar-telefono') || ''; } catch (e) { tel = ''; }
-  const fechaHoy = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-  w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Carta de motivación - ${esc2(o.organizacion.nombre || o.titulo)}</title>
+  const fechaHoy = new Date().toLocaleDateString(en ? 'en-GB' : 'es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+  w.document.write(`<!doctype html><html lang="${en ? 'en' : 'es'}"><head><meta charset="utf-8"><title>${en ? 'Cover letter' : 'Carta de motivación'} - ${esc2(o.organizacion.nombre || o.titulo)}</title>
 <style>@page{size:A4;margin:22mm 20mm}body{font:11pt/1.55 "IBM Plex Sans","Segoe UI",sans-serif;color:#18232d;max-width:170mm;margin:0 auto}
 .rem{margin-bottom:10mm}.rem b{font-size:14pt;display:block}.rem span{color:#5d6a75;font-size:10pt}.fecha{text-align:right;margin-bottom:8mm;color:#5d6a75}
 p{margin:0 0 4mm;white-space:pre-wrap}</style></head><body>
-<div class="rem"><b>${esc2(CV.nombre)}</b><span>${esc2([CV.ciudad, tel, CV.email, CV.linkedin].filter(Boolean).join(' · '))}</span></div>
+<div class="rem"><b>${esc2(CV.nombre)}</b><span>${esc2([en ? CV_EN.ciudad : CV.ciudad, tel, CV.email, CV.linkedin].filter(Boolean).join(' · '))}</span></div>
 <div class="fecha">Gijón, ${fechaHoy}</div>
 ${texto.split(/\n{2,}/).map((x) => `<p>${esc2(x)}</p>`).join('')}
 <script>window.onload=()=>window.print()<\/script></body></html>`);
@@ -341,17 +364,27 @@ ${texto.split(/\n{2,}/).map((x) => `<p>${esc2(x)}</p>`).join('')}
 function seccionCarta(o) {
   const s = el('section', 'carta'); s.id = 'fi-carta';
   const guardada = ST.cartas[o.id];
-  s.append(el('p', 'nota', 'Borrador hecho solo con datos de tu CV y tu propuesta de valor (la aprobada, si la hay). Revísalo y personalízalo: RADAR no envía nada.'));
+  let idioma = guardada?.idioma || idiomaTexto([o.titulo, o.descripcion].join(' '));
+  s.append(el('p', 'nota', 'Borrador hecho solo con datos de tu CV y tu propuesta de valor (la aprobada, si la hay; en inglés se usa la versión generada). Revísalo y personalízalo: RADAR no envía nada.'));
+  const lab = el('label', 'carta-idioma', 'Idioma de la carta ');
+  const selI = el('select'); selI.append(new Option('Español', 'es'), new Option('English', 'en')); selI.value = idioma;
+  lab.append(selI);
+  if (idioma === 'en' && !guardada) lab.append(el('small', null, ' · la oferta está en inglés'));
+  s.append(lab);
   const area = el('textarea', 'prop-texto'); area.rows = 16;
   area.setAttribute('aria-label', 'Carta de motivación');
-  area.value = guardada?.texto || generarCarta(o);
+  area.value = guardada?.texto || generarCarta(o, idioma);
+  selI.addEventListener('change', () => {
+    if (ST.cartas[o.id] && !confirm('Se generará la carta en el otro idioma y se perderán los cambios que hayas guardado. ¿Seguir?')) { selI.value = idioma; return; }
+    idioma = selI.value; delete ST.cartas[o.id]; guardarST(); area.value = generarCarta(o, idioma); estado.textContent = 'Sin guardar: es el borrador generado.';
+  });
   const estado = el('p', 'nota', guardada ? 'Editada el ' + fechaHora(guardada.f) : 'Sin guardar: es el borrador generado.');
   const acc = el('div', 'acciones');
   acc.append(
-    boton('Guardar cambios', 'btn mini', () => { ST.cartas[o.id] = { texto: area.value, f: new Date().toISOString() }; guardarST(); estado.textContent = 'Editada el ' + fechaHora(ST.cartas[o.id].f); }),
+    boton('Guardar cambios', 'btn mini', () => { ST.cartas[o.id] = { texto: area.value, f: new Date().toISOString(), idioma }; guardarST(); estado.textContent = 'Editada el ' + fechaHora(ST.cartas[o.id].f); }),
     boton('Copiar', 'btn sec mini', function () { copiar(this, area.value); }),
-    boton('Descargar PDF', 'btn sec mini', () => imprimirCarta(area.value, o)),
-    boton('Volver a generar', 'enlace', () => { delete ST.cartas[o.id]; guardarST(); area.value = generarCarta(o); estado.textContent = 'Sin guardar: es el borrador generado.'; }));
+    boton('Descargar PDF', 'btn sec mini', () => imprimirCarta(area.value, o, idioma)),
+    boton('Volver a generar', 'enlace', () => { delete ST.cartas[o.id]; guardarST(); area.value = generarCarta(o, idioma); estado.textContent = 'Sin guardar: es el borrador generado.'; }));
   s.append(area, estado, acc);
   return s;
 }

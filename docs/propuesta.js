@@ -67,6 +67,15 @@ const PROPUESTA = {
   },
 };
 
+const PROPUESTA_EN = {
+  gestion: ['Plan and control the project end to end: scope, schedule, milestones and costs.', 'Coordinate multidisciplinary teams, suppliers and the client as a single point of contact.', 'Translate the client\'s needs into requirements and delivery plans.', 'Prepare technical reports, budgets and proposals.'],
+  museo: ['Lead museum projects: content, production, installation and relations with public-sector clients.', 'Integrate digital and 3D resources into the exhibition narrative.', 'Control schedule and budget across several suppliers at once.', 'Prepare budgets, technical sheets and drawings.'],
+  geo: ['Lead bathymetry and photogrammetry campaigns through to model delivery.', 'Coordinate point cloud processing and 3D analysis.', 'Apply machine learning to land analysis.', 'Design platforms to visualise and analyse land data.'],
+  ia: ['Lead the development of digital twin and 3D analysis platforms.', 'Take machine learning projects from idea to delivery, with technology partners and public funding.', 'Define functional requirements and follow software development.', 'Bring generative AI into the team\'s daily work.'],
+  industrial: ['Run installation projects: budgets, drawings and site supervision.', 'Coordinate contractors and suppliers.', 'Prepare budgets with Presto and drawings with AutoCAD.', 'Lead technical projects in port environments.'],
+  marketing: ['Implement an ecommerce platform integrated with the ERP and automate processes.', 'Plan campaigns and measure results with A/B tests and KPIs.', 'Coordinate web development, design and content teams.', 'Launch online shops and Google Ads and social media campaigns.'],
+};
+
 const sinHtml = (s) => String(s).replace(/<[^>]+>/g, '');
 
 function textoOportunidad(o) {
@@ -96,12 +105,13 @@ function construirPropuesta(o) {
   const S = tema.secundario ? PROPUESTA[tema.secundario] : null;
   const aport = [];
   const usadas = new Set();
-  for (const [t, rx] of [...P.aportaciones, ...(S ? S.aportaciones.slice(0, 2) : [])]) {
+  const conEn = (lista, k) => lista.map(([t, rx], i) => [t, rx, (PROPUESTA_EN[k] || [])[i] || t]);
+  for (const [t, rx, en] of [...conEn(P.aportaciones, tema.principal), ...(S ? conEn(S.aportaciones.slice(0, 2), tema.secundario) : [])]) {
     if (aport.length >= 4) break;
     const ev = buscarEvidencia(rx);
     if (!ev || usadas.has(ev.texto)) continue;  // sin respaldo en el CV: no se incluye
     usadas.add(ev.texto);
-    aport.push({ t, cita: ev.cita, evidencia: ev.texto });
+    aport.push({ t, en, cita: ev.cita, evidencia: ev.texto });
   }
   const validar = [];
   const c = o.criterios || {};

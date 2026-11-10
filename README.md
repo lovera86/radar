@@ -87,6 +87,10 @@ con los mismos criterios que las ofertas diarias (`docs/data/perfil-busqueda.jso
 generado desde `config.json` por `exportar.py`) y ofrece CV adaptado, propuesta de
 valor y carta de motivación. Se guarda solo en el navegador y aparece con el resto.
 
+**Ofertas en inglés**: el CV adaptado y la carta detectan el idioma de la oferta y
+salen en inglés (`docs/cv-datos-en.js`, la misma información del CV traducida, con
+los mismos temas y viñetas ocultas). En el CV y en la carta se puede cambiar el idioma.
+
 «Mi perfil y ajustes» está en el icono de la barra. La ficha se abre como panel
 lateral: resumen, por qué encaja, puntos a comprobar, condiciones y notas; la
 propuesta de valor, la descripción, todos los datos, el cálculo de la prioridad

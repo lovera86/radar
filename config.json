@@ -258,7 +258,20 @@
       "ingenieria": 5,
       "energia": 5,
       "capm": 10,
-      "agile": 5
+      "agile": 5,
+      "artificial intelligence": 15,
+      "generative ai": 15,
+      "digital transformation": 10,
+      "photogrammetr": 15,
+      "point cloud": 10,
+      "museum": 15,
+      "heritage": 10,
+      "exhibition": 5,
+      "innovation": 5,
+      "engineering": 5,
+      "energy": 5,
+      "maritime": 5,
+      "port operations": 10
     },
     "lugares": {
       "asturias": 30,
