@@ -631,7 +631,7 @@ body[data-vista="radar"] .cab-vista { display: none; }
 .subnav a { text-decoration: none; padding: 7px 16px; border-radius: 999px; font-size: 14px; color: var(--muted); font-weight: 500; }
 .subnav a:hover { color: var(--ink); }
 .subnav a.on { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(16, 24, 32, .12); }
-body:not([data-vista="explorar"]):not([data-vista="empleo"]):not([data-vista="proyectos"]):not([data-vista="mapa"]):not([data-vista="descubrir"]) .subnav { display: none; }
+body:not([data-vista="explorar"]):not([data-vista="empleo"]):not([data-vista="proyectos"]):not([data-vista="publico"]):not([data-vista="mapa"]):not([data-vista="descubrir"]) .subnav { display: none; }
 
 /* Buscador compacto */
 .buscador-zona { background: none; padding-block: 16px 0; }
@@ -893,3 +893,4 @@ body[data-vista="radar"] .barra .actualizado { visibility: hidden; }
 html, body { overflow-x: clip; }
 .tarjeta.t2 { border-top: 4px solid var(--turq-line); }
 .tarjeta.t2:hover { border-top-color: var(--turq); }
+@media (max-width: 480px) { .subnav { display: flex; width: 100%; } .subnav a { flex: 1; text-align: center; padding: 7px 6px; font-size: 13.5px; } }

@@ -35,6 +35,7 @@ const MODALIDAD = { remoto: 'Remoto', hibrido: 'Híbrido', presencial: 'Presenci
 const VISTAS = {
   explorar: { titulo: 'Oportunidades', intro: 'Empleo, proyectos, licitaciones y adjudicaciones, ordenados por lo que más te conviene.' },
   empleo: { titulo: 'Oportunidades', intro: 'Ofertas publicadas y plazas públicas: vacantes confirmadas a las que puedes inscribirte.', tipo: 'empleo' },
+  publico: { titulo: 'Oportunidades', intro: 'Oposiciones y plazas públicas (BOE, ayuntamientos y Universidad de Oviedo) a las que puedes presentarte con tu titulación.', tipo: 'empleo', solo: ['oposicion', 'contrato_publico'] },
   proyectos: { titulo: 'Oportunidades', intro: 'Licitaciones abiertas y contratos adjudicados: no son vacantes, son proyectos que alguien tendrá que dirigir.', tipo: 'proyecto' },
   empresas: { titulo: 'Empresas', intro: 'Empresas con actividad verificable en tu sector. Una señal no es una vacante: es un buen motivo para escribirles.' },
   mapa: { titulo: 'Oportunidades', intro: 'Dónde están. Las remotas o sin ubicación fiable aparecen en la lista, sin marcador.' },
@@ -44,7 +45,7 @@ const VISTAS = {
   perfil: { titulo: 'Mi perfil y ajustes', intro: 'Lo que RADAR sabe de ti y cómo lo usa. Los cambios se aplican al momento y se guardan solo en este navegador.' },
 };
 /* Cuatro espacios principales; el resto vive dentro de ellos. */
-const SECCION = { radar: 'radar', explorar: 'explorar', empleo: 'explorar', proyectos: 'explorar', mapa: 'explorar', descubrir: 'explorar', empresas: 'empresas', guardados: 'guardados', perfil: 'perfil' };
+const SECCION = { radar: 'radar', explorar: 'explorar', empleo: 'explorar', publico: 'explorar', proyectos: 'explorar', mapa: 'explorar', descubrir: 'explorar', empresas: 'empresas', guardados: 'guardados', perfil: 'perfil' };
 
 /* ---------- utilidades ---------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -226,6 +227,7 @@ function pasa(o, sinTipo) {
   const p = puntuar(o);
   const tipo = VISTAS[VISTA].tipo || F.tipo;
   if (!sinTipo && tipo && o.tipo !== tipo) return false;
+  if (!sinTipo && VISTAS[VISTA].solo && !VISTAS[VISTA].solo.includes(o.subtipo)) return false;
   if (F.que) { const t = texto(o); if (!norm(F.que).split(/\s+/).filter(Boolean).every((w) => t.includes(w))) return false; }
   if (F.donde === 'asturias' && o.ubicacion.comunidad !== 'Asturias') return false;
   if (F.donde === 'norte' && !NORTE.includes(o.ubicacion.comunidad)) return false;
@@ -520,7 +522,7 @@ function pintar() {
   if (VISTA === 'guardados') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarGuardados(); }
   const lista = ordenar(D.ops.filter((o) => pasa(o)));
   const total = D.ops.filter((o) => pasa(o, false) || true).length;
-  $('#res-n').textContent = `${lista.length} de ${D.ops.filter((o) => !v.tipo || o.tipo === v.tipo).length} oportunidades`;
+  $('#res-n').textContent = `${lista.length} de ${D.ops.filter((o) => (!v.tipo || o.tipo === v.tipo) && (!v.solo || v.solo.includes(o.subtipo))).length} oportunidades`;
   const verMapa = MODO === 'mapa' || VISTA === 'mapa';
   $('#rejilla').hidden = verMapa;
   $('#vista-mapa').hidden = !verMapa;
