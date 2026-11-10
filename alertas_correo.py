@@ -132,19 +132,34 @@ def buzon_todos(m):
     return "INBOX"
 
 
+def guardar_parte(parte):
+    """Parte de la lectura (sin datos personales) para comprobar que funciona."""
+    import json
+    from pathlib import Path
+    f = Path(__file__).resolve().parent / "data" / "estado_alertas.json"
+    f.parent.mkdir(exist_ok=True)
+    f.write_text(json.dumps(parte, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
 def leer_alertas(dias=3):
     usuario, clave = os.environ.get("ALERTAS_EMAIL"), os.environ.get("ALERTAS_APP_PASSWORD")
+    parte = {"fecha": datetime.now(timezone.utc).isoformat(timespec="seconds"), "configurado": bool(usuario and clave),
+             "conectado": False, "correos": {}, "ofertas": {}, "error": ""}
     if not (usuario and clave):
+        guardar_parte(parte)
         return []
     out = []
     try:
         m = imaplib.IMAP4_SSL(os.environ.get("ALERTAS_IMAP", "imap.gmail.com"))
         m.login(usuario, clave)
+        parte["conectado"] = True
         m.select(buzon_todos(m), readonly=True)  # solo lectura: no marca ni borra nada
         for plataforma, remitentes in REMITENTES.items():
             consulta = "from:(" + " OR ".join(remitentes) + f") newer_than:{dias}d"
             typ, data = m.search(None, "X-GM-RAW", f'"{consulta}"')
             ids = (data[0] or b"").split()[-200:]
+            parte["correos"][plataforma] = len(ids)
+            antes = len(out)
             for i in ids:
                 typ, d = m.fetch(i, "(BODY.PEEK[])")
                 msg = email.message_from_bytes(d[0][1])
@@ -153,7 +168,10 @@ def leer_alertas(dias=3):
                 except Exception:
                     fecha = datetime.now(timezone.utc).date().isoformat()
                 out += ofertas_de_correo(plataforma, msg, fecha)
+            parte["ofertas"][plataforma] = len(out) - antes
         m.logout()
     except Exception as ex:
         print(f"[aviso] alertas por correo: {ex}", file=sys.stderr)
+        parte["error"] = type(ex).__name__ + ": " + str(ex)[:160].replace(usuario or "", "(tu correo)")
+    guardar_parte(parte)
     return out
