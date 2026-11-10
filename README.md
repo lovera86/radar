@@ -36,8 +36,12 @@ de IA, gemelos digitales, BIM, patrimonio…). Ajustes en `config.json → emple
   variables → Actions**: `INFOJOBS_ID` + `INFOJOBS_SECRET` (developer.infojobs.net),
   `JOOBLE_KEY` (es.jooble.org/api/about), `ADZUNA_ID` + `ADZUNA_KEY`
   (developer.adzuna.com).
-- LinkedIn e Indeed no permiten leer sus ofertas de forma automática: la web
-  enlaza sus búsquedas de las últimas 24 horas.
+- **LinkedIn e InfoJobs por alertas de correo** (`alertas_correo.py`): RADAR lee
+  en modo solo lectura los correos de alertas de empleo de tu Gmail y pasa cada
+  oferta por el filtro de perfil. Secretos: `ALERTAS_EMAIL` y
+  `ALERTAS_APP_PASSWORD` (contraseña de aplicación de Google).
+- Indeed no permite leer sus ofertas de forma automática: la web enlaza sus
+  búsquedas de las últimas 24 horas.
 
 ## Empleo público
 

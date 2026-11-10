@@ -4,6 +4,8 @@ Fuentes sin clave (funcionan siempre):
   - Tecnoempleo: canales RSS oficiales de alertas.
   - Remotive: API pública de empleo en remoto (solo ofertas abiertas a Europa).
 
+Alertas de empleo por correo (LinkedIn e InfoJobs): ALERTAS_EMAIL y ALERTAS_APP_PASSWORD.
+
 Fuentes con clave gratuita (se activan solas si existe la variable de entorno):
   - InfoJobs (API oficial):    INFOJOBS_ID, INFOJOBS_SECRET   -> developer.infojobs.net
   - Jooble (agregador; recoge ofertas de muchos portales):  JOOBLE_KEY  -> es.jooble.org/api/about
@@ -173,7 +175,16 @@ def adzuna(cfg):
     return out
 
 
-FUENTES = [tecnoempleo, remotive, infojobs, jooble, adzuna]
+def alertas(cfg):
+    """LinkedIn e InfoJobs a través de tus alertas de empleo por correo (ver alertas_correo.py)."""
+    if str(BASE) not in sys.path:
+        sys.path.insert(0, str(BASE))
+    from alertas_correo import leer_alertas
+    dias = int(os.environ.get("ALERTAS_DIAS", "3"))
+    return leer_alertas(dias)
+
+
+FUENTES = [tecnoempleo, remotive, infojobs, jooble, adzuna, alertas]
 
 
 # ---------------------------------------------------------------- puntuación

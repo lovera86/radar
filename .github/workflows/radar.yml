@@ -45,6 +45,8 @@ jobs:
           JOOBLE_KEY: ${{ secrets.JOOBLE_KEY }}
           ADZUNA_ID: ${{ secrets.ADZUNA_ID }}
           ADZUNA_KEY: ${{ secrets.ADZUNA_KEY }}
+          ALERTAS_EMAIL: ${{ secrets.ALERTAS_EMAIL }}
+          ALERTAS_APP_PASSWORD: ${{ secrets.ALERTAS_APP_PASSWORD }}
         run: python empleos.py
       - name: Buscar empleo público
         run: python publico.py
