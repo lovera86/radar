@@ -436,3 +436,8 @@ body[data-vista="descubrir"] .res-cab h2 { font-size: 18px; }
   .d-ayuda { font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .d-carta, .d-hoja, .d-ico { transition: none; } }
+
+.fila-g-acc { display: flex; gap: 12px; align-items: center; }
+.quitar { color: var(--bad) !important; }
+.fila-g.quitada { justify-content: flex-start; align-items: center; color: var(--muted); }
+.vaciar { display: block; margin: 4px 0 6px; color: var(--bad) !important; }

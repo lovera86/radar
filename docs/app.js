@@ -63,6 +63,7 @@ const iniciales = (s) => (String(s || '').replace(/\b(S\.?L\.?U?|S\.?A\.?|UTE|DE
 const ST = leer('radar-v2', { fav: {}, est: {}, busq: [], migrado: false });
 ST.prop = ST.prop || {};
 ST.vistas = ST.vistas || {};
+ST.ocultas = ST.ocultas || {};
 ST.snap = ST.snap || {};
 if (!ST.col) {
   ST.col = {};
@@ -94,6 +95,17 @@ function setEstado(id, e, nota) {
   ST.est[id] = { estado: e, hist: [...h, { e, f: new Date().toISOString(), ...(nota ? { nota } : {}) }] };
   guardarST();
 }
+/* Quitar de Guardados: borra favorito, colecciones y estado, y la deja oculta para que no vuelva a salir. */
+function quitarGuardado(id) {
+  instantanea(id);
+  delete ST.fav[id];
+  delete ST.est[id];
+  Object.values(ST.col).forEach((c) => { delete c.items[id]; });
+  ST.ocultas[id] = new Date().toISOString();
+  guardarST();
+}
+function recuperarOculta(id) { delete ST.ocultas[id]; guardarST(); }
+
 function toggleFav(id) {
   instantanea(id);
   if (ST.fav[id]) delete ST.fav[id]; else ST.fav[id] = new Date().toISOString();
@@ -213,7 +225,7 @@ function pasa(o, sinTipo) {
     if (!(F.estados.has(e) || (F.estados.has('guardada') && ST.fav[o.id]))) return false;
   }
   if (VISTA === 'guardados' && !ST.fav[o.id] && !ST.est[o.id]) return false;
-  if (VISTA !== 'guardados' && !F.estados.size && ST.est[o.id]?.estado === 'descartada') return false;
+  if (VISTA !== 'guardados' && !F.estados.size && (ST.est[o.id]?.estado === 'descartada' || ST.ocultas[o.id])) return false;
   return true;
 }
 
@@ -952,6 +964,7 @@ function siguientePaso(id) {
 function filaGuardado(id) {
   const g = datosGuardado(id);
   const li = el('li', 'fila-g');
+  li.dataset.id = id;
   const izq = el('div', 'fila-g-t');
   const t = g.o ? boton(g.titulo, 'enlace titulo-g', () => abrirFicha(id)) : el('span', 'titulo-g', g.titulo);
   izq.append(t, el('small', null, [SUBTIPOS[g.subtipo]?.nombre, g.org, ST.fav[id] ? 'guardada el ' + fechaCorta(ST.fav[id]) : ''].filter(Boolean).join(' · ')));
@@ -964,10 +977,35 @@ function filaGuardado(id) {
   sel.value = ST.est[id]?.estado || '';
   sel.addEventListener('change', () => { if (sel.value) setEstado(id, sel.value); else { delete ST.est[id]; guardarST(); } pintar(); });
   der.append(sel);
-  if (g.url) der.append(enlace(g.url, 'Fuente', 'enlace'));
+  const pie = el('div', 'fila-g-acc');
+  if (g.url) pie.append(enlace(g.url, 'Fuente', 'enlace'));
+  const q = boton('Quitar', 'enlace quitar', () => {
+    quitarGuardado(id);
+    li.classList.add('quitada');
+    li.replaceChildren(el('span', 'nota', `«${g.titulo.slice(0, 60)}» quitada. `), boton('Deshacer', 'enlace', () => {
+      recuperarOculta(id);
+      const prev = ultimoQuitado;
+      if (prev && prev.id === id) { if (prev.fav) ST.fav[id] = prev.fav; if (prev.est) ST.est[id] = prev.est; prev.cols.forEach((k) => { if (ST.col[k]) ST.col[k].items[id] = prev.fechaCol[k]; }); guardarST(); }
+      pintar();
+    }));
+    setTimeout(() => { if (li.isConnected && li.classList.contains('quitada')) pintar(); }, 6000);
+  });
+  q.setAttribute('aria-label', 'Quitar de Guardados: ' + g.titulo);
+  q.addEventListener('click', () => {}, { capture: true });
+  pie.append(q);
+  der.append(pie);
   li.append(izq, der);
   return li;
 }
+let ultimoQuitado = null;
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('.quitar');
+  if (!b) return;
+  const li = b.closest('.fila-g'); const id = li?.dataset.id;
+  if (id) ultimoQuitado = { id, fav: ST.fav[id] || null, est: ST.est[id] ? JSON.parse(JSON.stringify(ST.est[id])) : null,
+    cols: Object.entries(ST.col).filter(([, c]) => c.items[id]).map(([k]) => k),
+    fechaCol: Object.fromEntries(Object.entries(ST.col).filter(([, c]) => c.items[id]).map(([k, c]) => [k, c.items[id]])) };
+}, true);
 
 function indicadores(ids) {
   const box = el('section', 'indicadores');
@@ -1066,10 +1104,31 @@ function pintarGuardados() {
     alguna = true;
     const g = el('details', 'grupo-e'); g.open = !['descartada', 'cerrada'].includes(e);
     g.append(el('summary', null, `${NOMBRE_ESTADO[e]} · ${lista.length}`));
+    if (e === 'descartada' || e === 'cerrada') {
+      g.append(boton(`Quitar todas las ${e === 'descartada' ? 'descartadas' : 'cerradas'} de esta lista`, 'enlace vaciar', () => {
+        if (!confirm(`¿Quitar ${lista.length} oportunidad${lista.length === 1 ? '' : 'es'} de la lista? No volverán a salir en Explorar ni en Descubrir. Puedes recuperarlas con «Ver quitadas».`)) return;
+        lista.forEach(quitarGuardado); pintar();
+      }));
+    }
     const ul = el('ul', 'lista-g'); lista.forEach((id) => ul.append(filaGuardado(id))); g.append(ul);
     cand.append(g);
   });
   if (!alguna) cand.append(el('p', 'nota', 'Aún no hay candidaturas. Usa «Me interesa» o cambia el estado desde la ficha de una oportunidad.'));
+  const ocultas = Object.keys(ST.ocultas);
+  if (ocultas.length) {
+    const g = el('details', 'grupo-e');
+    g.append(el('summary', null, `Quitadas · ${ocultas.length}`));
+    g.append(el('p', 'nota', 'No salen en Explorar ni en Descubrir. Si recuperas una, vuelve a aparecer.'));
+    const ul = el('ul', 'lista-g');
+    ocultas.forEach((id) => {
+      const d = datosGuardado(id);
+      const li = el('li', 'fila-g');
+      li.append(el('div', 'fila-g-t', d.titulo), boton('Recuperar', 'enlace', () => { recuperarOculta(id); pintar(); }));
+      ul.append(li);
+    });
+    g.append(ul);
+    cand.append(g);
+  }
   cont.append(cand);
 
   $('#rejilla').replaceChildren(cont);
