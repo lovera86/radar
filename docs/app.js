@@ -591,12 +591,15 @@ function tarjetaEmpresa(e) {
   c.append(el('h3', null, e.nombre));
   if (e.ciudad) c.append(el('p', 'lugar', e.ciudad));
   const ul = el('ul', 'senales');
-  if (e.ganados.length) ul.append(el('li', 'hecho', `Ha ganado ${e.ganados.length} contrato${e.ganados.length > 1 ? 's' : ''} de tu perfil${e.importe ? ` (${eur(e.importe)})` : ''}`));
-  if (e.candidata.length) ul.append(el('li', 'inferido', `Suele ganar contratos como ${e.candidata.length} licitación${e.candidata.length > 1 ? 'es' : ''} abierta${e.candidata.length > 1 ? 's' : ''} ahora`));
+  const ultimo = e.ganados.map((g) => g.fechas.publicada || '').sort().pop();
+  if (e.ganados.length) ul.append(el('li', 'hecho', `Ha ganado ${e.ganados.length} contrato${e.ganados.length > 1 ? 's' : ''} de tu perfil${e.importe ? ` (${eur(e.importe)})` : ''}${ultimo ? ' · último el ' + fecha(ultimo) : ''}`));
+  if (e.candidata.length) ul.append(el('li', 'inferido', `Suele ganar contratos como ${e.candidata.length} ${e.candidata.length > 1 ? 'licitaciones' : 'licitación'} abierta${e.candidata.length > 1 ? 's' : ''} ahora`));
   (e.borme || []).slice(0, 3).forEach((g) => ul.append(el('li', g.categoria === 'aviso' ? 'aviso' : 'hecho', g.tipo === 'constitucion' ? `Empresa constituida (BORME, ${fecha(g.fecha)})` : `${g.titulo} (BORME, ${fecha(g.fecha)})`)));
   ul.append(el('li', e.contacto?.email ? 'hecho' : 'desconocido', e.contacto?.email ? 'Correo verificado en su web oficial' : 'Sin correo verificado'));
   c.append(ul);
   c.append(el('p', 'hipotesis', e.nueva ? 'Hipótesis: al empezar podría necesitar perfiles como el tuyo.' : 'Hipótesis: podría necesitar dirección de proyecto para ejecutarlos.'));
+  const refH = e.ganados.find((g) => g.hipotesis) || D.ops.find((o) => o.origen.lista === 'senal' && (e.borme || []).some((g) => g.id === o.origen.clave)) || e.candidata.find((g) => g.hipotesis);
+  if (refH?.hipotesis?.contacto) c.append(el('p', 'accion-rec', 'Acción recomendada: ' + refH.hipotesis.contacto));
   a.append(vis, c);
   const abrir = () => abrirEmpresa(e);
   a.addEventListener('click', abrir);
