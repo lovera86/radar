@@ -821,3 +821,75 @@ body[data-vista="radar"] .barra .actualizado { visibility: hidden; }
 }
 .t2-pie .btn { white-space: nowrap; }
 @media (max-width: 860px) { .ficha-izq > .analisis { order: 0; } }
+
+/* ===== Color: rosa y turquesa por bloques ===== */
+:root { --rosa: #c2255c; --rosa-soft: #fdebf2; --rosa-line: #f6c4d6; --turq: #0e9f97; --turq-soft: #e2f6f3; --turq-line: #b4e6df; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --rosa: #f48fb8; --rosa-soft: #33192a; --rosa-line: #5a2a44; --turq: #4fd1c5; --turq-soft: #12302f; --turq-line: #1f5552; }
+}
+:root[data-theme="dark"] { --rosa: #f48fb8; --rosa-soft: #33192a; --rosa-line: #5a2a44; --turq: #4fd1c5; --turq-soft: #12302f; --turq-line: #1f5552; }
+
+/* Barra con un hilo de color */
+.barra { border-bottom: 0; box-shadow: 0 1px 0 var(--line); }
+.barra::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px; background: linear-gradient(90deg, var(--turq), var(--rosa)); }
+.nav a.on { background: var(--turq-soft); box-shadow: inset 0 -2px 0 var(--turq); }
+.contador { background: var(--rosa); color: #fff; }
+
+/* Hoy: cabecera con degradado suave */
+.r2-cab { margin: 0 calc(50% - 50vw); padding: 26px max(16px, calc(50vw - 624px)) 22px; background: linear-gradient(110deg, var(--turq-soft) 0%, var(--bg) 50%, var(--rosa-soft) 100%); }
+.r2-cab h1 { color: var(--ink); }
+.r2-cab h1::after { content: ""; display: block; width: 56px; height: 4px; border-radius: 2px; margin-top: 10px; background: linear-gradient(90deg, var(--turq), var(--rosa)); }
+
+/* Indicadores alternos */
+.r2-kpi { border-color: transparent; }
+.r2-kpi:nth-child(odd) { background: var(--turq-soft); }
+.r2-kpi:nth-child(even) { background: var(--rosa-soft); }
+.r2-kpi:nth-child(odd) > .ico:first-child { background: var(--turq); color: #fff; }
+.r2-kpi:nth-child(even) > .ico:first-child { background: var(--rosa); color: #fff; }
+.r2-kpi:nth-child(odd):hover { border-color: var(--turq); }
+.r2-kpi:nth-child(even):hover { border-color: var(--rosa); }
+
+/* Mejor oportunidad: turquesa */
+.r-mejor { background: linear-gradient(150deg, var(--turq-soft), var(--surface) 70%); border-color: var(--turq-line); border-left: 5px solid var(--turq); }
+.r-badge { background: var(--turq); color: #fff; }
+.r-chip { background: var(--surface); border: 1px solid var(--turq-line); }
+.r-nota b { color: var(--turq); }
+
+/* Próximos movimientos: rosa */
+.r2-mov { background: linear-gradient(160deg, var(--rosa-soft), var(--surface) 75%); border-color: var(--rosa-line); border-left: 5px solid var(--rosa); }
+.r2-mov h3 .ico, .r2-mov-n { color: var(--rosa); }
+.r2-mov-n { background: var(--surface); border: 1px solid var(--rosa-line); }
+.r2-mov li + li { border-top-color: var(--rosa-line); }
+.r2-mas { background: var(--rosa-soft); border-color: var(--rosa-line); }
+
+/* Tarjetas: franja de color alterna */
+.t2 { border-top: 4px solid var(--turq-line); }
+.rejilla > .t2:nth-child(even), .r2-minis > .t2:nth-child(even) { border-top-color: var(--rosa-line); }
+.t2:hover { border-top-color: var(--turq); }
+.rejilla > .t2:nth-child(even):hover, .r2-minis > .t2:nth-child(even):hover { border-top-color: var(--rosa); }
+.t2-tag.nueva { background: var(--rosa); }
+.t2 .fav.on svg { fill: var(--rosa); stroke: var(--rosa); }
+
+/* Cabeceras de sección y pestañas */
+.cab-vista { margin: 0 calc(50% - 50vw); padding: 26px max(16px, calc(50vw - 624px)) 22px; background: linear-gradient(110deg, var(--turq-soft) 0%, var(--bg) 55%, var(--rosa-soft) 100%); }
+.subnav { background: var(--surface); border: 1px solid var(--turq-line); }
+.subnav a.on { background: var(--turq); color: #fff; box-shadow: none; }
+.chip.on { background: var(--rosa); border-color: var(--rosa); color: #fff; }
+.tag-activo { background: var(--rosa-soft); }
+.vista-btns button.on { background: var(--turq); color: #fff; }
+
+/* Ficha */
+.analisis div:first-child { background: var(--turq-soft); border-color: var(--turq-line); }
+.analisis div:nth-child(2) { background: var(--rosa-soft); border-color: var(--rosa-line); }
+.nota-b { background: var(--rosa-soft); border-color: var(--rosa-line); }
+.ficha-der { background: linear-gradient(170deg, var(--turq-soft), var(--surface) 45%); border-color: var(--turq-line); }
+
+/* Seguimiento */
+.g-col:first-child > section:first-child { background: linear-gradient(160deg, var(--turq-soft), var(--surface) 70%); border-color: var(--turq-line); }
+.notas-g { background: linear-gradient(160deg, var(--rosa-soft), var(--surface) 70%) !important; border-color: var(--rosa-line) !important; }
+/* Bandas a todo el ancho sin desbordar */
+.r2-cab, .cab-vista { margin: 0; padding-inline: 0; border-image: linear-gradient(110deg, var(--turq-soft) 0%, var(--bg) 52%, var(--rosa-soft) 100%) fill 0 / 0 / 0 100vw; }
+.cab-vista { margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+html, body { overflow-x: clip; }
+.tarjeta.t2 { border-top: 4px solid var(--turq-line); }
+.tarjeta.t2:hover { border-top-color: var(--turq); }
