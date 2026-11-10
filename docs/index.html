@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="styles.css?v=32">
+<link rel="stylesheet" href="styles.css?v=42">
 </head>
 <body>
 <header class="barra">
@@ -19,6 +19,7 @@
       <span>RADAR</span>
     </a>
     <nav class="nav" aria-label="Secciones">
+      <a href="#radar" data-v="radar">Mi radar</a>
       <a href="#descubrir" data-v="descubrir">Descubrir</a>
       <a href="#explorar" data-v="explorar">Explorar</a>
       <a href="#empleo" data-v="empleo">Empleo</a>
@@ -158,6 +159,10 @@
     <input type="range" id="f-minimo" min="0" max="90" step="5" value="0" aria-describedby="f-minimo-v"> <output id="f-minimo-v">0</output>
   </div>
   <div class="grupo-f">
+    <h3>Sector</h3>
+    <div class="opciones" id="f-sector"></div>
+  </div>
+  <div class="grupo-f">
     <h3>Estado</h3>
     <div class="opciones" id="f-estado"></div>
   </div>
@@ -207,7 +212,8 @@
 <script src="cv-datos.js?v=3"></script>
 <script src="propuesta.js?v=2"></script>
 <script src="mapa.js?v=22"></script>
-<script src="app.js?v=31"></script>
-<script src="descubrir.js?v=1"></script>
+<script src="app.js?v=40"></script>
+<script src="descubrir.js?v=2"></script>
+<script src="radar-diario.js?v=2"></script>
 </body>
 </html>

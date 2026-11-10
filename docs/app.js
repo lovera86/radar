@@ -38,6 +38,7 @@ const VISTAS = {
   empresas: { titulo: 'Empresas', intro: 'Empresas con señales verificables de actividad en tu sector. Una señal no es una vacante: es un buen motivo para escribirles.' },
   mapa: { titulo: 'Mapa', intro: 'Dónde están las oportunidades. Las remotas o sin ubicación fiable aparecen aparte, sin marcador.' },
   guardados: { titulo: 'Guardados y candidaturas', intro: 'Lo que has guardado y en qué punto está cada candidatura o contacto.' },
+  radar: { titulo: 'Mi Radar Diario', intro: '' },
   descubrir: { titulo: 'Descubrir', intro: 'Una oportunidad cada vez, de la que más encaja a la que menos. Solo salen las que aún no has revisado.' },
   perfil: { titulo: 'Mi perfil', intro: 'Lo que RADAR sabe de ti y cómo lo usa. Tus preferencias y pesos cambian la compatibilidad de todas las oportunidades al momento. Se guarda solo en este navegador.' },
 };
@@ -189,7 +190,23 @@ async function cargar() {
 }
 
 /* ---------- filtros ---------- */
-const F = { que: '', donde: '', modalidad: '', tipo: '', rapidos: new Set(), subtipos: new Set(), fuentes: new Set(), confianza: new Set(), estados: new Set(), minimo: 0 };
+const F = { que: '', donde: '', modalidad: '', tipo: '', rapidos: new Set(), subtipos: new Set(), fuentes: new Set(), confianza: new Set(), estados: new Set(), sectores: new Set(), minimo: 0 };
+const SECTORES = {
+  gestion: ['Dirección y gestión de proyectos', /project manag|jef[ea] de proyecto|gestor[a]? de proyecto|pmo|program manag|coordinador[a]? de proyecto|direccion de proyecto|delivery/],
+  ingenieria: ['Ingeniería e infraestructuras', /ingenier|obra|instalacion|infraestructura|puerto|portuari|industrial|energia|naval|asistencia tecnica|bim/],
+  digital: ['IA, innovación y transformación digital', /inteligencia artificial|\bia\b|machine learning|software|digital|datos|innovacion|i\+d|producto|product owner|tecnolog/],
+  tresd: ['3D, geomática y entornos digitales', /3d|fotogram|lidar|batimetr|nube|cartograf|topograf|gemelo|realidad (virtual|aumentada)|geoespacial|gis\b|dron/],
+  patrimonio: ['Patrimonio, museos y exposiciones', /muse|patrimonio|exposici|interpretacion|cultural/],
+  publico: ['Proyectos para administraciones públicas', null],
+  negocio: ['Comunicación, marketing y negocio tecnológico', /marketing|comunicacion|comercial tecnico|desarrollo de negocio|business development|ecommerce|martech|contenido/],
+};
+function sectoresDe(o) {
+  if (o._s) return o._s;
+  const t = norm([o.titulo, (o.etiquetas || []).join(' '), o.descripcion].join(' '));
+  const out = Object.entries(SECTORES).filter(([k, [, rx]]) => (k === 'publico' ? Boolean(o.cliente) || o.subtipo === 'oposicion' || o.subtipo === 'contrato_publico' : rx.test(t))).map(([k]) => k);
+  o._s = out;
+  return out;
+}
 let VISTA = 'explorar', MODO = 'rejilla', ORDEN = 'relevancia';
 
 function texto(o) {
@@ -220,6 +237,7 @@ function pasa(o, sinTipo) {
   if (F.fuentes.size && !o.fuentes.some((f) => F.fuentes.has(f.nombre))) return false;
   if (F.confianza.size && !F.confianza.has(o.confianza)) return false;
   if (F.minimo && p.total < F.minimo) return false;
+  if (F.sectores.size && !sectoresDe(o).some((x) => F.sectores.has(x))) return false;
   if (F.estados.size) {
     const e = ST.est[o.id]?.estado || 'sin';
     if (!(F.estados.has(e) || (F.estados.has('guardada') && ST.fav[o.id]))) return false;
@@ -253,6 +271,7 @@ function etiquetasActivas() {
   F.subtipos.forEach((s) => t.push([SUBTIPOS[s].nombre, () => F.subtipos.delete(s)]));
   F.fuentes.forEach((s) => t.push([s, () => F.fuentes.delete(s)]));
   F.confianza.forEach((s) => t.push(['Confianza ' + s, () => F.confianza.delete(s)]));
+  F.sectores.forEach((s) => t.push([SECTORES[s][0], () => F.sectores.delete(s)]));
   F.estados.forEach((s) => t.push([s === 'guardada' ? 'Guardadas' : s === 'sin' ? 'Sin estado' : NOMBRE_ESTADO[s], () => F.estados.delete(s)]));
   if (F.minimo) t.push([`Encaje ${F.minimo}+`, () => { F.minimo = 0; }]);
   return t;
@@ -289,17 +308,17 @@ function pintarActivos() {
 }
 
 function volcar() {
-  return { que: F.que, donde: F.donde, modalidad: F.modalidad, tipo: F.tipo, rapidos: [...F.rapidos], subtipos: [...F.subtipos], fuentes: [...F.fuentes], confianza: [...F.confianza], estados: [...F.estados], minimo: F.minimo };
+  return { que: F.que, donde: F.donde, modalidad: F.modalidad, tipo: F.tipo, rapidos: [...F.rapidos], subtipos: [...F.subtipos], fuentes: [...F.fuentes], confianza: [...F.confianza], estados: [...F.estados], sectores: [...F.sectores], minimo: F.minimo };
 }
 function aplicarBusqueda(b) {
   limpiar();
-  Object.assign(F, { que: b.que, donde: b.donde, modalidad: b.modalidad, tipo: b.tipo, minimo: b.minimo, rapidos: new Set(b.rapidos), subtipos: new Set(b.subtipos), fuentes: new Set(b.fuentes), confianza: new Set(b.confianza), estados: new Set(b.estados) });
+  Object.assign(F, { que: b.que, donde: b.donde, modalidad: b.modalidad, tipo: b.tipo, minimo: b.minimo, rapidos: new Set(b.rapidos), subtipos: new Set(b.subtipos), fuentes: new Set(b.fuentes), confianza: new Set(b.confianza), estados: new Set(b.estados), sectores: new Set(b.sectores || []) });
   $('#q-que').value = F.que; $('#q-donde').value = F.donde; $('#q-modalidad').value = F.modalidad; $('#q-tipo').value = F.tipo;
   sincronizarChips(); pintar();
 }
 function limpiar() {
   Object.assign(F, { que: '', donde: '', modalidad: '', tipo: '', minimo: 0 });
-  ['rapidos', 'subtipos', 'fuentes', 'confianza', 'estados'].forEach((k) => F[k].clear());
+  ['rapidos', 'subtipos', 'fuentes', 'confianza', 'estados', 'sectores'].forEach((k) => F[k].clear());
   ['#q-que', '#q-donde', '#q-modalidad', '#q-tipo'].forEach((s) => { $(s).value = ''; });
   sincronizarChips();
 }
@@ -307,7 +326,7 @@ function sincronizarChips() {
   $$('#rapidos .chip[data-f]').forEach((c) => { const on = F.rapidos.has(c.dataset.f); c.classList.toggle('on', on); c.setAttribute('aria-pressed', on); });
   $$('#filtros input[type=checkbox]').forEach((i) => { i.checked = F[i.name].has(i.value); });
   $('#f-minimo').value = F.minimo; $('#f-minimo-v').textContent = F.minimo;
-  const n = F.subtipos.size + F.fuentes.size + F.confianza.size + F.estados.size + (F.minimo ? 1 : 0);
+  const n = F.subtipos.size + F.fuentes.size + F.confianza.size + F.estados.size + F.sectores.size + (F.minimo ? 1 : 0);
   $('#abrir-filtros').classList.toggle('on', n > 0);
 }
 
@@ -325,6 +344,8 @@ function opcionesAvanzadas() {
   grupo('#f-fuente', 'fuentes', fuentes.map((f) => [f, `${f} (${nF(f)})`]));
   grupo('#f-confianza', 'confianza', [['alta', 'Alta: casi todos los datos confirmados'], ['media', 'Media: algún dato inferido o sin modalidad'], ['baja', 'Baja: faltan varios datos']]);
   grupo('#f-estado', 'estados', [['guardada', 'Guardadas'], ['sin', 'Sin estado'], ...ESTADOS]);
+  const nS = (k) => D.ops.filter((o) => sectoresDe(o).includes(k)).length;
+  grupo('#f-sector', 'sectores', Object.entries(SECTORES).map(([k, [n]]) => [k, `${n} (${nS(k)})`]));
 }
 
 function sugerencias() {
@@ -398,10 +419,14 @@ function tarjeta(o) {
   const raz = razones(o);
   if (raz.length) { const ul = el('ul', 'razones'); raz.forEach((r) => ul.append(el('li', null, r))); c.append(ul); }
   const pie = el('div', 'pie-t');
+  const ind = indicadores3(o);
   const nota = el('span', 'nota-encaje ' + (p.total >= 75 ? 'alta' : p.total >= 60 ? 'media' : 'baja'));
-  nota.title = 'Compatibilidad estimada con tu perfil. No es una probabilidad de contratación.';
-  nota.append(el('b', null, String(p.total)), ' compatibilidad');
-  pie.append(nota, el('span', 'conf conf-' + o.confianza, 'confianza ' + o.confianza));
+  nota.title = 'Prioridad: dónde merece la pena invertir tu tiempo. No es una probabilidad de contratación.';
+  nota.append(el('b', null, String(p.total)), ' prioridad');
+  const sub = el('span', 'ind-sub', `encaje ${ind.fit} · señal ${ind.senal}`);
+  sub.title = 'Encaje: tu compatibilidad con el puesto o proyecto. Señal: lo claro que es que la empresa necesita talento.';
+  pie.append(nota, sub, el('span', 'conf conf-' + o.confianza, 'confianza ' + o.confianza));
+  if (o.nueva) pie.append(el('span', 'badge-nueva', 'Nueva'));
   const fr = frescura(o);
   if (fr) pie.append(el('span', 'fresco' + (/cierra (hoy|en [1-3] )/.test(fr) ? ' urge' : ''), fr));
   c.append(pie);
@@ -454,6 +479,7 @@ function pintar() {
       enlace('https://www.tecnoempleo.com/ofertas-trabajo/?te=project+manager', 'Tecnoempleo', 'btn sec mini'));
   }
   if (VISTA === 'empresas') { $('#mejores').hidden = true; return pintarEmpresas(); }
+  if (VISTA === 'radar') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarRadarDiario(); }
   if (VISTA === 'descubrir') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarDescubrir(); }
   if (VISTA === 'perfil') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarPerfil(); }
   if (VISTA === 'guardados') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarGuardados(); }
@@ -704,6 +730,17 @@ function abrirFicha(id) {
     const d = el('p', 'descripcion', o.descripcion.length >= 590 ? o.descripcion + '…' : o.descripcion);
     izq.append(d, el('p', 'nota', 'Extracto publicado en ' + (o.fuentes[0]?.nombre || 'la fuente') + '. La oferta completa está en el enlace.'));
   }
+  if (o.hipotesis) {
+    const h = el('section', 'hipo');
+    h.append(el('h3', null, 'Oportunidad oculta: lo que deduce RADAR'));
+    h.append(el('p', 'nota', 'Hipótesis a partir de hechos verificados. No es una vacante: compruébalo al contactar.'));
+    const ul = el('ul');
+    o.hipotesis.necesidades.forEach((n) => { const li = el('li'); li.append(n, ' ', el('span', 'origen o-inferido', 'hipótesis')); ul.append(li); });
+    h.append(el('h4', null, 'Perfiles que podrían necesitar'), ul, el('h4', null, 'Cómo contactar'));
+    const rc = el('p'); rc.append(o.hipotesis.contacto, ' ', el('span', 'origen o-inferido', 'recomendación'));
+    h.append(rc);
+    izq.append(h);
+  }
   izq.append(el('h3', null, 'Análisis de encaje'));
   izq.append(analisis(o));
   izq.append(seccionPropuesta(o));
@@ -727,14 +764,21 @@ function abrirFicha(id) {
   }
 
   izq.append(el('h3', null, 'Fuentes'));
+  izq.append(el('p', 'nota', `Detectada por RADAR el ${fecha(o.fechas.detectada || o.fechas.consultada)}${o.fechas.publicada ? ' · publicada el ' + fecha(o.fechas.publicada) : ''}.`));
   const fu = el('ul', 'fuentes');
   o.fuentes.forEach((f) => { const li = el('li'); li.append(f.url ? enlace(f.url, f.nombre, 'enlace') : el('span', null, f.nombre), el('small', null, ' · consultada el ' + fecha(f.consultada))); fu.append(li); });
   izq.append(fu);
 
   // Panel de acción
+  const ind = indicadores3(o);
   const nota = el('div', 'panel-nota');
-  nota.append(el('b', 'n-' + (p.total >= 75 ? 'alta' : p.total >= 60 ? 'media' : 'baja'), String(p.total)), el('span', null, 'compatibilidad estimada con tu perfil · no es una probabilidad de contratación'));
+  nota.append(el('b', 'n-' + (p.total >= 75 ? 'alta' : p.total >= 60 ? 'media' : 'baja'), String(p.total)), el('span', null, 'prioridad · dónde invertir tu tiempo; no es una probabilidad de contratación'));
   der.append(nota);
+  const ind3 = el('div', 'ind3');
+  const filaI = (n, v, m, ayuda) => { const d = el('details', 'ind-f'); const s2 = el('summary'); s2.append(el('span', null, n), el('b', null, String(v))); d.append(s2, el('p', 'nota', ayuda), el('p', 'ind-m', m.length ? m.join(' · ') : 'Sin motivos registrados.')); return d; };
+  ind3.append(filaI('Encaje profesional', ind.fit, ind.fitM, 'Tu compatibilidad con el puesto o proyecto: experiencia, competencias, sector y nivel.'),
+    filaI('Señal de la empresa', ind.senal, ind.senalM, 'Lo claro que es que la empresa necesita talento, según hechos verificados.'));
+  der.append(ind3);
   der.append(el('p', 'conf conf-' + o.confianza, 'Confianza ' + o.confianza));
   der.append(el('p', 'verif v-' + o.verificacion, VERIF[o.verificacion] || ''));
   const acc = el('div', 'panel-acc');
@@ -1238,7 +1282,7 @@ function contadorGuardados() {
 function ruta() {
   const [v, , id] = location.hash.replace(/^#/, '').split('/');
   const movil = window.matchMedia('(max-width: 640px)').matches;
-  VISTA = VISTAS[v] ? v : movil ? 'descubrir' : 'explorar';
+  VISTA = VISTAS[v] ? v : movil ? 'descubrir' : 'radar';
   if (typeof cerrarHoja === 'function' && VISTA !== 'descubrir') cerrarHoja();
   $$('.nav a').forEach((a) => { const on = a.dataset.v === VISTA; a.classList.toggle('on', on); if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   document.body.dataset.vista = VISTA;
