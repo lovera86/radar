@@ -35,7 +35,7 @@ const MODALIDAD = { remoto: 'Remoto', hibrido: 'Híbrido', presencial: 'Presenci
 const VISTAS = {
   explorar: { titulo: 'Oportunidades', intro: 'Empleo, proyectos, licitaciones y adjudicaciones, ordenados por lo que más te conviene.' },
   empleo: { titulo: 'Oportunidades', intro: 'Ofertas publicadas y plazas públicas: vacantes confirmadas a las que puedes inscribirte.', tipo: 'empleo' },
-  publico: { titulo: 'Oportunidades', intro: 'Oposiciones y plazas públicas (BOE, ayuntamientos y Universidad de Oviedo) a las que puedes presentarte con tu titulación.', tipo: 'empleo', solo: ['oposicion', 'contrato_publico'] },
+  publico: { titulo: 'Oportunidades', intro: 'Oposiciones y plazas públicas del BOE, el BOPA (Principado y ayuntamientos de Asturias), los boletines de Cantabria, Galicia y Castilla y León, y la Universidad de Oviedo.', tipo: 'empleo', solo: ['oposicion', 'contrato_publico'] },
   proyectos: { titulo: 'Oportunidades', intro: 'Licitaciones abiertas y contratos adjudicados: no son vacantes, son proyectos que alguien tendrá que dirigir.', tipo: 'proyecto' },
   empresas: { titulo: 'Empresas', intro: 'Empresas con actividad verificable en tu sector. Una señal no es una vacante: es un buen motivo para escribirles.' },
   mapa: { titulo: 'Oportunidades', intro: 'Dónde están. Las remotas o sin ubicación fiable aparecen en la lista, sin marcador.' },

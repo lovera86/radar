@@ -207,11 +207,12 @@ def desde_publico(filas, consultada):
         titulo = partes[1] if len(partes) > 1 else partes[0]
         out.append({
             "id": "pub:" + o["clave"], "origen": {"lista": "pub", "clave": o["clave"]},
-            "tipo": "empleo", "subtipo": "oposicion" if o.get("fuente") == "BOE" else "contrato_publico",
+            "tipo": "empleo", "subtipo": "contrato_publico" if o.get("fuente") == "Universidad de Oviedo" else "oposicion",
             "verificacion": "vacante_confirmada",
             "titulo": titulo, "resolucion": partes[0] if len(partes) > 1 else "",
             "organizacion": {"nombre": o.get("organismo", ""), "nif": ""},
-            "ubicacion": {"texto": partes[0] if com == "Asturias" else o.get("organismo", ""), "comunidad": com},
+            "ubicacion": {"texto": partes[0] if com == "Asturias" and o.get("fuente") in ("BOE", "Universidad de Oviedo")
+                          else (re.sub(r"(?i)^ayuntamiento de ", "", o.get("organismo", "")) if re.match(r"(?i)ayuntamiento de ", o.get("organismo", "")) else com), "comunidad": com},
             "modalidad": "presencial", "salario": {"texto": None}, "importe": None,
             "fechas": {"publicada": o.get("fecha"), "plazo": None, "consultada": consultada},
             "fuentes": [{"nombre": o.get("fuente", ""), "url": o.get("url", ""), "consultada": consultada}],

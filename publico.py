@@ -4,15 +4,18 @@ Fuentes:
   - BOE, sección II.B «Oposiciones y concursos» (API de datos abiertos). Para los
     ayuntamientos de Asturias, que en el título no dicen la plaza, lee el texto.
   - Universidad de Oviedo: contratos de técnico/investigador en proyectos.
-
-El BOPA no ofrece un canal legible por programas; las convocatorias de Asturias
-salen también anunciadas en el BOE.
+  - BOPA (Asturias): sumario diario público (solo la página del sumario, que el
+    robots.txt permite; las disposiciones se enlazan, no se descargan).
+  - BOC (Cantabria): canal RSS oficial de «Oposiciones y concursos».
+  - DOG (Galicia): RSS oficial del sumario del día, sección «Oposiciones y concursos».
+  - BOCYL (Castilla y León): RSS oficial del boletín del día.
 
 Uso:
     python publico.py              # desde la última ejecución (máx. 10 días)
     python publico.py --dias 30    # rellenar
 """
 import argparse
+import time
 import html
 import json
 import re
@@ -36,7 +39,7 @@ EXCLUIR = re.compile(r"libre designacion|correccion de errores|relacion definiti
                      r"se nombra|nombramiento|adjudica|concurso de traslados|provision de puestos|concurso especifico|concurso general|"
                      r"profesor|docente|catedratic|policia|bombero|medic|enfermer|facultativo|militar|guardia civil|"
                      r"estabilizacion|promocion interna|auxiliar|conserje|ordenanza|limpieza|peon|operari|educador|"
-                     r"personas aprobadas|se modifica|corrig|aspirantes admitid|tribunal calificador|sanitari|farmac|celador|arquitect|psicolog|veterinari|abogad|letrad")
+                     r"personas aprobadas|se resuelve|resolucion del proceso|han superado|se modifica|corrig|aspirantes admitid|tribunal calificador|sanitari|farmac|celador|arquitect|psicolog|veterinari|abogad|letrad")
 PUNTOS = [
     (r"ingenier[oa]s? tecnic[oa]s? industrial|ingenieria tecnica industrial|ingenieros tecnicos industriales", 60, "Ingeniería Técnica Industrial"),
     (r"gestion de la administracion civil del estado", 60, "Gestión del Estado (A2)"),
@@ -181,6 +184,141 @@ def uniovi(desde):
     return out
 
 
+def convocatoria(titulo, organismo, fuente, clave, fecha, url, comunidad):
+    """Filtra y puntúa una disposición de boletín autonómico. Devuelve None si no encaja."""
+    t = norm(titulo)
+    if not ES_CONVOCATORIA.search(t) or EXCLUIR.search(t):
+        return None
+    asturias = comunidad == "Asturias"
+    p, motivos = puntuar(titulo + " " + organismo, asturias_bonus=asturias, lejos=not asturias)
+    m = re.search(r"(?i)plazas? de ([^,.;:]{4,90})", titulo) or re.search(r"(?i)(?:ingreso|acceso) (?:en|a|al) (?:el |la )?((?:cuerpo|escala|categor[ií]a)[^,.;:]{4,110})", titulo)
+    organismo = re.sub(r"(?<=\w )(De|Del|La|Las|Los|Y|E|En)\b", lambda x: x.group(0).lower(), organismo.strip())
+    return {"clave": clave, "fuente": fuente, "organismo": organismo, "titulo": titulo.strip() + (" — " + m.group(1).strip()[:1].upper() + m.group(1).strip()[1:] if m else ""),
+            "fecha": fecha, "url": url, "puntuacion": p, "encaje": ", ".join(motivos), "comunidad": comunidad}
+
+
+def limpio(x):
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", x))).strip()
+
+
+def bopa(desde, hasta):
+    """Sumario diario del BOPA: secciones de personal (Principado) y administración local."""
+    out, d = [], desde
+    while d <= hasta:
+        url = ("https://miprincipado.asturias.es/bopa-sumario?p_p_id=pa_sede_bopa_web_portlet_SedeBopaSummaryWeb&p_p_lifecycle=0"
+               f"&p_p_state=normal&p_p_mode=view&p_r_p_summaryDate={d:%d}%2F{d:%m}%2F{d:%Y}&p_r_p_summaryIsSearch=false")
+        try:
+            s = get(url, "text/html").decode("utf-8", "replace")
+        except Exception as ex:
+            print(f"[aviso] BOPA {d}: {ex}", file=sys.stderr)
+            d += timedelta(days=1)
+            continue
+        i = s.find('id="bopa-boletin"')
+        if i < 0:
+            d += timedelta(days=1)
+            continue
+        seccion = sub = org = ""
+        for m in re.finditer(r"<h4[^>]*>(.*?)</h4>|<h5[^>]*>(.*?)</h5>|<h6[^>]*>(.*?)</h6>|<p[^>]*subAuthor[^>]*>(.*?)</p>|<dt>(.*?)</dt>", s[i:], re.S):
+            h4, h5, h6, sa, dt = m.groups()
+            if h4:
+                seccion, sub, org = limpio(h4), "", ""
+            elif h5:
+                sub, org = limpio(h5), ""
+            elif h6:
+                org = limpio(h6)
+            elif sa:
+                org = limpio(sa)
+            elif dt:
+                if not re.search(r"personal|administraci[oó]n local", norm(seccion + " " + sub)):
+                    continue
+                txt = limpio(dt)
+                cod = re.search(r"\[C[oó]d\. ([\d-]+)\]", txt)
+                titulo = re.sub(r"\s*\[C[oó]d\. [\d-]+\]\s*$", "", txt)
+                organismo = org.title() if org else sub.title()
+                if norm(sub).startswith("ayuntamientos") and org and not norm(org).startswith("ayuntamiento"):
+                    organismo = "Ayuntamiento " + org.title()
+                ref = cod.group(1) if cod else str(abs(hash(titulo)))
+                enlace = ("https://miprincipado.asturias.es/bopa/disposiciones?p_p_id=pa_sede_bopa_web_portlet_SedeBopaDispositionWeb&p_p_lifecycle=0"
+                          f"&_pa_sede_bopa_web_portlet_SedeBopaDispositionWeb_mvcRenderCommandName=%2Fdisposition%2Fdetail&p_r_p_dispositionText={ref}"
+                          f"&p_r_p_dispositionReference={ref}&p_r_p_dispositionDate={d:%d}%2F{d:%m}%2F{d:%Y}")
+                c = convocatoria(titulo, organismo, "BOPA", "bopa-" + ref, d.isoformat(), enlace, "Asturias")
+                if c:
+                    out.append(c)
+        print(f"BOPA {d:%Y-%m-%d}", flush=True)
+        d += timedelta(days=1)
+        time.sleep(1)
+    return out
+
+
+def rss(url):
+    return ET.fromstring(get(url, "application/rss+xml, application/xml"))
+
+
+def fecha_rss(it, defecto):
+    t = it.findtext("pubDate") or ""
+    m = re.match(r"\d{4}-\d{2}-\d{2}", t)
+    if m:
+        return m.group(0)
+    try:
+        from email.utils import parsedate_to_datetime
+        return parsedate_to_datetime(t).date().isoformat()
+    except Exception:
+        return defecto
+
+
+def boc_cantabria(desde):
+    out = []
+    for it in rss("https://www.cantabria.es/o/BOC/feed/6802085").iter("item"):
+        f = fecha_rss(it, date.today().isoformat())
+        if f < desde.isoformat():
+            continue
+        titulo = limpio(it.findtext("title") or "")
+        organismo, _, resto = titulo.partition(": ")
+        url = (it.findtext("link") or "").strip()
+        ident = re.search(r"idAnuBlob=(\d+)", url)
+        c = convocatoria(resto or titulo, organismo.title(), "BOC (Cantabria)", "boc-" + (ident.group(1) if ident else str(abs(hash(titulo)))), f, url, "Cantabria")
+        if c:
+            out.append(c)
+    return out
+
+
+def dog_galicia():
+    out = []
+    for it in rss("https://www.xunta.gal/diario-oficial-galicia/rss/Sumario_es.rss").iter("item"):
+        desc = [limpio(x) for x in (it.findtext("description") or "").split("</br>")]
+        if not desc or "oposiciones" not in norm(desc[0]):
+            continue
+        titulo = limpio(it.findtext("title") or "")
+        url = (it.findtext("link") or "").strip()
+        m = re.search(r"/(\d{8})/", url)
+        f = f"{m.group(1)[:4]}-{m.group(1)[4:6]}-{m.group(1)[6:]}" if m else date.today().isoformat()
+        c = convocatoria(titulo, desc[1] if len(desc) > 1 else "Xunta de Galicia", "DOG (Galicia)", "dog-" + url.rsplit("/", 1)[-1].replace(".html", ""), f, url, "Galicia")
+        if c:
+            out.append(c)
+    return out
+
+
+def bocyl():
+    out = []
+    for it in rss("https://bocyl.jcyl.es/rss.do").iter("item"):
+        m = re.search(r"(\d{2})/(\d{2})/(\d{4})", it.findtext("title") or "")
+        f = f"{m.group(3)}-{m.group(2)}-{m.group(1)}" if m else date.today().isoformat()
+        desc = html.unescape(it.findtext("description") or "")
+        for li in re.findall(r"<li.*?</li>", desc, re.S):
+            ps = re.findall(r"<p[^>]*>(.*?)</p>", li, re.S)
+            if len(ps) < 2:
+                continue
+            a = re.search(r'href="([^"]+)"', ps[0])
+            cab = limpio(ps[0])
+            organismo = cab.split(" - ", 1)[-1].title()
+            titulo = limpio(ps[1])
+            url = a.group(1) if a else "https://bocyl.jcyl.es/"
+            c = convocatoria(titulo, organismo, "BOCYL (Castilla y León)", "bocyl-" + url.rsplit("/", 1)[-1].replace(".pdf", ""), f, url, "Castilla y León")
+            if c:
+                out.append(c)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dias", type=int)
@@ -209,7 +347,18 @@ def main():
     res_uni = uniovi(desde)
     registrar("Universidad de Oviedo", resultados=len(res_uni), error="" if res_uni or UNIOVI_OK else "no se pudo leer la página de convocatorias",
               detalle=f"{len(res_uni)} plazas desde {desde}")
-    for o in res_boe + res_uni:
+    autonomicos = []
+    for nombre, fn in [("BOPA (Asturias)", lambda: bopa(desde, hoy)), ("BOC (Cantabria)", lambda: boc_cantabria(desde)),
+                       ("DOG (Galicia)", dog_galicia), ("BOCYL (Castilla y León)", bocyl)]:
+        try:
+            r = fn()
+            autonomicos += r
+            registrar(nombre, resultados=len(r), detalle=f"{len(r)} convocatorias revisadas")
+            print(f"{nombre}: {len(r)} convocatorias")
+        except Exception as ex:
+            print(f"[aviso] {nombre}: {ex}", file=sys.stderr)
+            registrar(nombre, error=f"{type(ex).__name__}: {ex}")
+    for o in res_boe + res_uni + autonomicos:
         if o["puntuacion"] < minimo:
             continue
         if o["clave"] not in previas:

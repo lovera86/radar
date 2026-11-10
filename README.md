@@ -45,10 +45,19 @@ de IA, gemelos digitales, BIM, patrimonio…). Ajustes en `config.json → emple
 
 ## Empleo público
 
-`publico.py` revisa cada día el BOE (sección II.B, Oposiciones y concursos) y los
-contratos de técnico en proyectos de la Universidad de Oviedo. Puntúa más las
-plazas de Ingeniería Técnica Industrial, los cuerpos de gestión A2 y lo que es
-en Asturias. El BOPA no tiene un canal legible por programas: la web enlaza.
+`publico.py` revisa cada día:
+
+- el BOE (sección II.B, Oposiciones y concursos);
+- el BOPA: solo la página pública del sumario diario (Principado y ayuntamientos
+  de Asturias), que el robots.txt permite; cada disposición se enlaza, no se descarga;
+- el BOC de Cantabria (RSS oficial de «Oposiciones y concursos»), el DOG de Galicia
+  (RSS del sumario, sección IV) y el BOCYL (RSS del boletín del día);
+- los contratos de técnico en proyectos de la Universidad de Oviedo.
+
+Puntúa más las plazas de Ingeniería Técnica Industrial, los cuerpos de gestión
+A2 y lo que es en Asturias; las de otras comunidades restan puntos y solo salen
+si encajan mucho. Descarta listas de admitidos, resoluciones de procesos ya
+cerrados, nombramientos y puestos de otras profesiones.
 
 ## Modelo común (RADAR v2)
 
