@@ -39,7 +39,9 @@ Ninguna clave se pega en el chat.
 
 **Authentication → Sign In / Providers**
 - Email: activado. «Confirm email»: activado.
-- **Allow new users to sign up: desactivado.** Así solo entran las personas que invites.
+- **Allow new users to sign up: activado**, junto con el filtro de `002_solo_altas.sql`
+  (Authentication → Hooks → «Before User Created»): solo pueden crear cuenta los correos
+  dados de alta en la pestaña Piloto y los de administración.
 - Email OTP Length: 6. Email OTP Expiration: 3600.
 
 **Authentication → URL Configuration**
@@ -105,7 +107,7 @@ La política que ven los probadores está en `docs/privacidad.html`. Revísala a
 1. Claude prepara su perfil a partir del CV
    (`python piloto/validar_perfil.py perfil.json --config` para añadir su búsqueda).
 2. En RADAR → Mi perfil → **Piloto** → «Dar de alta»: correo, perfil (.json) y CV original.
-3. Supabase → **Authentication → Users → Add user → Send invitation** con ese mismo correo.
+3. Ya no hay que invitar en Supabase: mándale el enlace de RADAR y dile que entre con ese correo.
 4. La persona entra en RADAR con su correo. La primera vez acepta la política de privacidad
    y ve su panel. Después puede instalarlo como app.
 

@@ -217,7 +217,7 @@ function nubeFormularioEntrar(alEntrar) {
       const { error } = await RADAR_NUBE.auth.signInWithOtp({ email: correo.value.trim(), options: { shouldCreateUser: false, emailRedirectTo: NUBE_VOLVER } });
       enviar.disabled = false;
       if (error) {
-        msg.textContent = /signup|not allowed|not found|otp_disabled/i.test(error.message)
+        msg.textContent = (/signup|not allowed|not found|otp_disabled|acceso/i.test(error.message) || error.status === 403 || error.code === 'signup_disabled')
           ? 'Ese correo no tiene acceso al piloto. Si deberías tenerlo, escribe a ' + RADAR_CONTACTO_PILOTO + '.'
           : /rate|seconds/i.test(error.message) ? 'Has pedido un código hace muy poco. Espera un minuto y vuelve a intentarlo.' : 'No se ha podido enviar el código. Revisa la conexión y vuelve a intentarlo.';
         return;

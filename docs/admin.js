@@ -71,7 +71,7 @@ function seccionPiloto(tarjeta) {
     enviar.disabled = false;
     if (error) { msg.textContent = 'No se ha podido guardar el alta: ' + error.message; return; }
     msg.replaceChildren(el('b', null, `✓ ${datos.nombre} dado/a de alta con ${email}.`),
-      el('p', null, 'Si es una persona nueva, invítala en Supabase: Authentication → Users → Add user → Send invitation, con este mismo correo. Después mándale el enlace de RADAR y dile que entre con su correo.'));
+      el('p', null, 'Ya puede entrar: mándale el enlace de RADAR (lovera86.github.io/radar) y dile que pulse «Entrar con mi correo» con este correo. Le llegará un código.'));
     f.reset();
     pintarLista();
   });
