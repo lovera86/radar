@@ -34,14 +34,16 @@ function mostrarBienvenida() {
   const h = el('h2', null, 'Tu radar de oportunidades profesionales'); h.id = 'bv-t';
   const ul = el('ul', 'bv-lista');
   ['Busca cada día ofertas de empleo, oposiciones y oportunidades en muchas fuentes.', 'Las ordena según tu perfil y te explica por qué encajan.',
-    'Te prepara el CV adaptado, la propuesta de valor y la carta para cada una.', 'Tus datos se guardan solo en este navegador.']
+    'Te prepara el CV adaptado, la propuesta de valor y la carta para cada una.',
+    RADAR_NUBE ? 'Entras con tu correo y ves lo mismo en el móvil y en el ordenador.' : 'Tus datos se guardan solo en este navegador.']
     .forEach((x) => ul.append(el('li', null, x)));
   const errores = el('div', 'bv-err'); errores.setAttribute('role', 'alert');
   const acc = el('div', 'bv-acc');
-  acc.append(selectorPerfil((errs) => {
+  if (!RADAR_NUBE) acc.append(selectorPerfil((errs) => {
     if (!errs.length) { location.reload(); return; }
     errores.replaceChildren(el('b', null, 'No se ha podido cargar el perfil:'), ...errs.map((x) => el('p', null, x)));
-  }), boton('Ver un ejemplo', 'btn sec', async () => {
+  }));
+  acc.append(boton('Ver un ejemplo', 'btn sec', async () => {
     try {
       const ej = await fetch('perfiles/ejemplo.json', { cache: 'no-store' }).then((r) => r.json());
       localStorage.setItem('radar-usuario', JSON.stringify({ ...ej, ejemplo: true }));
@@ -52,7 +54,9 @@ function mostrarBienvenida() {
   const pie = el('p', 'nota');
   pie.append('¿Aún no tienes tu perfil? Durante el piloto lo preparamos a partir de tu CV. ', enlaceOpinion('Escríbenos', 'enlace'), '.');
   pie.querySelector('a').href = `mailto:${RADAR_CONTACTO_PILOTO}?subject=${encodeURIComponent('Quiero probar RADAR')}&body=${encodeURIComponent('Hola, Rocío. Me gustaría probar RADAR. Te adjunto mi CV.\n\nQué tipo de trabajo busco:\nZona o comunidad:\n¿Me interesan también oposiciones? (sí/no):\n')}`;
-  d.append(marca, h, el('p', 'bv-sub', 'Estás en el piloto privado. Carga el archivo de perfil que te hemos enviado para ver tus oportunidades.'), ul, acc, errores, pie);
+  if (RADAR_NUBE) {
+    d.append(marca, h, el('p', 'bv-sub', 'Estás en el piloto privado. Entra con el correo con el que te hemos dado de alta.'), ul, nubeFormularioEntrar(), acc, errores, pie);
+  } else d.append(marca, h, el('p', 'bv-sub', 'Estás en el piloto privado. Carga el archivo de perfil que te hemos enviado para ver tus oportunidades.'), ul, acc, errores, pie);
   document.body.append(d);
   d.addEventListener('cancel', (e) => e.preventDefault());
   d.showModal();
@@ -60,16 +64,28 @@ function mostrarBienvenida() {
 
 (() => {
   let nueva = false;
-  try { nueva = !RADAR_ACCESO && !USUARIO && !localStorage.getItem('radar-v2') && !localStorage.getItem('radar-perfil') && !localStorage.getItem('radar-demo'); } catch (e) { nueva = false; }
+  let conSesion = false;
+  try { conSesion = Boolean(RADAR_NUBE && localStorage.getItem('radar-sesion')); } catch (e) { conSesion = false; }
+  try { nueva = !RADAR_ACCESO && !USUARIO && !conSesion && !localStorage.getItem('radar-v2') && !localStorage.getItem('radar-perfil') && !localStorage.getItem('radar-demo'); } catch (e) { nueva = false; }
   if (nueva) mostrarBienvenida();
-  if (USUARIO) {
-    const p = $('.pie-acc');
-    if (p) p.append(' · ', enlaceOpinion('Enviar mi opinión sobre RADAR'));
-  }
+  const p = $('.pie-acc');
+  if (p && USUARIO) p.append(' · ', enlaceOpinion('Enviar mi opinión sobre RADAR'));
+  if (p && RADAR_NUBE) p.append(' · ', conSesion ? boton('Cerrar sesión', 'enlace', () => nubeSalir()) : boton('Entrar con mi correo', 'enlace', nubeAbrirEntrar));
 })();
 
 /* Tarjeta de «Mis datos» (Mi perfil) para gestionar el perfil cargado. */
 function tarjetaMiPerfil(tarjeta) {
+  if (RADAR_NUBE) {
+    tarjetaCuenta(tarjeta);
+    const t = tarjeta(USUARIO ? 'Tu perfil de RADAR' : 'Perfil en uso', USUARIO
+      ? (USUARIO.ejemplo ? `Estás viendo el perfil de ejemplo (${USUARIO.nombre}, ficticio).` : `${USUARIO.nombre} · ${REGION}. Lo preparamos a partir de tu CV; si algo no es correcto, escríbenos y lo cambiamos.`)
+      : 'Estás usando el perfil por defecto.');
+    const acc = el('div', 'acciones');
+    if (typeof botonInstalar === 'function') acc.append(botonInstalar());
+    if (USUARIO && !USUARIO.ejemplo) acc.append(enlaceOpinion('Enviar mi opinión', 'btn sec'));
+    t.append(acc);
+    return;
+  }
   const t = tarjeta(USUARIO ? 'Tu perfil de RADAR' : 'Perfil en uso', USUARIO
     ? (USUARIO.ejemplo ? `Estás viendo el perfil de ejemplo (${USUARIO.nombre}, ficticio). Carga tu propio perfil cuando lo tengas.` : `Perfil cargado: ${USUARIO.nombre} · ${REGION}. Está guardado solo en este navegador.`)
     : 'Estás usando el perfil por defecto. Si te han enviado un archivo de perfil, cárgalo aquí.');

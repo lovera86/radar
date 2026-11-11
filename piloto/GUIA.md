@@ -1,5 +1,9 @@
 # Piloto de RADAR (fase 1): guía de alta
 
+> **Con el servidor activo** (`docs/supabase-config.js` relleno, ver `supabase/GUIA-SERVIDOR.md`),
+> el alta se hace en RADAR → Mi perfil → Piloto y las personas entran con su correo.
+> El enlace personal y el archivo .json de abajo quedan como alternativa sin servidor.
+
 Objetivo: que 5–10 personas usen RADAR con su propio perfil durante 2–4 semanas y
 comprobar si lo usan, si las oportunidades encajan y si pagarían por ello.
 

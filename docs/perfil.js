@@ -4,7 +4,8 @@
    y mismo almacenamiento que antes (radar-perfil y radar-pesos en el navegador). */
 
 let PF_TAB = (() => { try { return localStorage.getItem('radar-perfil-tab') || 'busco'; } catch (e) { return 'busco'; } })();
-const PF_TABS = [['busco', 'Qué busco'], ['roles', 'Roles'], ['puntua', 'Cómo puntúa RADAR'], ['cv', 'Mi CV'], ['aprende', 'Aprendizaje'], ['datos', 'Mis datos']];
+const PF_TABS_BASE = [['busco', 'Qué busco'], ['roles', 'Roles'], ['puntua', 'Cómo puntúa RADAR'], ['cv', 'Mi CV'], ['aprende', 'Aprendizaje'], ['datos', 'Mis datos']];
+const pfTabs = () => (typeof NUBE_ADMIN !== 'undefined' && NUBE_ADMIN ? [...PF_TABS_BASE, ['piloto', 'Piloto']] : PF_TABS_BASE);
 const PF_ICO = {
   remoto: '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>',
   hibrido: '<svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7M5 10v10h5v-6h4v6h5V10"/></svg>',
@@ -76,10 +77,10 @@ function pintarPerfil() {
   cont.append(res);
 
   // ---------- Pestañas ----------
-  if (!PF_TABS.some(([k]) => k === PF_TAB)) PF_TAB = 'busco';
+  if (!pfTabs().some(([k]) => k === PF_TAB)) PF_TAB = 'busco';
   const tabs = el('div', 'pf-tabs');
   tabs.setAttribute('role', 'tablist');
-  PF_TABS.forEach(([k, n]) => {
+  pfTabs().forEach(([k, n]) => {
     const b = boton(n, 'pf-tab' + (k === PF_TAB ? ' on' : ''), () => { PF_TAB = k; try { localStorage.setItem('radar-perfil-tab', k); } catch (e) { /* sin almacenamiento */ } pintar(); });
     b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', k === PF_TAB);
     tabs.append(b);
@@ -240,7 +241,10 @@ function pintarPerfil() {
 
   if (PF_TAB === 'datos') {
     if (typeof tarjetaMiPerfil === 'function') tarjetaMiPerfil(tarjeta);
-    const d = tarjeta('Dónde se guardan tus datos', 'Tus preferencias, favoritos, candidaturas, notas, entrevistas, ofertas analizadas y cartas se guardan solo en este navegador. La web es pública pero no contiene nada tuyo salvo el CV sin teléfono.');
+    const enCuenta = typeof NUBE_SESION !== 'undefined' && NUBE_SESION;
+    const d = tarjeta(enCuenta ? 'Lo que has hecho en RADAR' : 'Dónde se guardan tus datos', enCuenta
+      ? 'Tus preferencias, guardadas, candidaturas, notas, entrevistas, ofertas analizadas y cartas se guardan en tu cuenta y en este navegador.'
+      : 'Tus preferencias, favoritos, candidaturas, notas, entrevistas, ofertas analizadas y cartas se guardan solo en este navegador. La web es pública pero no contiene nada tuyo salvo el CV sin teléfono.');
     const n = (o) => Object.keys(o || {}).length;
     const cifras = el('div', 'pf-cifras');
     [[n(ST.fav), 'guardadas'], [n(ST.est), 'con estado'], [n(ST.notas), 'notas'], [n(ST.externas), 'ofertas analizadas'], [n(ST.cartas), 'cartas'], [n(ST.convocatorias), 'convocatorias analizadas'], [n(ST.entrevistas), 'entrevistas']]
@@ -250,6 +254,8 @@ function pintarPerfil() {
     acc.append(boton('Exportar una copia', 'btn', () => $('#exportar').click()), boton('Importar una copia', 'btn sec', () => $('#importar').click()));
     d.append(acc, el('p', 'nota', 'Haz una copia de vez en cuando y cuando cambies de ordenador o de navegador: si se borran los datos del navegador, se pierde lo que no esté copiado.'));
   }
+
+  if (PF_TAB === 'piloto' && typeof seccionPiloto === 'function') seccionPiloto(tarjeta);
 
   $('#rejilla').replaceChildren(cont);
 }

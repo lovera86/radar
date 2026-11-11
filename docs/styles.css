@@ -1181,3 +1181,30 @@ body[data-vista="perfil"] .cab-vista p { display: none; }
 .bv-enlace { display: grid; gap: 6px; margin-top: 10px; }
 @media (max-width: 900px) { .pp-pasos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .pp-pasos { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Cuenta en el servidor (cuenta.js) y pestaña Piloto (admin.js) ---------- */
+.nube-cerrar { float: right; }
+.nube-form { display: grid; gap: 10px; margin: 6px 0 16px; }
+.nube-paso { display: grid; gap: 8px; }
+.nube-paso label, .adm-form label > span { font-weight: 600; font-size: 14px; }
+.nube-form input, .adm-form input[type="email"] { font: inherit; padding: 10px 12px; border: 1px solid var(--line2); border-radius: 10px; background: var(--soft); color: var(--ink); width: 100%; box-sizing: border-box; }
+.nube-form #nube-codigo { font: 600 20px var(--mono); letter-spacing: .25em; }
+.nube-paso .btn { justify-self: start; }
+.nube-msg { margin: 0; font-size: 14px; color: var(--muted); }
+.nube-msg b { color: var(--ink); }
+.nube-check { display: flex; gap: 8px; align-items: flex-start; margin: 4px 0 16px; font-size: 14.5px; }
+.nube-check input { margin-top: 4px; }
+.nube-linea { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; margin: 0 0 10px; }
+.nube-estado { font-size: 13.5px; color: var(--muted); }
+html[data-nube="al-dia"] .nube-estado { color: var(--ok); }
+html[data-nube="sin-conexion"] .nube-estado { color: var(--warn); }
+.enlace.peligro { color: var(--bad); }
+.adm-tabla { overflow-x: auto; }
+.adm-tabla table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 14px; }
+.adm-tabla th, .adm-tabla td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.adm-tabla th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.adm-tabla td small { display: block; color: var(--muted); }
+.adm-tabla td.num { font-variant-numeric: tabular-nums; }
+.adm-form { display: grid; gap: 12px; max-width: 520px; }
+.adm-form label { display: grid; gap: 6px; }
+.adm-form .btn { justify-self: start; }
