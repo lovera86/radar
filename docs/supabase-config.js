@@ -7,6 +7,6 @@
    NUNCA pongas aquí la clave «secret» ni la «service_role».
    Con los dos campos vacíos, RADAR funciona como siempre, solo en el navegador. */
 const RADAR_SUPABASE = {
-  url: '',
-  clave: '',
+  url: 'https://newalycxqyaounbhinhb.supabase.co',
+  clave: 'sb_publishable_5yDalPtOe4SMMwuI3fEqQw_alZNWlt8',
 };
