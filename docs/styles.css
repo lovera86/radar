@@ -1148,3 +1148,18 @@ body[data-vista="perfil"] .cab-vista p { display: none; }
 .apr-aviso > span:nth-child(2) { flex: 1; }
 .apr-aviso-i { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--turq), var(--rosa)); color: #fff; flex-shrink: 0; }
 @media (max-width: 640px) { .apr-sug { flex-direction: column; align-items: flex-start; } .apr-aviso { flex-wrap: wrap; } }
+
+/* Piloto: bienvenida y perfiles */
+.sin-proyectos .nav a[data-v="empresas"], .sin-proyectos #subnav a[data-v="proyectos"] { display: none; }
+.bv { width: min(560px, calc(100vw - 24px)); border-radius: 22px; padding: 28px; border-top: 6px solid var(--turq);
+  background: radial-gradient(400px 200px at 100% 0%, var(--rosa-soft), transparent 70%), var(--surface); }
+.bv-marca { display: flex; align-items: center; gap: 8px; color: var(--turq); font: 700 15px var(--display); letter-spacing: .08em; }
+.bv-marca svg { width: 28px; height: 28px; }
+.bv h2 { margin: 14px 0 6px; font: 700 24px/1.2 var(--display); }
+.bv-sub { margin: 0 0 12px; color: var(--muted); }
+.bv-lista { margin: 0 0 18px; padding-left: 20px; display: grid; gap: 6px; font-size: 14.5px; }
+.bv-lista li::marker { color: var(--rosa); }
+.bv-acc { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+.bv-cargar { cursor: pointer; }
+.bv-err { color: var(--bad); font-size: 13.5px; }
+.bv-err p { margin: 2px 0; }

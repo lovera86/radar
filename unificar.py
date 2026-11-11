@@ -157,7 +157,7 @@ def desde_empleos(filas, consultada):
         if o.get("salario"):
             datos.append({"campo": "Salario", "valor": o["salario"], "origen": "confirmado"})
         out.append({
-            "id": "emp:" + o["clave"], "origen": {"lista": "emp", "clave": o["clave"]},
+            "id": "emp:" + o["clave"], "origen": {"lista": "emp", "clave": o["clave"]}, "solo_piloto": bool(o.get("solo_piloto")),
             "tipo": "empleo", "subtipo": "oferta", "verificacion": "vacante_confirmada",
             "titulo": o["titulo"], "organizacion": {"nombre": o.get("empresa", ""), "nif": ""},
             "ubicacion": {"texto": o.get("ubicacion", ""), "comunidad": com}, "modalidad": mod,
@@ -208,7 +208,7 @@ def desde_publico(filas, consultada):
         partes = (o.get("titulo") or "").split(" — ")
         titulo = partes[1] if len(partes) > 1 else partes[0]
         out.append({
-            "id": "pub:" + o["clave"], "origen": {"lista": "pub", "clave": o["clave"]},
+            "id": "pub:" + o["clave"], "origen": {"lista": "pub", "clave": o["clave"]}, "solo_piloto": bool(o.get("solo_piloto")),
             "tipo": "empleo", "subtipo": "contrato_publico" if o.get("fuente") == "Universidad de Oviedo" else "oposicion",
             "verificacion": "vacante_confirmada",
             "titulo": titulo, "resolucion": partes[0] if len(partes) > 1 else "",

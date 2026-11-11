@@ -1,0 +1,88 @@
+'use strict';
+/* Bienvenida del piloto: a quien entra por primera vez (sin perfil y sin datos) le
+   explica qué es RADAR y le deja cargar su perfil o ver el ejemplo. */
+
+function selectorPerfil(alCargar) {
+  const lab = el('label', 'btn bv-cargar');
+  lab.append('Cargar mi perfil (.json)');
+  const inp = el('input'); inp.type = 'file'; inp.accept = 'application/json,.json'; inp.hidden = true;
+  inp.addEventListener('change', () => { if (inp.files[0]) cargarPerfilDesdeArchivo(inp.files[0], alCargar); });
+  lab.append(inp);
+  return lab;
+}
+
+function enlaceOpinion(texto, cls) {
+  const cuerpo = [
+    `Hola, Rocío. Mi opinión sobre RADAR (${new Date().toLocaleDateString('es-ES')}):`, '',
+    '1. ¿Lo has abierto varios días? ¿Qué es lo primero que miras?', '',
+    '2. ¿Las oportunidades que te propone encajan contigo? (1 a 5)', '',
+    '3. ¿Has preparado alguna candidatura con el CV o la carta? ¿Qué tal?', '',
+    '4. ¿Qué echas en falta o te sobra?', '',
+    '5. ¿Lo recomendarías? ¿Pagarías por usarlo? ¿Cuánto al mes?', '',
+  ].join('\n');
+  const a = el('a', cls || 'enlace', texto);
+  a.href = `mailto:${RADAR_CONTACTO_PILOTO}?subject=${encodeURIComponent('Opinión sobre RADAR')}&body=${encodeURIComponent(cuerpo)}`;
+  return a;
+}
+
+function mostrarBienvenida() {
+  const d = el('dialog', 'bv');
+  d.setAttribute('aria-labelledby', 'bv-t');
+  const marca = el('div', 'bv-marca');
+  marca.innerHTML = $('.marca svg').outerHTML;
+  marca.append(el('span', null, 'RADAR · piloto'));
+  const h = el('h2', null, 'Tu radar de oportunidades profesionales'); h.id = 'bv-t';
+  const ul = el('ul', 'bv-lista');
+  ['Busca cada día ofertas de empleo, oposiciones y oportunidades en muchas fuentes.', 'Las ordena según tu perfil y te explica por qué encajan.',
+    'Te prepara el CV adaptado, la propuesta de valor y la carta para cada una.', 'Tus datos se guardan solo en este navegador.']
+    .forEach((x) => ul.append(el('li', null, x)));
+  const errores = el('div', 'bv-err'); errores.setAttribute('role', 'alert');
+  const acc = el('div', 'bv-acc');
+  acc.append(selectorPerfil((errs) => {
+    if (!errs.length) { location.reload(); return; }
+    errores.replaceChildren(el('b', null, 'No se ha podido cargar el perfil:'), ...errs.map((x) => el('p', null, x)));
+  }), boton('Ver un ejemplo', 'btn sec', async () => {
+    try {
+      const ej = await fetch('perfiles/ejemplo.json', { cache: 'no-store' }).then((r) => r.json());
+      localStorage.setItem('radar-usuario', JSON.stringify({ ...ej, ejemplo: true }));
+      if (ej.preferencias) localStorage.setItem('radar-perfil', JSON.stringify(ej.preferencias));
+    } catch (e) { try { localStorage.setItem('radar-demo', '1'); } catch (x) { /* sin almacenamiento */ } }
+    location.reload();
+  }));
+  const pie = el('p', 'nota');
+  pie.append('¿Aún no tienes tu perfil? Durante el piloto lo preparamos a partir de tu CV. ', enlaceOpinion('Escríbenos', 'enlace'), '.');
+  pie.querySelector('a').href = `mailto:${RADAR_CONTACTO_PILOTO}?subject=${encodeURIComponent('Quiero probar RADAR')}&body=${encodeURIComponent('Hola, Rocío. Me gustaría probar RADAR. Te adjunto mi CV.\n\nQué tipo de trabajo busco:\nZona o comunidad:\n¿Me interesan también oposiciones? (sí/no):\n')}`;
+  d.append(marca, h, el('p', 'bv-sub', 'Estás en el piloto privado. Carga el archivo de perfil que te hemos enviado para ver tus oportunidades.'), ul, acc, errores, pie);
+  document.body.append(d);
+  d.addEventListener('cancel', (e) => e.preventDefault());
+  d.showModal();
+}
+
+(() => {
+  let nueva = false;
+  try { nueva = !USUARIO && !localStorage.getItem('radar-v2') && !localStorage.getItem('radar-perfil') && !localStorage.getItem('radar-demo'); } catch (e) { nueva = false; }
+  if (nueva) mostrarBienvenida();
+  if (USUARIO) {
+    const p = $('.pie-acc');
+    if (p) p.append(' · ', enlaceOpinion('Enviar mi opinión sobre RADAR'));
+  }
+})();
+
+/* Tarjeta de «Mis datos» (Mi perfil) para gestionar el perfil cargado. */
+function tarjetaMiPerfil(tarjeta) {
+  const t = tarjeta(USUARIO ? 'Tu perfil de RADAR' : 'Perfil en uso', USUARIO
+    ? (USUARIO.ejemplo ? `Estás viendo el perfil de ejemplo (${USUARIO.nombre}, ficticio). Carga tu propio perfil cuando lo tengas.` : `Perfil cargado: ${USUARIO.nombre} · ${REGION}. Está guardado solo en este navegador.`)
+    : 'Estás usando el perfil por defecto. Si te han enviado un archivo de perfil, cárgalo aquí.');
+  const errores = el('div', 'bv-err');
+  const acc = el('div', 'acciones');
+  acc.append(selectorPerfil((errs) => { if (!errs.length) location.reload(); else errores.replaceChildren(...errs.map((x) => el('p', null, x))); }));
+  if (USUARIO) {
+    acc.append(boton('Quitar mi perfil de este navegador', 'btn sec', () => {
+      if (!confirm('Se quitará tu perfil de este navegador (tus guardadas y notas se mantienen). ¿Seguir?')) return;
+      try { localStorage.removeItem('radar-usuario'); localStorage.setItem('radar-demo', '1'); } catch (e) { /* sin almacenamiento */ }
+      location.reload();
+    }));
+    acc.append(enlaceOpinion('Enviar mi opinión', 'btn sec'));
+  }
+  t.append(acc, errores);
+}

@@ -43,13 +43,13 @@ function pintarPerfil() {
   const cab = el('section', 'pf-cab');
   const av = el('div', 'pf-avatar', iniciales(CV.nombre));
   const id = el('div', 'pf-id');
-  id.append(el('h2', null, CV.nombre), el('p', 'pf-titular', CV.temas.gestion.titular));
+  id.append(el('h2', null, CV.nombre), el('p', 'pf-titular', (CV.temas.gestion || Object.values(CV.temas)[0] || {}).titular || ''));
   const contacto = el('p', 'pf-contacto');
   contacto.append(CV.ciudad, ' · ', CV.email, ' · ');
   contacto.append(enlace('https://www.' + CV.linkedin, 'LinkedIn ↗', 'enlace'));
   id.append(contacto);
   const sellos = el('div', 'pf-sellos');
-  ['Ingeniería Técnica Industrial', 'Máster en Project Management', 'CAPM (PMI)', 'Inglés C2'].forEach((x) => sellos.append(el('span', 'pf-sello', x)));
+  SELLOS.forEach((x) => sellos.append(el('span', 'pf-sello', x)));
   id.append(sellos);
   const anillo = el('div', 'pf-anillo');
   anillo.style.setProperty('--p', pct);
@@ -69,7 +69,7 @@ function pintarPerfil() {
   const res = el('div', 'pf-resumen');
   res.append(el('span', 'pf-res-t', 'RADAR busca para ti:'));
   const chip = (t, cls) => res.append(el('span', 'pf-chip ' + (cls || ''), t));
-  ['Asturias', 'Remoto', ...PREF.zonas].forEach((z) => chip(z, 'turq'));
+  [REGION, 'Remoto', ...PREF.zonas.filter((z) => z !== REGION)].forEach((z) => chip(z, 'turq'));
   PREF.modalidades.forEach((m) => chip(MODALIDAD[m], 'rosa'));
   if (PREF.salarioMin) chip('desde ' + (+PREF.salarioMin).toLocaleString('es-ES') + ' €', 'rosa');
   ROLES.filter((r) => PREF.roles[r.k] === true).forEach((r) => chip(r.nombre));
@@ -92,10 +92,10 @@ function pintarPerfil() {
 
   if (PF_TAB === 'busco') {
     // Zonas
-    const z = tarjeta('Dónde quieres trabajar', 'Asturias y el trabajo en remoto cuentan siempre. Añade las zonas a las que te moverías o irías algunos días.', 'pf-zonas');
+    const z = tarjeta('Dónde quieres trabajar', `${REGION} y el trabajo en remoto cuentan siempre. Añade las zonas a las que te moverías o irías algunos días.`, 'pf-zonas');
     const zs = el('div', 'pf-pills');
-    ['Asturias', 'Remoto'].forEach((x) => { const b = el('span', 'pf-pill on fijo'); b.append(pfIco('ok'), x, el('small', null, 'siempre')); zs.append(b); });
-    ZONAS_PERFIL.filter((x) => x !== 'Asturias').forEach((x) => {
+    [REGION, 'Remoto'].forEach((x) => { const b = el('span', 'pf-pill on fijo'); b.append(pfIco('ok'), x, el('small', null, 'siempre')); zs.append(b); });
+    [...new Set([...ZONAS_PERFIL, ...NORTE])].filter((x) => x !== REGION).forEach((x) => {
       const on = PREF.zonas.includes(x);
       const b = boton('', 'pf-pill' + (on ? ' on' : ''), () => { PREF.zonas = on ? PREF.zonas.filter((y) => y !== x) : [...PREF.zonas, x]; repintar(); });
       if (on) b.append(pfIco('ok')); b.append(x);
@@ -239,6 +239,7 @@ function pintarPerfil() {
   if (PF_TAB === 'aprende' && typeof seccionAprendizaje === 'function') seccionAprendizaje(tarjeta, () => { pfGuardado(); pintar(); });
 
   if (PF_TAB === 'datos') {
+    if (typeof tarjetaMiPerfil === 'function') tarjetaMiPerfil(tarjeta);
     const d = tarjeta('Dónde se guardan tus datos', 'Tus preferencias, favoritos, candidaturas, notas, entrevistas, ofertas analizadas y cartas se guardan solo en este navegador. La web es pública pero no contiene nada tuyo salvo el CV sin teléfono.');
     const n = (o) => Object.keys(o || {}).length;
     const cifras = el('div', 'pf-cifras');

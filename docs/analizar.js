@@ -58,10 +58,10 @@ function extSalario(texto) {
 
 function extGeografia(com, mod) {
   if (mod === 'remoto') return critE(1, ['en remoto']);
-  if (com === 'Asturias') return critE(1, ['en Asturias']);
-  if (EXT_NORTE.includes(com)) return critE(mod === 'hibrido' ? 0.7 : 0.6, [`en ${com} (norte)`].concat(mod === 'hibrido' ? ['híbrido'] : []));
+  if (com === REGION) return critE(1, ['en ' + REGION]);
+  if (NORTE.includes(com)) return critE(mod === 'hibrido' ? 0.7 : 0.6, [`en ${com} (norte)`].concat(mod === 'hibrido' ? ['híbrido'] : []));
   if (mod === 'hibrido') return critE(0.5, [com ? `híbrido en ${com}: habría que ir a la oficina algunos días` : 'híbrido sin ciudad indicada: confirma dónde está la oficina']);
-  if (com) return critE(0.25, [`presencial fuera de Asturias (${com})`]);
+  if (com) return critE(0.25, [`presencial fuera de ${REGION} (${com})`]);
   return critE(0, [], true);
 }
 
@@ -75,7 +75,7 @@ function extSalarioCrit(texto) {
 
 /* Construye una oportunidad con el mismo modelo que las del radar. */
 function construirExterna(d) {
-  const cfg = PERFIL_BUSQUEDA || { puestos: { 'project manager': 45, 'jefe de proyecto': 45, 'pmo': 35 }, temas: {}, lugares: {}, excluir: [] };
+  const cfg = USUARIO?.busqueda || PERFIL_BUSQUEDA || { puestos: { 'project manager': 45, 'jefe de proyecto': 45, 'pmo': 35 }, temas: {}, lugares: {}, excluir: [] };
   const titulo = d.puesto.trim();
   const texto = [titulo, d.texto].join('\n');
   const tTit = norm(titulo); const tTodo = norm(texto);
@@ -88,18 +88,20 @@ function construirExterna(d) {
   if (rol) encM.push(`puesto: ${rol[0]}${rolEnTexto ? ' (en la descripción, no en el título)' : ''}`);
   else encM.push('el título no coincide con tus roles principales');
   temasE.slice(0, 5).forEach((x) => encM.push(`tema: ${x}`));
-  if (/ingl[eé]s|english/.test(tTodo) && /Inglés/.test(CV.idiomas)) encM.push('piden inglés: tienes C2 (Cambridge Proficiency)');
-  if (/franc[eé]s|french/.test(tTodo) && /Francés/.test(CV.idiomas)) encM.push('piden francés: tienes el DELF');
-  const pideCapm = /capm/.test(tTodo);
-  if (pideCapm || /pmbok|\bpmi\b/.test(tTodo)) { enc += 0.05; encM.push(pideCapm ? 'mencionan la CAPM: la tienes' : 'mencionan PMI/PMBOK: tienes la CAPM'); }
+  if (/ingl[eé]s|english/.test(tTodo) && idiomaCV('ingl')) encM.push(`piden inglés: en tu CV figura «${idiomaCV('ingl')}»`);
+  if (/franc[eé]s|french/.test(tTodo) && idiomaCV('franc')) encM.push(`piden francés: en tu CV figura «${idiomaCV('franc')}»`);
+  const tengoCapm = /capm/.test(CV_TEXTO());
+  const pideCapm = tengoCapm && /capm/.test(tTodo);
+  if (pideCapm || (tengoCapm && /pmbok|\bpmi\b/.test(tTodo))) { enc += 0.05; encM.push(pideCapm ? 'mencionan la CAPM: la tienes' : 'mencionan PMI/PMBOK: tienes la CAPM'); }
 
   let acc = 0.7; const accM = [];
   const excl = (cfg.excluir || []).find((k) => rxPalabra(k).test(tTit));
   if (excl) { acc -= 0.3; accM.push(`el título incluye «${excl}»: puede no corresponder a tu nivel o perfil`); }
   if (/\bsenior\b|\bsr\b|director|head of|lead\b/.test(tTit)) { acc = Math.min(acc, 0.55); accM.push('puesto sénior: revisa los años de experiencia que piden'); }
   if (/\bpmp\b/.test(tTodo) && !pideCapm) {
-    if (/(valorable|se valorara|deseable|plus)[^.]{0,40}\bpmp\b/.test(tTodo)) { acc = Math.min(acc, 0.65); accM.push('valoran el PMP; tienes la CAPM (mismo organismo, nivel inicial)'); }
-    else { acc -= 0.1; accM.push('piden PMP; tienes la CAPM (mismo organismo, nivel inicial)'); }
+    const tuya = tengoCapm ? 'tienes la CAPM (mismo organismo, nivel inicial)' : 'no figura en tu CV';
+    if (/(valorable|se valorara|deseable|plus)[^.]{0,40}\bpmp\b/.test(tTodo)) { acc = Math.min(acc, 0.65); accM.push('valoran el PMP; ' + tuya); }
+    else { acc -= 0.1; accM.push('piden PMP; ' + tuya); }
   }
   const anos = [...tTodo.matchAll(/(\d{1,2})\s*\+?\s*(?:anos|years)/g)].map((m) => +m[1]).filter((n) => n > 0 && n < 30);
   if (anos.length) { const n = Math.max(...anos); if (n >= 8) { acc -= 0.1; accM.push(`piden ${n} años de experiencia: comprueba si los cubres`); } else { acc = Math.min(acc, 0.65); accM.push(`piden ${n} años de experiencia: comprueba que los cubres`); } }
@@ -316,7 +318,7 @@ function generarCartaEn(o) {
     perfil,
   ];
   if (pr.aportaciones.length) partes.push('Based on the job description, I believe I could contribute from day one:\n' + pr.aportaciones.map((a) => '- ' + a.en).join('\n'));
-  partes.push(`I am motivated by the opportunity to keep developing my career in ${CARTA_SECTOR_EN[pr.tema]}${empresa ? ' at ' + empresa : ''} and to put this experience at the service of your team.`);
+  partes.push(`I am motivated by the opportunity to keep developing my career in ${(!USUARIO && CARTA_SECTOR_EN[pr.tema]) || (CV_EN.temas[pr.tema]?.nombre || 'my field').toLowerCase()}${empresa ? ' at ' + empresa : ''} and to put this experience at the service of your team.`);
   partes.push('Please find my CV attached. I would welcome the opportunity to discuss my application in an interview.');
   partes.push(`Kind regards,\n${PERFIL.nombre}\n${PERFIL.email}\n${PERFIL.linkedin}`);
   return partes.join('\n\n');
@@ -329,14 +331,14 @@ function generarCarta(o, idioma) {
   const aprobada = ST.prop[o.id]?.aprobada ? aportacionesParaCorreo(ST.prop[o.id].texto) : '';
   const aport = aprobada || pr.aportaciones.map((a) => '- ' + a.t).join('\n');
   let perfil = CV.temas[pr.tema].perfil;
-  if (/^[A-Z][^.]{0,60} con /.test(perfil)) perfil = 'Soy ' + perfil;
+  if (/^[A-ZÁÉÍÓÚ][^.]{0,60} con /.test(perfil)) perfil = 'Soy ' + (/^[A-ZÁÉÍÓÚ][a-záéíóúñ]+ [a-záéíóú]/.test(perfil) ? perfil.charAt(0).toLowerCase() + perfil.slice(1) : perfil);
   const partes = [
     `${empresa ? 'Estimado equipo de ' + empresa : 'Estimado equipo de selección'}:`,
     `Me pongo en contacto con ustedes para presentar mi candidatura al puesto de ${o.titulo}.`,
     perfil,
   ];
   if (aport) partes.push('Por lo que describe la oferta, creo que podría aportar desde el primer momento:\n' + aport);
-  partes.push(`Me motiva la posibilidad de seguir desarrollando mi carrera en ${CARTA_SECTOR[pr.tema]}${empresa ? ' en ' + empresa : ''} y de poner esta experiencia al servicio de su equipo.`);
+  partes.push(`Me motiva la posibilidad de seguir desarrollando mi carrera en ${(!USUARIO && CARTA_SECTOR[pr.tema]) || (CV.temas[pr.tema]?.nombre || 'mi sector').toLowerCase()}${empresa ? ' en ' + empresa : ''} y de poner esta experiencia al servicio de su equipo.`);
   if (PREF.disponibilidad) partes.push(`Mi disponibilidad para incorporarme es ${PREF.disponibilidad.replace(/\.$/, '')}.`);
   partes.push('Adjunto mi currículum y quedo a su disposición para ampliar cualquier información en una entrevista.');
   partes.push(firma());
@@ -355,7 +357,7 @@ function imprimirCarta(texto, o, idioma) {
 .rem{margin-bottom:10mm}.rem b{font-size:14pt;display:block}.rem span{color:#5d6a75;font-size:10pt}.fecha{text-align:right;margin-bottom:8mm;color:#5d6a75}
 p{margin:0 0 4mm;white-space:pre-wrap}</style></head><body>
 <div class="rem"><b>${esc2(CV.nombre)}</b><span>${esc2([en ? CV_EN.ciudad : CV.ciudad, tel, CV.email, CV.linkedin].filter(Boolean).join(' · '))}</span></div>
-<div class="fecha">Gijón, ${fechaHoy}</div>
+<div class="fecha">${esc2((CV.ciudad || '').split(/[(,]/)[0].trim())}${CV.ciudad ? ', ' : ''}${fechaHoy}</div>
 ${texto.split(/\n{2,}/).map((x) => `<p>${esc2(x)}</p>`).join('')}
 <script>window.onload=()=>window.print()<\/script></body></html>`);
   w.document.close();
@@ -367,7 +369,9 @@ function seccionCarta(o) {
   let idioma = guardada?.idioma || idiomaTexto([o.titulo, o.descripcion].join(' '));
   s.append(el('p', 'nota', 'Borrador hecho solo con datos de tu CV y tu propuesta de valor (la aprobada, si la hay; en inglés se usa la versión generada). Revísalo y personalízalo: RADAR no envía nada.'));
   const lab = el('label', 'carta-idioma', 'Idioma de la carta ');
+  if (CV_EN.sinIngles) idioma = 'es';
   const selI = el('select'); selI.append(new Option('Español', 'es'), new Option('English', 'en')); selI.value = idioma;
+  if (CV_EN.sinIngles) { selI.options[1].disabled = true; selI.title = 'Tu perfil todavía no tiene versión en inglés.'; }
   lab.append(selI);
   if (idioma === 'en' && !guardada) lab.append(el('small', null, ' · la oferta está en inglés'));
   s.append(lab);

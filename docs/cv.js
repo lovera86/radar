@@ -142,6 +142,7 @@ async function iniciar() {
   const tema = { ...auto };
   IDIOMA = idiomaParam === 'en' || idiomaParam === 'es' ? idiomaParam : (o ? idiomaTexto(info.texto) : 'es');
   const selIdioma = $('#idioma');
+  if (CV_EN.sinIngles) { IDIOMA = 'es'; selIdioma.querySelector('[value="en"]').disabled = true; selIdioma.title = 'Tu perfil todavía no tiene versión en inglés.'; }
   selIdioma.value = IDIOMA;
   if (o && !idiomaParam && IDIOMA === 'en') cab.insertAdjacentHTML('beforeend', '<span> · Oferta en inglés: CV en inglés (puedes cambiarlo).</span>');
   const nombresTema = () => { const C = IDIOMA === 'en' ? CV_EN : CV; [...sel.options].forEach((op) => { op.textContent = C.temas[op.value].nombre + (op.value === auto.principal && o ? (IDIOMA === 'en' ? ' (recommended)' : ' (recomendado)') : ''); }); };
@@ -154,7 +155,7 @@ async function iniciar() {
   nombresTema();
   telefono.addEventListener('change', () => { guardar('radar-telefono', telefono.value.trim()); repintar(); });
   $('#pdf').addEventListener('click', () => window.print());
-  const actualizarTitulo = () => { document.title = `${IDIOMA === 'en' ? 'CV' : 'CV'} Rocío Lovera${IDIOMA === 'en' ? ' (EN)' : ''}${info.empresa ? ' - ' + info.empresa : ''}`.replace(/[\\/:*?"<>|]/g, ''); };
+  const actualizarTitulo = () => { document.title = `CV ${CV.nombre}${IDIOMA === 'en' ? ' (EN)' : ''}${info.empresa ? ' - ' + info.empresa : ''}`.replace(/[\\/:*?"<>|]/g, ''); };
   actualizarTitulo();
   repintar();
 }

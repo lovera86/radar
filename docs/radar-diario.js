@@ -201,7 +201,7 @@ function pintarRadarDiario() {
   const h = new Date().getHours();
   const cab = el('section', 'r2-cab');
   const ct = el('div', 'r2-cab-t');
-  ct.append(el('h1', null, `${h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches'}, Rocío`));
+  ct.append(el('h1', null, `${h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches'}, ${NOMBRE_CORTO}`));
   ct.append(el('p', 'r2-sub', 'Estas son las oportunidades que merecen tu atención.'));
   cab.append(ct);
   const act = el('p', 'r2-fecha'); act.append(icoR('calendario'), D.meta.actualizado ? 'Actualizado ' + new Date(D.meta.actualizado).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Sin fecha de actualización');
@@ -275,7 +275,7 @@ function pintarRadarDiario() {
   const siete = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
   const ul = el('ul', 'r2-cifras');
   [[lista.filter((o) => o.subtipo === 'adjudicacion' && (o.fechas.publicada || '') >= siete).length, 'adjudicaciones en 7 días'],
-    [lista.filter((o) => o.ubicacion.comunidad === 'Asturias').length, 'en Asturias'], [vacantes.filter((o) => o.modalidad === 'remoto').length, 'vacantes en remoto'],
+    [lista.filter((o) => o.ubicacion.comunidad === REGION).length, 'en ' + REGION], [vacantes.filter((o) => o.modalidad === 'remoto').length, 'vacantes en remoto'],
     [pend, 'candidaturas por preparar'], [lista.length, 'oportunidades vigentes']]
     .forEach(([n, t]) => { const li = el('li'); li.append(el('b', null, String(n)), ' ' + t); ul.append(li); });
   mas.append(ul);

@@ -88,8 +88,11 @@ function analizarConvocatoria(texto, ctx) {
     r.requisitos.titulacion = mt[1].trim();
     const tn = norm(mt[1]);
     const generica = /titulo de grado(?! en)|titulo universitario de grado(?! en)|grado universitario|diplomatura(?! en)|titulacion universitaria|ingenieria tecnica(?! de obras| agricola| forestal| de minas| naval| de telecom| en )|ingeniero tecnico(?! de obras| agricola| forestal| de minas| naval| de telecom| en )/;
-    if (/ingenieria tecnica industrial|ingeniero tecnico industrial/.test(tn)) r.requisitos.cumple = ['si', 'Piden Ingeniería Técnica Industrial: la tienes (Mecánica). Revisa si exigen otra especialidad.'];
-    else if (generica.test(tn)) r.requisitos.cumple = ['si', 'Tu Ingeniería Técnica Industrial cumple el requisito de titulación.'];
+    const titulos = (CV.formacion || []).map((f) => f.t);
+    const propio = titulos.find((x) => { const w = norm(x).replace(/\(.*?\)/g, '').split(/\s+/).filter((y) => y.length > 4); return w.length && w.every((y) => tn.includes(y)); });
+    const universitario = /grado|licenciatura|diplomatura|ingenier|arquitect|master|máster|doctorado/i.test(titulos.join(' '));
+    if (propio) r.requisitos.cumple = ['si', `Piden ${propio}: figura en tu CV. Revisa si exigen una especialidad concreta.`];
+    else if (generica.test(tn) && universitario) r.requisitos.cumple = ['si', `Tu titulación (${titulos[0] || 'universitaria'}) cumple el requisito.`];
     else if (/obras publicas|ingenieria civil|arquitect|psicolog|medicina|enfermer|derecho|trabajo social|magisterio/.test(tn)) r.requisitos.cumple = ['no', 'Piden una titulación concreta que no figura en tu CV.'];
     else r.requisitos.cumple = ['?', 'Compruébalo en las bases: no queda claro si tu titulación sirve.'];
   }
@@ -173,14 +176,14 @@ function planPreparacion(a, o) {
     if (/test/.test(t)) pasos.push(`${p.nombre} (${t}): haz tests por temas desde la primera semana y simulacros completos con el tiempo real${p.detalle.find((d) => /restan/.test(d)) ? '; como los errores restan, no contestes al azar' : ''}.`);
     if (/supuesto/.test(t)) pasos.push(`${p.nombre} (${t}): practica con supuestos de convocatorias anteriores del mismo cuerpo${p.detalle.some((d) => /libros/.test(d)) ? ' y prepara un índice de la legislación que llevarás en papel' : ''}.`);
     if (/desarrollo/.test(t)) pasos.push(`${p.nombre} (desarrollo): haz esquemas de cada tema y redacta con el tiempo cronometrado.`);
-    if (/idioma/.test(t)) pasos.push(`${p.nombre} (idioma): tienes inglés C2 (Cambridge Proficiency), es un punto fuerte.`);
+    if (/idioma/.test(t)) pasos.push(`${p.nombre} (idioma): ${idiomaCV('ingl') ? 'en tu CV figura «' + idiomaCV('ingl') + '»; repasa el formato de la prueba' : 'prepara el idioma con exámenes de otras convocatorias'}.`);
     if (p.detalle.some((d) => /lectura/.test(d))) pasos.push(`${p.nombre}: se lee ante el tribunal; ensaya la lectura en voz alta y las preguntas posteriores.`);
   });
-  if (a.concurso) pasos.push('Hay fase de concurso: reúne ya los certificados de experiencia (vida laboral y contratos) y de formación (Máster en Project Management, CAPM).');
+  if (a.concurso) pasos.push(`Hay fase de concurso: reúne ya los certificados de experiencia (vida laboral y contratos) y de formación (${(CV.formacion || []).slice(0, 2).map((f) => f.t).join(', ') || 'títulos y cursos'}).`);
   const prog = norm((a.temario?.bloques || []).join(' ') + ' ' + (a.texto || o.descripcion || '').slice(0, 120000));
   const fuertes = [];
   if (/contratacion|contratos del sector publico/.test(prog)) fuertes.push('contratación pública (figura en tu CV y la sigues en RADAR)');
-  if (/gestion de proyectos|direccion de proyectos|planificacion/.test(prog)) fuertes.push('gestión de proyectos (tu Máster y la CAPM)');
+  if (/gestion de proyectos|direccion de proyectos|planificacion/.test(prog)) fuertes.push('gestión de proyectos' + (/project management|gestion de proyectos|capm|pmp/.test(CV_TEXTO()) ? ' (figura en tu formación)' : ''));
   if (/presupuest|economic|gasto publico/.test(prog)) fuertes.push('presupuestos y control de costes');
   if (/administracion electronica|transformacion digital|proteccion de datos|tecnologias de la informacion/.test(prog)) fuertes.push('transformación digital');
   if (fuertes.length) pasos.push('Partes con ventaja en: ' + fuertes.join(', ') + '. Dedica más tiempo a los bloques de derecho administrativo.');

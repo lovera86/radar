@@ -75,7 +75,8 @@ def aviso(fuente, ex):
 
 def tecnoempleo(cfg):
     out = []
-    for termino in cfg["busquedas_tecnoempleo"]:
+    terminos = list(dict.fromkeys(cfg["busquedas_tecnoempleo"] + [q for p in cfg.get("_piloto", []) for q in p.get("consultas", [])[:3]]))
+    for termino in terminos:
         url = "https://www.tecnoempleo.com/alertas-empleo-rss.php?te=" + urllib.parse.quote(termino)
         try:
             raiz = ET.fromstring(get(url))
@@ -211,6 +212,8 @@ def eures(cfg):
     url = "https://europa.eu/eures/api/jv-searchengine/public/jv-search/search"
     norte = ["es12", "es13", "es11", "es21", "es41"]
     busquedas = [(norte, "proyecto"), (norte, "project"), (["es"], "project manager"), (["es"], "pmo")]
+    for p in cfg.get("_piloto", []):
+        busquedas += [(p.get("nuts") or ["es"], q) for q in p.get("consultas", [])[:3]]
     out, vistos = [], set()
     for locs, kw in busquedas:
         cuerpo = {"resultsPerPage": 50, "page": 1, "sortSearch": "MOST_RECENT", "keywords": [{"keyword": kw, "specificSearchCode": "TITLE"}],
@@ -239,7 +242,8 @@ def eures(cfg):
 def himalayas(cfg):
     """Himalayas: empleo en remoto abierto a España."""
     out = []
-    for q, paginas in (("project manager", 2), ("program manager", 1), ("pmo", 1)):
+    extra = tuple((q, 1) for p in cfg.get("_piloto", []) for q in p.get("remoto", [])[:2])
+    for q, paginas in (("project manager", 2), ("program manager", 1), ("pmo", 1)) + extra:
         for pg in range(1, paginas + 1):
             try:
                 d = json.loads(get("https://himalayas.app/jobs/api/search?" + urllib.parse.urlencode({"q": q, "country": "ES", "sort": "recent", "page": pg})))
@@ -405,7 +409,11 @@ def comunidad(o):
 # ---------------------------------------------------------------- principal
 
 def main():
-    cfg = json.loads((BASE / "config.json").read_text(encoding="utf-8"))["empleo"]
+    config = json.loads((BASE / "config.json").read_text(encoding="utf-8"))
+    cfg = config["empleo"]
+    cfg["_piloto"] = config.get("piloto", [])
+    perfiles = [cfg] + [{"puestos": p["busqueda"].get("puestos", {}), "temas": p["busqueda"].get("temas", {}),
+                         "lugares": p["busqueda"].get("lugares", {}), "excluir": p["busqueda"].get("excluir", [])} for p in cfg["_piloto"] if p.get("busqueda")]
     DATA.mkdir(exist_ok=True)
     f = DATA / "empleos.json"
     previas = {o["clave"]: o for o in (json.loads(f.read_text(encoding="utf-8")) if f.exists() else [])}
@@ -437,9 +445,10 @@ def main():
         for o in lote:
             if not o["titulo"] or not o["url"]:
                 continue
-            p, motivos = puntuar(o, cfg)
+            p, motivos = max((puntuar(o, pc) for pc in perfiles), key=lambda x: x[0])
             if p < cfg["puntuacion_minima"]:
                 continue
+            o["solo_piloto"] = puntuar(o, cfg)[0] < cfg["puntuacion_minima"]  # solo encaja con perfiles del piloto
             clave = norm(o["titulo"] + "|" + o["empresa"])[:160]
             o.update(clave=clave, puntuacion=p, encaje=", ".join(motivos), comunidad=comunidad(o))
             if clave in previas:
@@ -457,7 +466,7 @@ def main():
     (DATA / "empleos_nuevos.json").write_text(json.dumps(nuevas, ensure_ascii=False, indent=1), encoding="utf-8")
     web = BASE / "docs" / "data"
     web.mkdir(parents=True, exist_ok=True)
-    campos = ("clave", "puntuacion", "titulo", "empresa", "ubicacion", "fuente", "url", "fecha", "visto", "salario", "encaje", "comunidad")
+    campos = ("clave", "puntuacion", "titulo", "empresa", "ubicacion", "fuente", "url", "fecha", "visto", "salario", "encaje", "comunidad", "solo_piloto")
     (web / "empleos.json").write_text(json.dumps([{k: o.get(k, "") for k in campos} for o in vivas], ensure_ascii=False), encoding="utf-8")
     print(f"Revisadas {vistas} ofertas; {len(vivas)} encajan ({len(nuevas)} nuevas) -> data/empleos.json")
 

@@ -1,23 +1,23 @@
 {
  "Tecnoempleo": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T08:46:54+00:00",
-  "ultima_correcta": "2026-11-11T08:46:54+00:00",
-  "resultados": 347,
+  "ultima_consulta": "2026-11-11T12:25:50+00:00",
+  "ultima_correcta": "2026-11-11T12:25:50+00:00",
+  "resultados": 398,
   "error": "",
-  "detalle": "347 ofertas leídas"
+  "detalle": "398 ofertas leídas"
  },
  "Remotive": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T08:46:56+00:00",
-  "ultima_correcta": "2026-11-11T08:46:56+00:00",
+  "ultima_consulta": "2026-11-11T12:25:50+00:00",
+  "ultima_correcta": "2026-11-11T12:25:50+00:00",
   "resultados": 10,
   "error": "",
   "detalle": "10 ofertas leídas"
  },
  "InfoJobs (API)": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T08:46:59+00:00",
+  "ultima_consulta": "2026-11-11T12:26:08+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -25,7 +25,7 @@
  },
  "Jooble": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T08:46:59+00:00",
+  "ultima_consulta": "2026-11-11T12:26:08+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -33,7 +33,7 @@
  },
  "Adzuna": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T08:46:59+00:00",
+  "ultima_consulta": "2026-11-11T12:26:08+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -41,7 +41,7 @@
  },
  "Alertas de LinkedIn e InfoJobs (correo)": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T08:46:59+00:00",
+  "ultima_consulta": "2026-11-11T12:26:08+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -129,34 +129,34 @@
  },
  "EURES (SEPE y servicios públicos de empleo)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T08:46:58+00:00",
-  "ultima_correcta": "2026-11-11T08:46:58+00:00",
-  "resultados": 82,
+  "ultima_consulta": "2026-11-11T12:26:06+00:00",
+  "ultima_correcta": "2026-11-11T12:26:06+00:00",
+  "resultados": 179,
   "error": "",
-  "detalle": "82 ofertas leídas"
+  "detalle": "179 ofertas leídas"
  },
  "Himalayas (remoto)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T08:46:58+00:00",
-  "ultima_correcta": "2026-11-11T08:46:58+00:00",
-  "resultados": 69,
+  "ultima_consulta": "2026-11-11T12:26:07+00:00",
+  "ultima_correcta": "2026-11-11T12:26:07+00:00",
+  "resultados": 90,
   "error": "",
-  "detalle": "69 ofertas leídas"
+  "detalle": "90 ofertas leídas"
  },
  "Jobicy (remoto)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T08:46:59+00:00",
-  "ultima_correcta": "2026-11-11T08:46:59+00:00",
+  "ultima_consulta": "2026-11-11T12:26:08+00:00",
+  "ultima_correcta": "2026-11-11T12:26:08+00:00",
   "resultados": 50,
   "error": "",
   "detalle": "50 ofertas leídas"
  },
  "Portales de empresas (Greenhouse, Lever, Teamtailor, Workable, Recruitee, Personio, SmartRecruiters)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T08:47:06+00:00",
-  "ultima_correcta": "2026-11-11T08:47:06+00:00",
-  "resultados": 594,
+  "ultima_consulta": "2026-11-11T12:26:26+00:00",
+  "ultima_correcta": "2026-11-11T12:26:26+00:00",
+  "resultados": 591,
   "error": "",
-  "detalle": "594 ofertas leídas"
+  "detalle": "591 ofertas leídas"
  }
 }

@@ -3,8 +3,8 @@
    Datos: data/oportunidades.json (modelo común generado por unificar.py).
    Lo personal (favoritos, estados, búsquedas, pesos) vive solo en este navegador. */
 
-const PERFIL = { nombre: 'Rocío Lovera García', email: 'rlovera86@gmail.com', linkedin: 'linkedin.com/in/rociolovera' };
-const NORTE = ['Asturias', 'Galicia', 'Cantabria', 'País Vasco', 'Navarra', 'Castilla y León'];
+const PERFIL = USUARIO ? { nombre: USUARIO.nombre, email: USUARIO.email || '', linkedin: USUARIO.linkedin || '' } : { nombre: 'Rocío Lovera García', email: 'rlovera86@gmail.com', linkedin: 'linkedin.com/in/rociolovera' };
+const NORTE = USUARIO?.cerca || ['Asturias', 'Galicia', 'Cantabria', 'País Vasco', 'Navarra', 'Castilla y León'];
 const PESOS_BASE = { encaje: 30, necesidad: 20, geografia: 15, calidad: 15, salario: 10, acceso: 10 };
 const CRITERIOS = {
   encaje: 'Encaje con tu experiencia', necesidad: 'Necesidad real de contratar', geografia: 'Ubicación y modalidad',
@@ -78,7 +78,7 @@ if (!ST.col) {
 }
 const PESOS = { ...PESOS_BASE, ...leer('radar-pesos', {}) };
 const PREF = { zonas: [], modalidades: [], salarioMin: '', disponibilidad: '', permiso: '', roles: {}, evitar: '', ocultos: {}, ...leer('radar-perfil', {}) };
-const ROLES = [
+const ROLES = USUARIO?.roles ? USUARIO.roles.map((r) => ({ ...r, rx: rxPerfil(r.rx) })) : [
   { k: 'program', nombre: 'Program Manager', rx: /program(me)? manager/i, por: 'Has dirigido varios proyectos a la vez en Gárgola Lab (Atlántida, RURAL IA 3D, ForestScape).' },
   { k: 'product', nombre: 'Product Manager / Product Owner', rx: /product (manager|owner)/i, por: 'Definiste la estructura y los requisitos de la plataforma RURAL IA 3D y de herramientas web con IA.' },
   { k: 'pmo', nombre: 'PMO', rx: /\bpmo\b/i, por: 'Máster en Project Management, CAPM y control de alcance, plazos y costes.' },
@@ -125,6 +125,7 @@ const D = { ops: [], meta: {}, porId: new Map(), senales: [] };
 function ajustados(o) {
   const c = {};
   Object.entries(o.criterios).forEach(([k, v]) => { c[k] = { ...v, motivos: [...(v.motivos || [])] }; });
+  recalcularParaUsuario(o, c);
   const t = norm(o.titulo);
   if (PREF.zonas.length && c.geografia && o.ubicacion.comunidad && PREF.zonas.includes(o.ubicacion.comunidad) && (c.geografia.valor ?? 0) < 0.85) {
     c.geografia.valor = 0.85; c.geografia.motivos.push(`${o.ubicacion.comunidad} está entre las zonas que aceptas`);
@@ -182,8 +183,10 @@ async function cargar() {
       fetch('data/meta.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => ({})),
       fetch('data/empresas.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => []),
     ]);
-    D.ops = ops; D.meta = meta; D.senales = senales;
-    ops.forEach((o) => D.porId.set(o.id, o));
+    // Sin perfil cargado no se muestran las oportunidades que solo encajan con perfiles del piloto.
+    const visibles = USUARIO ? ops : ops.filter((o) => !o.solo_piloto);
+    D.ops = USUARIO?.proyectos === false ? visibles.filter((o) => o.tipo === 'empleo') : visibles; D.meta = meta; D.senales = USUARIO?.proyectos === false ? [] : senales;
+    D.ops.forEach((o) => D.porId.set(o.id, o));
     if (typeof cargarExternas === 'function') cargarExternas();
     if (typeof aplicarPlazosConvocatorias === 'function') aplicarPlazosConvocatorias();
     migrarAntiguas();
@@ -232,13 +235,13 @@ function pasa(o, sinTipo) {
   if (!sinTipo && tipo && o.tipo !== tipo) return false;
   if (!sinTipo && VISTAS[VISTA].solo && !VISTAS[VISTA].solo.includes(o.subtipo)) return false;
   if (F.que) { const t = texto(o); if (!norm(F.que).split(/\s+/).filter(Boolean).every((w) => t.includes(w))) return false; }
-  if (F.donde === 'asturias' && o.ubicacion.comunidad !== 'Asturias') return false;
+  if (F.donde === 'asturias' && o.ubicacion.comunidad !== REGION) return false;
   if (F.donde === 'norte' && !NORTE.includes(o.ubicacion.comunidad)) return false;
   if (F.donde === 'remoto' && o.modalidad !== 'remoto') return false;
   if (F.modalidad && o.modalidad !== F.modalidad) return false;
   for (const r of F.rapidos) {
     if (r === 'remoto' && o.modalidad !== 'remoto') return false;
-    if (r === 'asturias' && o.ubicacion.comunidad !== 'Asturias') return false;
+    if (r === 'asturias' && o.ubicacion.comunidad !== REGION) return false;
     if (r === 'alto' && p.total < 70) return false;
     if (r === 'contacto' && !conContacto(o)) return false;
     if (r === 'nuevas' && !(dias(o.fechas.publicada) != null && dias(o.fechas.publicada) <= 7)) return false;
@@ -271,8 +274,8 @@ function ordenar(lista) {
   return lista.sort(cmp);
 }
 
-const RAPIDOS = { remoto: 'Remoto', asturias: 'Asturias', alto: 'Encaje alto (70+)', contacto: 'Con contacto', nuevas: 'Últimos 7 días', plazo: 'Plazo abierto', salario: 'Con salario', hoy: 'Nuevas de hoy' };
-const DONDE = { asturias: 'Asturias', norte: 'Norte de España', remoto: 'En remoto' };
+const RAPIDOS = { remoto: 'Remoto', asturias: REGION, alto: 'Encaje alto (70+)', contacto: 'Con contacto', nuevas: 'Últimos 7 días', plazo: 'Plazo abierto', salario: 'Con salario', hoy: 'Nuevas de hoy' };
+const DONDE = { asturias: REGION, norte: USUARIO ? 'Zonas cercanas' : 'Norte de España', remoto: 'En remoto' };
 
 function etiquetasActivas() {
   const t = [];
@@ -596,7 +599,7 @@ function pintarEmpresas() {
   const lista = [...emp.values()]
     .filter((e) => !t || norm(e.nombre + ' ' + e.ganados.map((g) => g.titulo).join(' ')).includes(t))
     .filter((e) => !F.rapidos.has('contacto') || e.contacto?.email)
-    .filter((e) => !F.rapidos.has('asturias') && F.donde !== 'asturias' || e.ganados.some((g) => g.ubicacion.comunidad === 'Asturias'))
+    .filter((e) => !F.rapidos.has('asturias') && F.donde !== 'asturias' || e.ganados.some((g) => g.ubicacion.comunidad === REGION))
     .sort((a, b) => peso(b) - peso(a));
   function peso(e) { return e.ganados.length * 2 + e.candidata.length + (e.contacto?.email ? 1 : 0) + (e.borme || []).filter((g) => g.categoria === 'crecimiento').length * 2 + (e.nueva ? Math.max(...e.borme.map((g) => g.puntuacion)) / 40 : 0); }
   $('#res-n').textContent = `${lista.length} empresas con señales`;
@@ -1389,5 +1392,11 @@ $('#importar').addEventListener('change', async (e) => {
   } catch (err) { alert('No se ha podido leer el archivo.'); }
 });
 window.abrirFicha = abrirFicha;
+
+/* Textos que dependen de la zona y el nombre de la persona. */
+document.title = 'RADAR · ' + PERFIL.nombre;
+$('#q-donde option[value="asturias"]').textContent = REGION;
+$('#q-donde option[value="norte"]').textContent = DONDE.norte;
+$$('.chip[data-f="asturias"]').forEach((c) => { c.textContent = REGION; });
 
 cargar();

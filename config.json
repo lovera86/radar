@@ -415,5 +415,65 @@
   },
   "publico": {
     "puntuacion_minima": 35
-  }
+  },
+  "piloto": [
+    {
+      "id": "ejemplo",
+      "region": "Madrid",
+      "nuts": [
+        "es30"
+      ],
+      "consultas": [
+        "responsable de marketing",
+        "marketing manager",
+        "digital marketing manager"
+      ],
+      "remoto": [
+        "responsable de marketing",
+        "marketing manager"
+      ],
+      "publico": [],
+      "busqueda": {
+        "puestos": {
+          "responsable de marketing": 45,
+          "marketing manager": 45,
+          "digital marketing manager": 45,
+          "especialista en marketing digital": 40,
+          "ecommerce manager": 40,
+          "growth": 30,
+          "content manager": 30,
+          "social media manager": 30,
+          "tecnico de marketing": 35,
+          "tecnico de comunicacion": 30
+        },
+        "temas": {
+          "seo": 10,
+          "sem": 10,
+          "google ads": 10,
+          "ecommerce": 10,
+          "crm": 5,
+          "analitica": 10,
+          "contenidos": 5,
+          "redes sociales": 5,
+          "branding": 5,
+          "inteligencia artificial": 5
+        },
+        "lugares": {
+          "madrid": 30,
+          "remoto": 25,
+          "teletrabajo": 25,
+          "remote": 25,
+          "toledo": 10,
+          "guadalajara": 10
+        },
+        "excluir": [
+          "practicas",
+          "becario",
+          "comercial",
+          "televenta",
+          "junior"
+        ]
+      }
+    }
+  ]
 }

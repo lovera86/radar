@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "id": "ejemplo",
+  "nombre": "Laura Martín Ejemplo",
+  "nombreCorto": "Laura",
+  "email": "laura.ejemplo@example.com",
+  "linkedin": "linkedin.com/in/ejemplo",
+  "ciudad": "Madrid",
+  "region": "Madrid",
+  "cerca": ["Castilla-La Mancha", "Castilla y León"],
+  "proyectos": false,
+  "sellos": ["Grado en Publicidad y RR. PP.", "Máster en Marketing Digital", "Google Ads", "Inglés C1"],
+  "preferencias": { "modalidades": ["hibrido", "remoto"], "salarioMin": "30000" },
+  "busqueda": {
+    "puestos": {
+      "responsable de marketing": 45, "marketing manager": 45, "digital marketing manager": 45, "especialista en marketing digital": 40,
+      "ecommerce manager": 40, "growth": 30, "content manager": 30, "social media manager": 30, "tecnico de marketing": 35, "tecnico de comunicacion": 30
+    },
+    "temas": { "seo": 10, "sem": 10, "google ads": 10, "ecommerce": 10, "crm": 5, "analitica": 10, "contenidos": 5, "redes sociales": 5, "branding": 5, "inteligencia artificial": 5 },
+    "lugares": { "madrid": 30, "remoto": 25, "teletrabajo": 25, "remote": 25, "toledo": 10, "guadalajara": 10 },
+    "excluir": ["practicas", "becario", "comercial", "televenta", "junior"]
+  },
+  "cv": {
+    "ciudad": "Madrid",
+    "temas": {
+      "marketing": {
+        "nombre": "Marketing digital",
+        "detectar": "marketing|seo|sem|google ads|paid|growth|captaci[oó]n|campa[nñ]a",
+        "titular": "Marketing digital · SEO/SEM · Captación y analítica",
+        "perfil": "Especialista en marketing digital con 7 años de experiencia en captación, SEO, SEM y analítica para marcas de consumo y comercio electrónico.",
+        "perfil2": "Planifico campañas con objetivos medibles, coordino agencias y equipos de contenido y presento resultados con cuadros de mando.",
+        "habilidades": ["SEO y SEM", "Google Ads y Meta Ads", "Google Analytics 4", "Planificación de campañas", "Coordinación de agencias", "Informes y KPIs"]
+      },
+      "ecommerce": {
+        "nombre": "Ecommerce y CRM",
+        "detectar": "ecommerce|e-commerce|tienda online|shopify|crm|fidelizaci[oó]n|email marketing",
+        "titular": "Ecommerce · CRM · Fidelización",
+        "perfil": "Responsable de canal online con experiencia en tiendas Shopify, email marketing y programas de fidelización.",
+        "perfil2": "Mejoro la conversión con pruebas A/B y automatizaciones de CRM.",
+        "habilidades": ["Shopify", "Email marketing", "Automatización de CRM", "Pruebas A/B", "Fidelización"]
+      }
+    },
+    "experiencia": [
+      { "puesto": "Especialista en Marketing Digital", "empresa": "Empresa Ejemplo Moda", "fechas": "2021 – actualidad", "siempre": true,
+        "vinetas": [
+          { "t": "Gestión de campañas en Google Ads y Meta Ads con un presupuesto anual de 400.000 €.", "temas": ["marketing"] },
+          { "t": "Estrategia SEO de la tienda online: tráfico orgánico +60 % en dos años.", "temas": ["marketing", "ecommerce"] },
+          { "t": "Coordinación de la agencia creativa y del equipo de contenidos.", "temas": ["marketing"] },
+          { "t": "Automatizaciones de email y CRM para recuperar carritos abandonados.", "temas": ["ecommerce"] }
+        ] },
+      { "puesto": "Técnica de Marketing", "empresa": "Agencia Ejemplo", "fechas": "2018 – 2021",
+        "vinetas": [
+          { "t": "Planificación y seguimiento de campañas para 12 clientes de consumo.", "temas": ["marketing"] },
+          { "t": "Cuadros de mando en Looker Studio y presentación mensual de resultados.", "temas": ["marketing", "ecommerce"] }
+        ] }
+    ],
+    "formacion": [
+      { "t": "Grado en Publicidad y Relaciones Públicas", "d": "Universidad Ejemplo · 2014 – 2018" },
+      { "t": "Máster en Marketing Digital", "d": "Escuela Ejemplo · 2019" }
+    ],
+    "idiomas": "Español (nativo) · Inglés (C1)",
+    "extra": "Permiso de conducir B"
+  },
+  "roles": [
+    { "k": "growth", "nombre": "Growth Marketing Manager", "rx": "growth", "por": "Has mejorado captación y conversión con pruebas y datos." },
+    { "k": "crm", "nombre": "CRM Manager", "rx": "\\bcrm\\b", "por": "Automatizaciones de email y CRM en Empresa Ejemplo Moda." }
+  ],
+  "propuesta": {
+    "marketing": {
+      "aportaciones": [
+        ["Planificar y optimizar campañas de pago con objetivos de negocio.", "Google Ads", "Plan and optimise paid campaigns against business goals."],
+        ["Hacer crecer el tráfico orgánico con una estrategia SEO.", "SEO", "Grow organic traffic with an SEO strategy."],
+        ["Coordinar agencias y equipos de contenido.", "Coordinación de la agencia", "Coordinate agencies and content teams."]
+      ],
+      "transferibles": [["Analítica y cuadros de mando", "Agencia Ejemplo"], ["Gestión de presupuestos", "Empresa Ejemplo Moda"]],
+      "inicio": ["Auditoría de campañas y canales", "Plan de captación del trimestre", "Cuadro de mando de KPIs"]
+    }
+  }
+}

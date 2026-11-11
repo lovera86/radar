@@ -52,6 +52,14 @@ PUNTOS = [
 ASTURIAS = re.compile(r"asturias|principado|gijon|oviedo|aviles|llanera|siero|langreo|mieres|uniovi")
 
 
+PILOTO_PUBLICO = []  # palabras de empleo público de los perfiles del piloto (config.json → piloto[].publico)
+
+
+def piloto(texto):
+    t = norm(texto)
+    return any(w in t for w in PILOTO_PUBLICO)
+
+
 def norm(s):
     s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode()
     return re.sub(r"\s+", " ", s.lower()).strip()
@@ -114,7 +122,7 @@ def boe(desde, hasta):
                         for it in lista(ep.get("item")):
                             titulo = it.get("titulo", "")
                             t = norm(titulo)
-                            if not ES_CONVOCATORIA.search(t) or EXCLUIR.search(t):
+                            if not ES_CONVOCATORIA.search(t) or (EXCLUIR.search(t) and not piloto(t)):
                                 continue
                             extra = ""
                             # Los ayuntamientos no dicen la plaza en el título: se lee el texto solo en Asturias.
@@ -122,6 +130,9 @@ def boe(desde, hasta):
                                 extra = texto_boe(it["identificador"])
                             lejos = bool(re.search(r"administracion local|universidades|comunidad autonoma", norm(organismo)))
                             p, motivos = puntuar(titulo + " " + extra, lejos=lejos)
+                            p_base = p
+                            if piloto(titulo + " " + extra):
+                                p, motivos = max(p, 55), motivos + ["perfil del piloto"]
                             plaza = ""
                             m = re.search(r"(?i)plazas? de ([^,.;]{4,90})", extra)
                             if m:
@@ -131,7 +142,7 @@ def boe(desde, hasta):
                                 "clave": it["identificador"], "fuente": "BOE", "organismo": organismo.title(),
                                 "titulo": titulo + (f" — {plaza}" if plaza else ""),
                                 "fecha": f"{d:%Y-%m-%d}", "url": it.get("url_html", ""),
-                                "puntuacion": p, "encaje": ", ".join(motivos),
+                                "puntuacion": p, "p_base": p_base, "encaje": ", ".join(motivos),
                                 "comunidad": "Asturias" if ASTURIAS.search(norm(titulo + " " + organismo)) else "Estatal / otras",
                             })
         print(f"BOE {d:%Y-%m-%d}", flush=True)
@@ -190,14 +201,17 @@ def uniovi(desde):
 def convocatoria(titulo, organismo, fuente, clave, fecha, url, comunidad):
     """Filtra y puntúa una disposición de boletín autonómico. Devuelve None si no encaja."""
     t = norm(titulo)
-    if not ES_CONVOCATORIA.search(t) or EXCLUIR.search(t):
+    if not ES_CONVOCATORIA.search(t) or (EXCLUIR.search(t) and not piloto(t)):
         return None
     asturias = comunidad == "Asturias"
     p, motivos = puntuar(titulo + " " + organismo, asturias_bonus=asturias, lejos=not asturias)
+    p_base = p
+    if piloto(titulo):
+        p, motivos = max(p, 55), motivos + ["perfil del piloto"]
     m = re.search(r"(?i)plazas? de ([^,.;:]{4,90})", titulo) or re.search(r"(?i)(?:ingreso|acceso) (?:en|a|al) (?:el |la )?((?:cuerpo|escala|categor[ií]a)[^,.;:]{4,110})", titulo)
     organismo = re.sub(r"(?<=\w )(De|Del|La|Las|Los|Y|E|En)\b", lambda x: x.group(0).lower(), organismo.strip())
     return {"clave": clave, "fuente": fuente, "organismo": organismo, "titulo": titulo.strip() + (" — " + m.group(1).strip()[:1].upper() + m.group(1).strip()[1:] if m else ""),
-            "fecha": fecha, "url": url, "puntuacion": p, "encaje": ", ".join(motivos), "comunidad": comunidad}
+            "fecha": fecha, "url": url, "puntuacion": p, "p_base": p_base, "encaje": ", ".join(motivos), "comunidad": comunidad}
 
 
 def limpio(x):
@@ -415,7 +429,9 @@ def main():
         desde = max(date.fromisoformat(estado["ultima"]) - timedelta(days=1), hoy - timedelta(days=10))
     else:
         desde = hoy - timedelta(days=30)
-    minimo = json.loads((BASE / "config.json").read_text(encoding="utf-8")).get("publico", {}).get("puntuacion_minima", 40)
+    config = json.loads((BASE / "config.json").read_text(encoding="utf-8"))
+    minimo = config.get("publico", {}).get("puntuacion_minima", 40)
+    PILOTO_PUBLICO[:] = [norm(w) for p in config.get("piloto", []) for w in p.get("publico", []) if len(w) >= 4]
     nuevas = []
     from fuentes_estado import registrar
     res_boe, res_uni = [], []
@@ -443,17 +459,18 @@ def main():
         if o["puntuacion"] >= minimo and (o["clave"] not in previas or not previas[o["clave"]].get("texto")) and len(o.get("texto") or "") < 1500:
             o["texto"] = texto_boe(o["clave"])
             p2, _ = puntuar(o["titulo"] + " " + o["texto"][:1500], lejos=o["comunidad"] != "Asturias")
-            if p2 == 0:
+            if p2 == 0 and not piloto(o["titulo"] + " " + o["texto"][:1500]):
                 o["puntuacion"] = 0  # el texto revela una plaza de otra profesión
     for o in res_boe + res_uni + autonomicos:
         if o["puntuacion"] < minimo:
             previas.pop(o["clave"], None)  # ya no encaja (p. ej., el texto revela otra profesión)
             continue
+        o["solo_piloto"] = o.get("p_base", o["puntuacion"]) < minimo
         if o["clave"] not in previas:
             nuevas.append(o)
         previas[o["clave"]] = o
     corte = (hoy - timedelta(days=DIAS_GUARDADO)).isoformat()
-    vivas = sorted((o for o in previas.values() if o["fecha"] >= corte and not EXCLUIR.search(re.sub(r"/as?\b|\(as?\)", "", norm(o["titulo"])))), key=lambda o: (-o["puntuacion"], o["fecha"]))
+    vivas = sorted((o for o in previas.values() if o["fecha"] >= corte and (piloto(o["titulo"]) or not EXCLUIR.search(re.sub(r"/as?\b|\(as?\)", "", norm(o["titulo"]))))), key=lambda o: (-o["puntuacion"], o["fecha"]))
     completar_plazos(vivas)
     f.write_text(json.dumps(vivas, ensure_ascii=False, indent=1), encoding="utf-8")
     (DATA / "publico_nuevos.json").write_text(json.dumps(nuevas, ensure_ascii=False, indent=1), encoding="utf-8")

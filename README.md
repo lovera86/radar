@@ -79,6 +79,14 @@ Workable, Recruitee, Personio y SmartRecruiters; lista en `config.json`,
 `empleo.portales_corporativos`). De las webs de empresa solo se quedan las ofertas
 en España o en remoto.
 
+## Piloto multiusuario (fase 1)
+
+Cada probador carga un archivo de perfil (CV, roles, zona y búsqueda) que queda solo
+en su navegador (`docs/usuario.js`). Sin perfil, la web usa el perfil por defecto.
+La recogida diaria añade las búsquedas de `config.json → piloto` (sin datos
+personales) y marca como `solo_piloto` lo que solo encaja con probadores. Guía de alta,
+perfil de ejemplo ficticio y validador en `piloto/`.
+
 ## Aprendizaje
 
 En «Mi perfil → Aprendizaje», RADAR compara lo que descartas con lo que guardas o
