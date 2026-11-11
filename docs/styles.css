@@ -1108,3 +1108,26 @@ body[data-vista="perfil"] .cab-vista p { display: none; }
   .pf-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pf-card { padding: 16px; }
 }
+
+/* Fechas al calendario */
+.cal-sec { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 8px; }
+.cal-sec h4 { margin: 0; font: 600 14px var(--display); }
+.cal-conv { border: 1px solid var(--turq-line); border-radius: 14px; padding: 12px 14px; margin: -6px 0 16px; background: var(--surface); }
+.cal-ev { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; align-items: start; padding: 8px 10px; border-radius: 12px; background: var(--soft); }
+.cal-ev.cal-plazo, .cal-ev.cal-examen, .cal-ev.cal-examen-min { background: var(--turq-soft); }
+.cal-ev.cal-entrevista, .cal-ev.cal-insistir { background: var(--rosa-soft); }
+.cal-ico { font-size: 18px; line-height: 1.2; }
+.cal-ev-t { display: grid; gap: 1px; min-width: 0; }
+.cal-ev-t b, .cal-ev-t .titulo-g { font-size: 13.5px; font-weight: 600; }
+.cal-ev-t small { color: var(--muted); font-size: 12px; }
+.cal-bts { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.cal-b { border: 1px solid var(--line2); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 4px 11px; font: 500 12.5px var(--body); cursor: pointer; text-decoration: none; }
+.cal-b:hover { border-color: var(--turq); color: var(--turq); }
+.cal-entrevista summary { cursor: pointer; font-size: 13.5px; font-weight: 500; color: var(--rosa); }
+.cal-entrevista[open] summary { margin-bottom: 8px; }
+.cal-form { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.cal-form input { border: 1px solid var(--line2); border-radius: 10px; padding: 7px 9px; background: var(--surface); color: var(--ink); font: inherit; font-size: 13.5px; min-width: 0; }
+.cal-form input:last-child { grid-column: 1 / -1; }
+.cal-prox { border-color: var(--turq-line) !important; background: linear-gradient(160deg, var(--turq-soft), var(--surface) 70%) !important; }
+.cal-lista { display: grid; gap: 8px; margin-top: 10px; }
+.cal-prox .cal-ev { background: var(--surface); border: 1px solid var(--line); }

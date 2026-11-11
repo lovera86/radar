@@ -237,10 +237,10 @@ function pintarPerfil() {
   }
 
   if (PF_TAB === 'datos') {
-    const d = tarjeta('Dónde se guardan tus datos', 'Tus preferencias, favoritos, candidaturas, notas, ofertas analizadas y cartas se guardan solo en este navegador. La web es pública pero no contiene nada tuyo salvo el CV sin teléfono.');
+    const d = tarjeta('Dónde se guardan tus datos', 'Tus preferencias, favoritos, candidaturas, notas, entrevistas, ofertas analizadas y cartas se guardan solo en este navegador. La web es pública pero no contiene nada tuyo salvo el CV sin teléfono.');
     const n = (o) => Object.keys(o || {}).length;
     const cifras = el('div', 'pf-cifras');
-    [[n(ST.fav), 'guardadas'], [n(ST.est), 'con estado'], [n(ST.notas), 'notas'], [n(ST.externas), 'ofertas analizadas'], [n(ST.cartas), 'cartas'], [n(ST.convocatorias), 'convocatorias analizadas']]
+    [[n(ST.fav), 'guardadas'], [n(ST.est), 'con estado'], [n(ST.notas), 'notas'], [n(ST.externas), 'ofertas analizadas'], [n(ST.cartas), 'cartas'], [n(ST.convocatorias), 'convocatorias analizadas'], [n(ST.entrevistas), 'entrevistas']]
       .forEach(([v, t]) => { const c = el('div'); c.append(el('b', null, String(v)), el('small', null, t)); cifras.append(c); });
     d.append(cifras);
     const acc = el('div', 'acciones');

@@ -227,6 +227,8 @@ function pintarConvocatoria(o) {
     else if (a.examen.minimo) fechas.append(caja('🗓', 'Examen', 'No antes del ' + fecha(a.examen.minimo), `las bases fijan un mínimo de ${a.examen.minimoMeses} mes${a.examen.minimoMeses === 1 ? '' : 'es'} desde la publicación${a.examen.anuncio ? '; la fecha exacta se publicará ' + a.examen.anuncio : ''}`, 'rosa'));
     else fechas.append(caja('🗓', 'Examen', 'Sin fecha todavía', a.examen.anuncio ? 'Se publicará ' + a.examen.anuncio + '.' : 'Las bases completas suelen indicar cuándo se anuncia.', 'rosa'));
     cont.append(fechas);
+    const evCal = typeof eventosDe === 'function' ? eventosDe(o).filter((e) => /plazo|examen/.test(e.tipo)) : [];
+    if (evCal.length) { const c = el('div', 'cal-sec cal-conv'); evCal.forEach((e) => c.append(filaEvento(e))); cont.append(c); }
 
     const req = el('section', 'cv-sec');
     req.append(el('h3', null, 'Qué piden'));

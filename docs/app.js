@@ -879,6 +879,7 @@ function abrirFicha(id) {
   acc.append(fila2);
   der.append(acc);
   der.append(selectorColecciones(o.id));
+  if (typeof seccionFechas === 'function') der.append(seccionFechas(o));
 
   const est = el('div', 'panel-est');
   const lab = el('label', null, 'Estado de la candidatura');
@@ -1318,7 +1319,7 @@ function pintarGuardados() {
   const act = el('details', 'g-act');
   act.append(el('summary', null, 'Tu actividad y qué canal te funciona'), indicadores(ids));
   const izqG = el('div', 'g-col'); izqG.append(cand, cols);
-  const derG = el('div', 'g-col'); derG.append(seccionNotas(), act);
+  const derG = el('div', 'g-col'); if (typeof seccionProximasFechas === 'function') derG.append(seccionProximasFechas()); derG.append(seccionNotas(), act);
   cont.replaceChildren(izqG, derG);
 
   $('#rejilla').replaceChildren(cont);
@@ -1383,7 +1384,7 @@ $('#importar').addEventListener('change', async (e) => {
   const f = e.target.files[0]; if (!f) return;
   try {
     const d = JSON.parse(await f.text());
-    if (d.radar && d.radar.fav && d.radar.est) { Object.assign(ST, d.radar); ST.notas = ST.notas || {}; ST.externas = ST.externas || {}; ST.cartas = ST.cartas || {}; ST.convocatorias = ST.convocatorias || {}; cargarExternas(); guardarST(); if (d.perfil) { Object.assign(PREF, d.perfil); guardarPref(); } pintar(); alert('Copia importada.'); } else alert('Ese archivo no es una copia de RADAR.');
+    if (d.radar && d.radar.fav && d.radar.est) { Object.assign(ST, d.radar); ST.notas = ST.notas || {}; ST.externas = ST.externas || {}; ST.cartas = ST.cartas || {}; ST.convocatorias = ST.convocatorias || {}; ST.entrevistas = ST.entrevistas || {}; cargarExternas(); guardarST(); if (d.perfil) { Object.assign(PREF, d.perfil); guardarPref(); } pintar(); alert('Copia importada.'); } else alert('Ese archivo no es una copia de RADAR.');
   } catch (err) { alert('No se ha podido leer el archivo.'); }
 });
 window.abrirFicha = abrirFicha;
