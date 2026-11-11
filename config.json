@@ -474,6 +474,235 @@
           "junior"
         ]
       }
+    },
+    {
+      "id": "aitana",
+      "region": "Asturias",
+      "nuts": [
+        "es12"
+      ],
+      "consultas": [
+        "asistente de marketing",
+        "tecnico de marketing digital",
+        "community manager"
+      ],
+      "remoto": [
+        "asistente de marketing",
+        "tecnico de marketing digital"
+      ],
+      "publico": [],
+      "busqueda": {
+        "puestos": {
+          "asistente de marketing": 45,
+          "tecnico de marketing digital": 45,
+          "community manager": 45,
+          "social media": 40,
+          "creador de contenidos": 40,
+          "content creator": 35,
+          "auxiliar de marketing": 40,
+          "tecnico de comunicacion": 35,
+          "marketing digital": 35
+        },
+        "temas": {
+          "redes sociales": 10,
+          "instagram": 5,
+          "tiktok": 5,
+          "linkedin": 5,
+          "contenidos": 10,
+          "seo": 5,
+          "google analytics": 5,
+          "wordpress": 5,
+          "canva": 5,
+          "newsletter": 5,
+          "calendario editorial": 5
+        },
+        "lugares": {
+          "oviedo": 30,
+          "gijon": 25,
+          "aviles": 20,
+          "asturias": 20,
+          "remoto": 20,
+          "teletrabajo": 20
+        },
+        "excluir": [
+          "senior",
+          "director",
+          "head of",
+          "comercial",
+          "televenta"
+        ]
+      }
+    },
+    {
+      "id": "daniel",
+      "region": "Asturias",
+      "nuts": [
+        "es12"
+      ],
+      "consultas": [
+        "jefe de proyecto",
+        "project manager",
+        "responsable de proyectos"
+      ],
+      "remoto": [
+        "jefe de proyecto",
+        "project manager"
+      ],
+      "publico": [],
+      "busqueda": {
+        "puestos": {
+          "jefe de proyecto": 45,
+          "project manager": 45,
+          "responsable de proyectos": 45,
+          "director de proyecto": 35,
+          "jefe de obra": 30,
+          "ingeniero de proyectos": 40,
+          "oficina tecnica": 35,
+          "responsable de mantenimiento": 30,
+          "ingeniero industrial": 30
+        },
+        "temas": {
+          "instalaciones": 10,
+          "eficiencia energetica": 10,
+          "mantenimiento": 5,
+          "industrial": 10,
+          "presupuesto": 5,
+          "licitaciones": 5,
+          "ms project": 5,
+          "autocad": 5,
+          "prince2": 5,
+          "planificacion": 5
+        },
+        "lugares": {
+          "gijon": 30,
+          "aviles": 25,
+          "oviedo": 25,
+          "asturias": 20,
+          "santander": 10,
+          "leon": 10,
+          "remoto": 10
+        },
+        "excluir": [
+          "practicas",
+          "becario",
+          "comercial",
+          "junior"
+        ]
+      }
+    },
+    {
+      "id": "marta",
+      "region": "Asturias",
+      "nuts": [
+        "es12"
+      ],
+      "consultas": [
+        "administrativa contable",
+        "administrativo contable",
+        "administrativa"
+      ],
+      "remoto": [
+        "administrativa contable",
+        "administrativo contable"
+      ],
+      "publico": [
+        "auxiliar administrativo",
+        "administrativo",
+        "auxiliar de administracion"
+      ],
+      "busqueda": {
+        "puestos": {
+          "administrativa contable": 45,
+          "administrativo contable": 45,
+          "administrativa": 40,
+          "administrativo": 40,
+          "auxiliar administrativo": 40,
+          "auxiliar contable": 35,
+          "tecnico de contabilidad": 35,
+          "facturacion": 35,
+          "recepcionista": 20
+        },
+        "temas": {
+          "contabilidad": 10,
+          "facturacion": 10,
+          "sage": 10,
+          "factusol": 5,
+          "conciliacion": 5,
+          "proveedores": 5,
+          "excel": 5,
+          "gestion documental": 5
+        },
+        "lugares": {
+          "aviles": 30,
+          "gijon": 20,
+          "oviedo": 20,
+          "asturias": 15,
+          "llanera": 15
+        },
+        "excluir": [
+          "practicas",
+          "becario",
+          "comercial",
+          "televenta",
+          "director financiero"
+        ]
+      }
+    },
+    {
+      "id": "joseluis",
+      "region": "Asturias",
+      "nuts": [
+        "es12"
+      ],
+      "consultas": [
+        "encargado de almacen",
+        "jefe de almacen",
+        "responsable de almacen"
+      ],
+      "remoto": [
+        "encargado de almacen",
+        "jefe de almacen"
+      ],
+      "publico": [],
+      "busqueda": {
+        "puestos": {
+          "encargado de almacen": 45,
+          "jefe de almacen": 40,
+          "responsable de almacen": 40,
+          "encargado de turno": 40,
+          "jefe de equipo": 30,
+          "coordinador de logistica": 35,
+          "mozo de almacen": 25,
+          "carretillero": 30,
+          "preparador de pedidos": 20
+        },
+        "temas": {
+          "almacen": 10,
+          "logistica": 10,
+          "inventario": 5,
+          "stock": 5,
+          "expediciones": 5,
+          "carretilla": 5,
+          "turnos": 5,
+          "erp": 5,
+          "distribucion": 5
+        },
+        "lugares": {
+          "langreo": 30,
+          "mieres": 20,
+          "siero": 20,
+          "oviedo": 20,
+          "gijon": 15,
+          "llanera": 20,
+          "asturias": 15
+        },
+        "excluir": [
+          "comercial",
+          "televenta",
+          "ingeniero",
+          "director"
+        ]
+      }
     }
   ]
 }

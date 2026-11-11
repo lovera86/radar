@@ -95,6 +95,8 @@ def enlace(p):
 
 
 def main():
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')  # la consola de Windows no muestra «→» ni tildes
     if len(sys.argv) < 2:
         print(__doc__)
         sys.exit(1)
