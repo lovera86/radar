@@ -6,6 +6,56 @@
    Este archivo se carga después de cv-datos.js (y de cv-datos-en.js y propuesta.js si
    la página los usa) y antes de app.js / cv.js. */
 
+/* ---------- Enlace personal de acceso ----------
+   lovera86.github.io/radar/#acceso=<perfil comprimido>. Lo que va tras «#» nunca sale
+   del navegador (no llega a ningún servidor). Se guarda el perfil y se limpia la dirección. */
+const RADAR_ACCESO = location.hash.startsWith('#acceso=') ? location.hash.slice(8) : '';
+
+function b64url(bytes) {
+  let s = ''; bytes.forEach((b) => { s += String.fromCharCode(b); });
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function desdeB64url(t) {
+  const b = atob(t.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((t.length + 3) % 4));
+  return Uint8Array.from(b, (c) => c.charCodeAt(0));
+}
+async function perfilAEnlace(perfil) {
+  const datos = new TextEncoder().encode(JSON.stringify(perfil));
+  let token;
+  if (typeof CompressionStream === 'function') {
+    const comp = await new Response(new Blob([datos]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer();
+    token = 'z' + b64url(new Uint8Array(comp));
+  } else token = 'j' + b64url(datos);
+  return location.origin + location.pathname.replace(/[^/]*$/, '') + '#acceso=' + token;
+}
+async function enlaceAPerfil(token) {
+  const bytes = desdeB64url(token.slice(1));
+  if (token[0] === 'j') return JSON.parse(new TextDecoder().decode(bytes));
+  const txt = await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+  return JSON.parse(txt);
+}
+
+if (RADAR_ACCESO) {
+  document.documentElement.classList.add('accediendo');
+  enlaceAPerfil(RADAR_ACCESO).then((p) => {
+    const errores = validarPerfil(p);
+    if (errores.length) throw new Error(errores.join(' '));
+    localStorage.setItem('radar-usuario', JSON.stringify(p));
+    if (p.preferencias && !localStorage.getItem('radar-perfil')) localStorage.setItem('radar-perfil', JSON.stringify(p.preferencias));
+    localStorage.removeItem('radar-demo');
+    history.replaceState(null, '', location.pathname + location.search + '#radar');
+    location.reload();
+  }).catch(() => {
+    history.replaceState(null, '', location.pathname + location.search);
+    document.documentElement.classList.remove('accediendo');
+    alert('Este enlace de acceso no es válido o está incompleto. Pide que te lo envíen de nuevo.');
+    location.reload();
+  });
+}
+
+// Si el enlace se abre con RADAR ya abierta, solo cambia lo que va tras «#»: hay que recargar.
+window.addEventListener('hashchange', () => { if (location.hash.startsWith('#acceso=')) location.reload(); });
+
 const USUARIO = (() => {
   try {
     const p = JSON.parse(localStorage.getItem('radar-usuario'));

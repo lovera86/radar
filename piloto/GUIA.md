@@ -6,8 +6,12 @@ comprobar si lo usan, si las oportunidades encajan y si pagarían por ello.
 ## Cómo funciona
 
 - Todos usan la misma web: https://lovera86.github.io/radar/
-- Cada persona tiene un **archivo de perfil** (.json) con su CV, roles, zona y búsqueda.
-  Lo carga una vez en «Cargar mi perfil» y queda **solo en su navegador**. No se publica.
+- Cada persona tiene un **enlace personal de acceso**: al abrirlo (en el ordenador o
+  en el móvil) entra directamente en su panel. El perfil (CV, roles, zona y búsqueda)
+  va dentro del enlace, tras «#», que nunca llega a ningún servidor, y queda **solo en
+  su navegador**. Alternativa: el archivo .json con «Cargar mi perfil».
+- Puede **instalar RADAR como app** (icono en el móvil o el escritorio) y ve una guía
+  de «Primeros pasos» en Hoy la primera vez.
 - La recogida diaria busca también lo que piden los probadores. En `config.json`
   (bloque `piloto`) solo van palabras de búsqueda y zona, **nunca datos personales**.
 - Sin perfil cargado se usa el perfil de Rocío (la web de siempre). Las oportunidades
@@ -38,16 +42,18 @@ comprobar si lo usan, si las oportunidades encajan y si pagarían por ello.
    - `cv_en` (CV en inglés) es opcional: sin él, el CV y la carta salen solo en español.
    - `publico`: palabras de empleo público (p. ej. «tecnico de comunicacion») si quiere
      oposiciones. `consultas`: 2–3 búsquedas para los portales (por defecto, sus puestos).
-3. **Validar y añadir su búsqueda**:
+3. **Validar, añadir su búsqueda y generar su enlace**:
    ```
-   python piloto/validar_perfil.py ruta/perfil-nombre.json --config
+   python piloto/validar_perfil.py ruta/perfil-nombre.json --config --enlace
    ```
-   Comprueba el perfil y añade su bloque (sin datos personales) a `config.json`.
+   Comprueba el perfil, añade su bloque (sin datos personales) a `config.json` e imprime
+   su enlace personal.
 4. **Publicar** el cambio de `config.json` (commit y push). Al día siguiente la
    recogida ya incluye sus búsquedas (o lanzar «Run workflow» para no esperar).
-5. **Enviarle su archivo de perfil por un canal privado** (correo o mensaje), con
-   estas instrucciones: «Abre https://lovera86.github.io/radar/, pulsa “Cargar mi
-   perfil” y elige este archivo. Usa siempre el mismo navegador».
+5. **Enviarle su enlace por un canal privado** (correo o mensaje), con estas
+   instrucciones: «Abre este enlace en el móvil y en el ordenador: entrarás en tu
+   RADAR. Después, instálalo como app desde “Primeros pasos”. El enlace es personal:
+   no lo compartas». Si lo pierde, puede copiarlo de nuevo en Mi perfil → Mis datos.
 6. Guardar los perfiles **fuera del repositorio** (por ejemplo,
    `Desktop/radar-empleo/perfiles-piloto/`). Nunca subirlos a GitHub.
 

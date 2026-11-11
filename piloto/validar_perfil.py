@@ -3,13 +3,16 @@
 Uso:
     python piloto/validar_perfil.py ruta/al/perfil.json
     python piloto/validar_perfil.py ruta/al/perfil.json --config   # además lo añade a config.json (piloto)
+    python piloto/validar_perfil.py ruta/al/perfil.json --enlace   # y genera su enlace personal de acceso
 
 El bloque que va a config.json NO lleva datos personales: solo puestos, temas, zona,
 consultas de búsqueda y palabras de empleo público.
 """
+import base64
 import json
 import re
 import sys
+import zlib
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
@@ -81,6 +84,16 @@ def bloque_config(p):
     }
 
 
+WEB = "https://lovera86.github.io/radar/"
+
+
+def enlace(p):
+    """Enlace personal: el perfil comprimido va tras «#acceso=» (no llega a ningún servidor)."""
+    c = zlib.compressobj(9, zlib.DEFLATED, -15)
+    datos = c.compress(json.dumps(p, ensure_ascii=False, separators=(",", ":")).encode("utf-8")) + c.flush()
+    return WEB + "#acceso=z" + base64.urlsafe_b64encode(datos).decode().rstrip("=")
+
+
 def main():
     if len(sys.argv) < 2:
         print(__doc__)
@@ -103,6 +116,11 @@ def main():
         c["piloto"] = [x for x in c.get("piloto", []) if x.get("id") != bloque["id"]] + [bloque]
         f.write_text(json.dumps(c, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(f"Añadido a config.json (piloto: {len(c['piloto'])} perfiles).")
+    if "--enlace" in sys.argv:
+        url = enlace(p)
+        print()
+        print(f"Enlace personal ({len(url)} caracteres). Envíalo por un canal privado:")
+        print(url)
 
 
 if __name__ == "__main__":

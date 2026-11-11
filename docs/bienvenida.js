@@ -60,7 +60,7 @@ function mostrarBienvenida() {
 
 (() => {
   let nueva = false;
-  try { nueva = !USUARIO && !localStorage.getItem('radar-v2') && !localStorage.getItem('radar-perfil') && !localStorage.getItem('radar-demo'); } catch (e) { nueva = false; }
+  try { nueva = !RADAR_ACCESO && !USUARIO && !localStorage.getItem('radar-v2') && !localStorage.getItem('radar-perfil') && !localStorage.getItem('radar-demo'); } catch (e) { nueva = false; }
   if (nueva) mostrarBienvenida();
   if (USUARIO) {
     const p = $('.pie-acc');
@@ -76,6 +76,15 @@ function tarjetaMiPerfil(tarjeta) {
   const errores = el('div', 'bv-err');
   const acc = el('div', 'acciones');
   acc.append(selectorPerfil((errs) => { if (!errs.length) location.reload(); else errores.replaceChildren(...errs.map((x) => el('p', null, x))); }));
+  if (typeof botonInstalar === 'function') acc.append(botonInstalar());
+  if (USUARIO && !USUARIO.ejemplo) {
+    const linea = el('div', 'bv-enlace');
+    const nota = el('p', 'nota', 'Tu enlace personal abre RADAR con tu perfil en cualquier navegador o en el móvil. Es privado: no lo publiques ni lo reenvíes.');
+    linea.append(boton('Copiar mi enlace de acceso', 'btn sec', async function () {
+      try { const url = await perfilAEnlace(USUARIO); await navigator.clipboard.writeText(url); this.textContent = '✓ Enlace copiado'; } catch (e) { this.textContent = 'No se ha podido copiar'; }
+    }), nota);
+    t.append(linea);
+  }
   if (USUARIO) {
     acc.append(boton('Quitar mi perfil de este navegador', 'btn sec', () => {
       if (!confirm('Se quitará tu perfil de este navegador (tus guardadas y notas se mantienen). ¿Seguir?')) return;

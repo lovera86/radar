@@ -1163,3 +1163,21 @@ body[data-vista="perfil"] .cab-vista p { display: none; }
 .bv-cargar { cursor: pointer; }
 .bv-err { color: var(--bad); font-size: 13.5px; }
 .bv-err p { margin: 2px 0; }
+
+/* Acceso por enlace, primeros pasos */
+.accediendo body > * { visibility: hidden; }
+.accediendo body::after { content: "Abriendo tu RADAR…"; position: fixed; inset: 0; display: grid; place-items: center; font: 600 18px var(--display); color: var(--turq);
+  background: linear-gradient(135deg, var(--turq-soft), var(--rosa-soft)); }
+.pp { border: 1px solid var(--turq-line); border-radius: 18px; padding: 16px 18px; background: linear-gradient(135deg, var(--turq-soft), var(--surface) 55%, var(--rosa-soft)); display: grid; gap: 8px; }
+.pp-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.pp-cab h3 { margin: 0; font-size: 17px; }
+.pp-pasos { margin: 0; padding: 0; list-style: none; counter-reset: pp; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.pp-pasos li { counter-increment: pp; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: grid; gap: 8px; align-content: space-between; }
+.pp-pasos li > div { display: grid; gap: 3px; }
+.pp-pasos li b::before { content: counter(pp) ". "; color: var(--rosa); }
+.pp-pasos li b { font: 600 14px var(--display); }
+.pp-pasos li span { font-size: 13px; color: var(--muted); }
+.pp-pasos .btn { justify-self: start; }
+.bv-enlace { display: grid; gap: 6px; margin-top: 10px; }
+@media (max-width: 900px) { .pp-pasos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .pp-pasos { grid-template-columns: minmax(0, 1fr); } }

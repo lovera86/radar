@@ -218,6 +218,8 @@ function pintarRadarDiario() {
   cont.append(kpis);
   const apr = typeof avisoAprendizaje === 'function' ? avisoAprendizaje() : null;
   if (apr) cont.append(apr);
+  const pp = typeof primerosPasos === 'function' ? primerosPasos() : null;
+  if (pp) cont.append(pp);
 
   const grid = el('div', 'r2-grid2');
   const pr = el('div', 'r2-p');
