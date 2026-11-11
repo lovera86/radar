@@ -39,7 +39,7 @@ EXCLUIR = re.compile(r"libre designacion|correccion de errores|relacion definiti
                      r"se nombra|nombramiento|adjudica|concurso de traslados|provision de puestos|concurso especifico|concurso general|"
                      r"profesor|docente|catedratic|policia|bombero|medic|enfermer|facultativo|militar|guardia civil|"
                      r"estabilizacion|promocion interna|auxiliar|conserje|ordenanza|limpieza|peon|operari|educador|"
-                     r"personas aprobadas|se resuelve|resolucion del proceso|han superado|se modifica|corrig|aspirantes admitid|tribunal calificador|sanitari|farmac|celador|arquitect|psicolog|veterinari|abogad|letrad")
+                     r"personas aprobadas|se resuelve|resolucion del proceso|han superado|se modifica|corrig|aspirantes admitid|tribunal calificador|sanitari|farmac|celador|arquitect|psicolog|veterinari|abogad|letrad|educacion infantil|maestr|monitor|cocin|socorrist|jardiner|fisioterap|trabajador social|archiver|bibliotec")
 PUNTOS = [
     (r"ingenier[oa]s? tecnic[oa]s? industrial|ingenieria tecnica industrial|ingenieros tecnicos industriales", 60, "Ingeniería Técnica Industrial"),
     (r"gestion de la administracion civil del estado", 60, "Gestión del Estado (A2)"),
@@ -84,10 +84,12 @@ def puntuar(texto, asturias_bonus=True, lejos=False):
     return min(100, p), motivos
 
 
-def texto_boe(ident):
+def texto_boe(ident, maximo=15000):
     try:
         raiz = ET.fromstring(get(f"https://www.boe.es/diario_boe/xml.php?id={ident}", "application/xml"))
-        return " ".join(raiz.find("texto").itertext())[:3000] if raiz.find("texto") is not None else ""
+        if raiz.find("texto") is None:
+            return ""
+        return re.sub(r"[ \t]+", " ", "\n".join(" ".join(p.itertext()).strip() for p in raiz.find("texto"))).strip()[:maximo]
     except Exception as ex:
         print(f"[aviso] BOE {ident}: {ex}", file=sys.stderr)
         return ""
@@ -125,6 +127,7 @@ def boe(desde, hasta):
                             if m:
                                 plaza = m.group(1).strip()
                             out.append({
+                                "texto": extra,
                                 "clave": it["identificador"], "fuente": "BOE", "organismo": organismo.title(),
                                 "titulo": titulo + (f" — {plaza}" if plaza else ""),
                                 "fecha": f"{d:%Y-%m-%d}", "url": it.get("url_html", ""),
@@ -319,6 +322,83 @@ def bocyl():
     return out
 
 
+# ---------------------------------------------------------------- plazos
+NUMEROS = {"uno": 1, "dos": 2, "tres": 3, "cuatro": 4, "cinco": 5, "seis": 6, "siete": 7, "ocho": 8, "nueve": 9, "diez": 10,
+           "once": 11, "doce": 12, "trece": 13, "catorce": 14, "quince": 15, "veinte": 20, "veinticinco": 25, "treinta": 30, "cuarenta": 40}
+# Festivos nacionales y de Asturias (aproximado: no incluye festivos locales).
+FESTIVOS = {"2026-01-01", "2026-01-06", "2026-04-02", "2026-04-03", "2026-05-01", "2026-08-15", "2026-09-08", "2026-10-12",
+            "2026-12-08", "2026-12-25", "2027-01-01", "2027-01-06", "2027-03-25", "2027-03-26", "2027-05-01",
+            "2027-09-08", "2027-10-12", "2027-11-01", "2027-12-06", "2027-12-08", "2027-12-25"}
+BOLETINES = [("BOE", r"bolet[ií]n oficial del estado|\bboe\b"), ("BOPA", r"principado de asturias|\bbopa\b"),
+             ("BOC", r"bolet[ií]n oficial de cantabria|\bboc\b"), ("DOG", r"diario oficial de galicia|\bdog\b"),
+             ("BOCYL", r"castilla y le[oó]n|\bbocyl\b")]
+
+
+def habil(d):
+    return d.weekday() < 5 and d.isoformat() not in FESTIVOS
+
+
+def regla_plazo(texto):
+    """Lee la regla del plazo de solicitudes: (días, 'naturales'|'hábiles', boletín desde el que cuenta)."""
+    t = norm(texto)
+    m = re.search(r"plazo de presentacion de (?:las )?(?:solicitudes|instancias)[^.]{0,120}?(\d{1,2}|" + "|".join(NUMEROS) +
+                  r") dias (naturales|habiles)([^.]{0,260})", t)
+    if not m:
+        return None
+    n = int(m.group(1)) if m.group(1).isdigit() else NUMEROS[m.group(1)]
+    desde = next((b for b, rx in BOLETINES if re.search(rx, m.group(3))), "")
+    return n, "hábiles" if m.group(2) == "habiles" else "naturales", desde
+
+
+def fin_plazo(base_iso, n, tipo):
+    d = date.fromisoformat(base_iso)
+    if tipo == "naturales":
+        d += timedelta(days=n)
+        while not habil(d):  # si el último día es inhábil, pasa al siguiente hábil
+            d += timedelta(days=1)
+        return d.isoformat()
+    cuenta = 0
+    while cuenta < n:
+        d += timedelta(days=1)
+        if habil(d):
+            cuenta += 1
+    return d.isoformat()
+
+
+def completar_plazos(filas):
+    """Calcula la fecha fin de solicitudes cuando se conoce la fecha del boletín desde el que cuenta,
+    y une cada extracto del BOE con la convocatoria del BOPA a la que se refiere."""
+    bopa = [o for o in filas if o["fuente"] == "BOPA"]
+    for o in filas:
+        if o["fuente"] != "BOE" or not o.get("texto"):
+            continue
+        m = re.search(r"principado de asturias[^0-9]{0,20}(?:numero \d+, )?de (\d{1,2}) de (\w+) de (\d{4})", norm(o["texto"]))
+        if not m or m.group(2) not in MESES:
+            continue
+        f = date(int(m.group(3)), MESES[m.group(2)], int(m.group(1))).isoformat()
+        palabras = {w for w in re.findall(r"[a-z]{5,}", norm(o["titulo"].split(" — ")[-1]))}
+        lugar = re.search(r"ayuntamiento de ([a-z ]+?) \(", norm(o["titulo"]))
+        for b in bopa:
+            if b["fecha"] != f:
+                continue
+            tb = norm(b["titulo"] + " " + b["organismo"])
+            if (lugar and lugar.group(1).strip() in tb) or len(palabras & set(re.findall(r"[a-z]{5,}", tb))) >= 2:
+                b["extracto_boe"] = {"clave": o["clave"], "fecha": o["fecha"], "url": o["url"], "texto": o["texto"][:3000]}
+                o["vinculada"] = b["clave"]
+                break
+    for o in filas:
+        texto = o.get("texto") or (o.get("extracto_boe") or {}).get("texto", "")
+        r = regla_plazo(texto) if texto else None
+        if not r:
+            continue
+        n, tipo, desde = r
+        o["regla_plazo"] = {"dias": n, "tipo": tipo, "desde": desde}
+        base = o["fecha"] if desde == o["fuente"] else (o.get("extracto_boe") or {}).get("fecha") if desde == "BOE" else None
+        if base:
+            o["plazo"] = fin_plazo(base, n, tipo)
+    return filas
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dias", type=int)
@@ -358,14 +438,23 @@ def main():
         except Exception as ex:
             print(f"[aviso] {nombre}: {ex}", file=sys.stderr)
             registrar(nombre, error=f"{type(ex).__name__}: {ex}")
+    # Texto completo de los anuncios del BOE que encajan (para el análisis de la convocatoria).
+    for o in res_boe:
+        if o["puntuacion"] >= minimo and (o["clave"] not in previas or not previas[o["clave"]].get("texto")) and len(o.get("texto") or "") < 1500:
+            o["texto"] = texto_boe(o["clave"])
+            p2, _ = puntuar(o["titulo"] + " " + o["texto"][:1500], lejos=o["comunidad"] != "Asturias")
+            if p2 == 0:
+                o["puntuacion"] = 0  # el texto revela una plaza de otra profesión
     for o in res_boe + res_uni + autonomicos:
         if o["puntuacion"] < minimo:
+            previas.pop(o["clave"], None)  # ya no encaja (p. ej., el texto revela otra profesión)
             continue
         if o["clave"] not in previas:
             nuevas.append(o)
         previas[o["clave"]] = o
     corte = (hoy - timedelta(days=DIAS_GUARDADO)).isoformat()
-    vivas = sorted((o for o in previas.values() if o["fecha"] >= corte), key=lambda o: (-o["puntuacion"], o["fecha"]))
+    vivas = sorted((o for o in previas.values() if o["fecha"] >= corte and not EXCLUIR.search(re.sub(r"/as?\b|\(as?\)", "", norm(o["titulo"])))), key=lambda o: (-o["puntuacion"], o["fecha"]))
+    completar_plazos(vivas)
     f.write_text(json.dumps(vivas, ensure_ascii=False, indent=1), encoding="utf-8")
     (DATA / "publico_nuevos.json").write_text(json.dumps(nuevas, ensure_ascii=False, indent=1), encoding="utf-8")
     estado_f.write_text(json.dumps({"ultima": hoy.isoformat()}), encoding="utf-8")

@@ -184,6 +184,7 @@ async function cargar() {
     D.ops = ops; D.meta = meta; D.senales = senales;
     ops.forEach((o) => D.porId.set(o.id, o));
     if (typeof cargarExternas === 'function') cargarExternas();
+    if (typeof aplicarPlazosConvocatorias === 'function') aplicarPlazosConvocatorias();
     migrarAntiguas();
     $('#actualizado').textContent = meta.actualizado ? 'Actualizado ' + new Date(meta.actualizado).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : '';
     sugerencias();
@@ -776,6 +777,7 @@ function abrirFicha(id) {
   if (o.nueva) chips.append(el('span', 'badge-nueva', 'Nueva'));
   res.append(chips);
   if (o.resolucion) res.append(el('p', 'ficha-res', o.resolucion));
+  if (/oposicion|contrato_publico/.test(o.subtipo) && typeof resumenConvocatoria === 'function') res.append(resumenConvocatoria(o));
   izq.append(res);
 
   // 2. Por qué encaja y qué comprobar
@@ -843,7 +845,8 @@ function abrirFicha(id) {
   der.append(el('p', 'verif v-' + o.verificacion, (VERIF[o.verificacion] || '') + ' · confianza ' + o.confianza));
   const acc = el('div', 'panel-acc');
   if (o.tipo === 'empleo') {
-    if (o.accion.url) acc.append(enlace(o.accion.url, o.subtipo === 'oferta' ? 'Ver oferta e inscribirme' : 'Ver convocatoria y requisitos', 'btn grande'));
+    if (o.subtipo !== 'oferta' && typeof abrirConvocatoria === 'function') acc.append(boton('Analizar convocatoria', 'btn grande', () => abrirConvocatoria(o.id)));
+    if (o.accion.url) acc.append(enlace(o.accion.url, o.subtipo === 'oferta' ? 'Ver oferta e inscribirme' : 'Ver convocatoria oficial', o.subtipo === 'oferta' ? 'btn grande' : 'btn sec'));
     acc.append(enlace(cvUrl(o.origen.lista, o.origen.clave), 'CV adaptado (PDF)'));
     acc.append(boton('Ver mi propuesta de valor', 'btn sec', () => { const s = $('#fi-propuesta'); if (!s) return; s.closest('details').open = true; s.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
     acc.append(boton('Carta de motivación', 'btn sec', () => { const s = $('#fi-carta'); if (!s) return; s.closest('details').open = true; s.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
@@ -1469,7 +1472,7 @@ $('#importar').addEventListener('change', async (e) => {
   const f = e.target.files[0]; if (!f) return;
   try {
     const d = JSON.parse(await f.text());
-    if (d.radar && d.radar.fav && d.radar.est) { Object.assign(ST, d.radar); ST.notas = ST.notas || {}; ST.externas = ST.externas || {}; ST.cartas = ST.cartas || {}; cargarExternas(); guardarST(); if (d.perfil) { Object.assign(PREF, d.perfil); guardarPref(); } pintar(); alert('Copia importada.'); } else alert('Ese archivo no es una copia de RADAR.');
+    if (d.radar && d.radar.fav && d.radar.est) { Object.assign(ST, d.radar); ST.notas = ST.notas || {}; ST.externas = ST.externas || {}; ST.cartas = ST.cartas || {}; ST.convocatorias = ST.convocatorias || {}; cargarExternas(); guardarST(); if (d.perfil) { Object.assign(PREF, d.perfil); guardarPref(); } pintar(); alert('Copia importada.'); } else alert('Ese archivo no es una copia de RADAR.');
   } catch (err) { alert('No se ha podido leer el archivo.'); }
 });
 window.abrirFicha = abrirFicha;

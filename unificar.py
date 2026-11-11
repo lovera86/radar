@@ -181,6 +181,8 @@ def desde_empleos(filas, consultada):
 def desde_publico(filas, consultada):
     out = []
     for o in filas:
+        if o.get("vinculada"):
+            continue  # extracto del BOE ya unido a su convocatoria del BOPA
         tags = [t.strip() for t in (o.get("encaje") or "").split(",") if t.strip()]
         texto = norm(o.get("titulo", "") + " " + (o.get("encaje") or ""))
         enc, enc_m = 0.4, []
@@ -214,11 +216,12 @@ def desde_publico(filas, consultada):
             "ubicacion": {"texto": partes[0] if com == "Asturias" and o.get("fuente") in ("BOE", "Universidad de Oviedo")
                           else (re.sub(r"(?i)^ayuntamiento de ", "", o.get("organismo", "")) if re.match(r"(?i)ayuntamiento de ", o.get("organismo", "")) else com), "comunidad": com},
             "modalidad": "presencial", "salario": {"texto": None}, "importe": None,
-            "fechas": {"publicada": o.get("fecha"), "plazo": None, "consultada": consultada},
+            "fechas": {"publicada": o.get("fecha"), "plazo": o.get("plazo"), "consultada": consultada},
+            "descripcion": (o.get("texto") or "")[:15000], "extracto_boe": o.get("extracto_boe"), "regla_plazo": o.get("regla_plazo"),
             "fuentes": [{"nombre": o.get("fuente", ""), "url": o.get("url", ""), "consultada": consultada}],
             "datos": [{"campo": "Organismo", "valor": o.get("organismo", ""), "origen": "confirmado"},
                       {"campo": "Modalidad", "valor": "presencial", "origen": "inferido"},
-                      {"campo": "Plazo de solicitud", "valor": "ver bases", "origen": "desconocido"}],
+                      {"campo": "Plazo de solicitud", "valor": o.get("plazo") or "ver bases", "origen": "inferido" if o.get("plazo") else "desconocido"}],
             "etiquetas": tags,
             "criterios": {
                 "encaje": crit(enc, enc_m or ["puesto técnico"]),

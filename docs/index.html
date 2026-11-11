@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="styles.css?v=48">
+<link rel="stylesheet" href="styles.css?v=49">
 </head>
 <body>
 <header class="barra">
@@ -220,6 +220,12 @@
   <div id="an-res" class="an-res" hidden></div>
 </dialog>
 
+<!-- Análisis de una convocatoria de empleo público -->
+<dialog id="convocatoria" class="panel-dialogo lateral cv-dialogo" aria-labelledby="cv-t">
+  <form method="dialog" class="cerrar"><button aria-label="Cerrar">✕</button></form>
+  <div id="cv-cuerpo"></div>
+</dialog>
+
 <!-- Ficha de oportunidad -->
 <dialog id="ficha" class="ficha-dialogo" aria-labelledby="fi-titulo">
   <form method="dialog" class="cerrar"><button aria-label="Cerrar">✕</button></form>
@@ -261,9 +267,10 @@
 <script src="cv-datos-en.js?v=1"></script>
 <script src="propuesta.js?v=3"></script>
 <script src="mapa.js?v=23"></script>
-<script src="app.js?v=47"></script>
+<script src="app.js?v=48"></script>
 <script src="descubrir.js?v=2"></script>
 <script src="analizar.js?v=2"></script>
-<script src="radar-diario.js?v=8"></script>
+<script src="convocatoria.js?v=1"></script>
+<script src="radar-diario.js?v=9"></script>
 </body>
 </html>

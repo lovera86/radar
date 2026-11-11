@@ -110,6 +110,9 @@ function siguientesMovimientos(lista, principal) {
   const lic = lista.filter((o) => o.subtipo === 'licitacion_abierta' && o.pide_pm && (o.fechas.plazo || '') >= manana && puntuar(o).total >= 55 && !decidida(o) && !usados.has(o.id))
     .sort((a, b) => a.fechas.plazo.localeCompare(b.fechas.plazo));
   if (lic[0]) { mov.push({ o: lic[0], ico: 'lupa', titulo: 'Ofrecerte para una licitación', motivo: `Puntúa al jefe de proyecto; ofertas hasta el ${fecha(lic[0].fechas.plazo)}.` }); usados.add(lic[0].id); }
+  const opos = lista.filter((o) => /oposicion|contrato_publico/.test(o.subtipo) && (o.fechas.plazo || '') >= hoyISO() && puntuar(o).total >= 55 && !decidida(o) && !usados.has(o.id))
+    .sort((a, b) => a.fechas.plazo.localeCompare(b.fechas.plazo));
+  if (opos[0] && mov.length < 3) { mov.push({ o: opos[0], ico: 'calendario', titulo: `Inscribirte en ${corta(opos[0].titulo, 40)}`, motivo: `Plazo de solicitudes hasta el ${fecha(opos[0].fechas.plazo)}.` }); usados.add(opos[0].id); }
   if (mov.length < 3) {
     const otra = vac.find((o) => !usados.has(o.id));
     if (otra) mov.push({ o: otra, ico: 'enviar', titulo: `Aplicar a ${otra.organizacion.nombre || corta(otra.titulo, 40)}`, motivo: 'Otra vacante con prioridad alta.' });

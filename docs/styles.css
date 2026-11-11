@@ -935,3 +935,38 @@ html, body { overflow-x: clip; }
 .carta .prop-texto { margin-bottom: 6px; }
 @media (max-width: 820px) { .analizar-btn { margin-left: auto; padding: 7px 10px; } .analizar-btn span { display: none; } .ajustes { margin-left: 0; } }
 @media (max-width: 640px) { .panel-dialogo.lateral { margin: auto 0 0; width: 100vw; height: auto; max-height: 92vh; border-radius: 18px 18px 0 0; } .an-2 { grid-template-columns: 1fr; } }
+
+/* Análisis de convocatorias */
+.cv-dialogo { width: min(640px, 100vw); }
+#cv-cuerpo h2 { font-size: 21px; margin: 0; padding-right: 44px; }
+#cv-cuerpo .ficha-sub { margin: 6px 0 16px; }
+.cv-fechas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+.cv-caja { border-radius: 14px; padding: 14px 16px; background: var(--soft); border: 1px solid var(--line); display: grid; gap: 2px; }
+.cv-caja.turq { background: var(--turq-soft); border-color: var(--turq-line); }
+.cv-caja.rosa { background: var(--rosa-soft); border-color: var(--rosa-line); }
+.cv-caja.cerrado { opacity: .75; }
+.cv-caja small { color: var(--muted); font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em; }
+.cv-caja b { font: 700 19px/1.2 var(--display); }
+.cv-caja p { margin: 2px 0 0; font-size: 12.5px; color: var(--muted); }
+.cv-ico { font-size: 20px; }
+.cv-sec { border-top: 1px solid var(--line); padding: 14px 0 6px; }
+.cv-sec h3 { margin: 0 0 10px; font-size: 16px; }
+.cv-sec .condiciones dd { font-size: 13.5px; }
+.cv-cumple { margin: 10px 0 0; padding: 8px 12px; border-radius: 10px; font-size: 13.5px; }
+.cv-cumple.c-si { background: var(--turq-soft); }
+.cv-cumple.c-no { background: color-mix(in srgb, var(--bad) 12%, transparent); }
+.cv-cumple.c-duda { background: var(--soft); }
+.cv-pruebas { margin: 0 0 10px; padding-left: 20px; display: grid; gap: 6px; font-size: 14px; }
+.cv-pruebas small { display: block; color: var(--muted); font-size: 12.5px; }
+.cv-bloques { margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--muted); }
+.cv-plan { background: linear-gradient(160deg, var(--rosa-soft), var(--surface) 70%); border: 1px solid var(--rosa-line); border-radius: 14px; padding: 14px 16px; margin: 10px 0; }
+.cv-plan ol { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 7px; font-size: 14px; }
+.cv-pegar { border: 1px dashed var(--line2); border-radius: 14px; padding: 12px 14px; margin-top: 14px; display: grid; gap: 8px; }
+.cv-pegar summary { cursor: pointer; font-weight: 600; }
+.cv-pegar[open] { gap: 10px; }
+.cv-pie { margin-top: 16px; }
+.cv-resumen { margin-top: 14px; border-radius: 14px; padding: 12px 14px; background: linear-gradient(120deg, var(--turq-soft), var(--rosa-soft)); display: grid; gap: 4px; }
+.cv-resumen p { margin: 0; font-size: 14px; }
+.cv-resumen .btn { justify-self: start; margin-top: 6px; }
+@media (max-width: 640px) { .cv-fechas { grid-template-columns: 1fr; } }
+@media (max-width: 1150px) { .barra .actualizado { display: none; } }

@@ -54,6 +54,17 @@ de IA, gemelos digitales, BIM, patrimonio…). Ajustes en `config.json → emple
   (RSS del sumario, sección IV) y el BOCYL (RSS del boletín del día);
 - los contratos de técnico en proyectos de la Universidad de Oviedo.
 
+Para cada anuncio del BOE guarda el texto oficial y calcula la fecha fin de
+solicitudes («veinte días naturales desde el siguiente a la publicación en el BOE»,
+días hábiles sin sábados, domingos ni festivos nacionales y de Asturias). Si el BOE
+publica el extracto de una convocatoria del BOPA, las une: el plazo sale de ahí y no
+aparece duplicada.
+
+En la web, **Analizar convocatoria** (ficha de cada oposición) resume cuándo hay que
+apuntarse, cuándo es el examen (o la fecha mínima que fijan las bases), requisitos,
+pruebas, temario y un plan de preparación orientativo. Si RADAR solo tiene el
+extracto, se pegan las bases desde el enlace oficial (`docs/convocatoria.js`).
+
 Puntúa más las plazas de Ingeniería Técnica Industrial, los cuerpos de gestión
 A2 y lo que es en Asturias; las de otras comunidades restan puntos y solo salen
 si encajan mucho. Descarta listas de admitidos, resoluciones de procesos ya
