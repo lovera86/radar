@@ -1,23 +1,23 @@
 {
  "Tecnoempleo": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T06:14:47+00:00",
-  "ultima_correcta": "2026-11-11T06:14:47+00:00",
-  "resultados": 349,
+  "ultima_consulta": "2026-11-11T08:46:54+00:00",
+  "ultima_correcta": "2026-11-11T08:46:54+00:00",
+  "resultados": 347,
   "error": "",
-  "detalle": "349 ofertas leídas"
+  "detalle": "347 ofertas leídas"
  },
  "Remotive": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T06:14:47+00:00",
-  "ultima_correcta": "2026-11-11T06:14:47+00:00",
+  "ultima_consulta": "2026-11-11T08:46:56+00:00",
+  "ultima_correcta": "2026-11-11T08:46:56+00:00",
   "resultados": 10,
   "error": "",
   "detalle": "10 ofertas leídas"
  },
  "InfoJobs (API)": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T06:14:47+00:00",
+  "ultima_consulta": "2026-11-11T08:46:59+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -25,7 +25,7 @@
  },
  "Jooble": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T06:14:47+00:00",
+  "ultima_consulta": "2026-11-11T08:46:59+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -33,7 +33,7 @@
  },
  "Adzuna": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T06:14:47+00:00",
+  "ultima_consulta": "2026-11-11T08:46:59+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -41,7 +41,7 @@
  },
  "Alertas de LinkedIn e InfoJobs (correo)": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T06:14:47+00:00",
+  "ultima_consulta": "2026-11-11T08:46:59+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -126,5 +126,37 @@
   "resultados": 9,
   "error": "",
   "detalle": "9 boletines provinciales leídos; 0 señales nuevas"
+ },
+ "EURES (SEPE y servicios públicos de empleo)": {
+  "estado": "ok",
+  "ultima_consulta": "2026-11-11T08:46:58+00:00",
+  "ultima_correcta": "2026-11-11T08:46:58+00:00",
+  "resultados": 82,
+  "error": "",
+  "detalle": "82 ofertas leídas"
+ },
+ "Himalayas (remoto)": {
+  "estado": "ok",
+  "ultima_consulta": "2026-11-11T08:46:58+00:00",
+  "ultima_correcta": "2026-11-11T08:46:58+00:00",
+  "resultados": 69,
+  "error": "",
+  "detalle": "69 ofertas leídas"
+ },
+ "Jobicy (remoto)": {
+  "estado": "ok",
+  "ultima_consulta": "2026-11-11T08:46:59+00:00",
+  "ultima_correcta": "2026-11-11T08:46:59+00:00",
+  "resultados": 50,
+  "error": "",
+  "detalle": "50 ofertas leídas"
+ },
+ "Portales de empresas (Greenhouse, Lever, Teamtailor, Workable, Recruitee, Personio, SmartRecruiters)": {
+  "estado": "ok",
+  "ultima_consulta": "2026-11-11T08:47:06+00:00",
+  "ultima_correcta": "2026-11-11T08:47:06+00:00",
+  "resultados": 594,
+  "error": "",
+  "detalle": "594 ofertas leídas"
  }
 }

@@ -305,7 +305,113 @@
       "jr",
       "jr."
     ],
-    "portales_corporativos": []
+    "portales_corporativos": [
+      {
+        "empresa": "Sener",
+        "ats": "teamtailor",
+        "id": "https://www.engineering-jobs.sener/jobs.rss"
+      },
+      {
+        "empresa": "Ingeteam",
+        "ats": "teamtailor",
+        "id": "https://ingeteam.teamtailor.com/jobs.rss"
+      },
+      {
+        "empresa": "Arquimea",
+        "ats": "teamtailor",
+        "id": "https://arquimea.teamtailor.com/jobs.rss"
+      },
+      {
+        "empresa": "Sacyr",
+        "ats": "teamtailor",
+        "id": "https://sacyr.teamtailor.com/jobs.rss"
+      },
+      {
+        "empresa": "Multiverse Computing",
+        "ats": "teamtailor",
+        "id": "https://multiversecomputing.teamtailor.com/jobs.rss"
+      },
+      {
+        "empresa": "Knowmad mood",
+        "ats": "teamtailor",
+        "id": "https://knowmadmood.teamtailor.com/jobs.rss"
+      },
+      {
+        "empresa": "Seedtag",
+        "ats": "teamtailor",
+        "id": "https://seedtag.teamtailor.com/jobs.rss"
+      },
+      {
+        "empresa": "Idealista",
+        "ats": "teamtailor",
+        "id": "https://idealista.teamtailor.com/jobs.rss"
+      },
+      {
+        "empresa": "Plain Concepts",
+        "ats": "workable",
+        "id": "plainconcepts"
+      },
+      {
+        "empresa": "Paradigma Digital",
+        "ats": "personio",
+        "id": "paradigmadigital"
+      },
+      {
+        "empresa": "Aciturri",
+        "ats": "personio",
+        "id": "aciturri"
+      },
+      {
+        "empresa": "Holded",
+        "ats": "recruitee",
+        "id": "holded"
+      },
+      {
+        "empresa": "Bosch",
+        "ats": "smartrecruiters",
+        "id": "BoschGroup"
+      },
+      {
+        "empresa": "Lodgify",
+        "ats": "lever",
+        "id": "lodgify"
+      },
+      {
+        "empresa": "Wallapop",
+        "ats": "greenhouse",
+        "id": "wallapop"
+      },
+      {
+        "empresa": "Ebury",
+        "ats": "greenhouse",
+        "id": "ebury"
+      },
+      {
+        "empresa": "Cabify",
+        "ats": "greenhouse",
+        "id": "cabify"
+      },
+      {
+        "empresa": "Typeform",
+        "ats": "greenhouse",
+        "id": "typeform"
+      },
+      {
+        "empresa": "Bitpanda",
+        "ats": "greenhouse",
+        "id": "bitpanda"
+      },
+      {
+        "empresa": "N26",
+        "ats": "greenhouse",
+        "id": "n26"
+      },
+      {
+        "empresa": "Esri",
+        "ats": "greenhouse",
+        "id": "esri"
+      }
+    ]
   },
   "publico": {
     "puntuacion_minima": 35

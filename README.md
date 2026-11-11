@@ -70,6 +70,21 @@ A2 y lo que es en Asturias; las de otras comunidades restan puntos y solo salen
 si encajan mucho. Descarta listas de admitidos, resoluciones de procesos ya
 cerrados, nombramientos y puestos de otras profesiones.
 
+## Más fuentes de empleo
+
+`empleos.py` también lee EURES (ofertas del SEPE y de los servicios públicos de
+empleo, incluido Trabajastur), Himalayas y Jobicy (remoto abierto a España) y las
+webs de empleo de empresas con API o RSS públicos (Greenhouse, Lever, Teamtailor,
+Workable, Recruitee, Personio y SmartRecruiters; lista en `config.json`,
+`empleo.portales_corporativos`). De las webs de empresa solo se quedan las ofertas
+en España o en remoto.
+
+## Aprendizaje
+
+En «Mi perfil → Aprendizaje», RADAR compara lo que descartas con lo que guardas o
+envías y propone reglas (subir o bajar empresas, palabras, zonas, modalidades,
+tipos o sectores). Solo se aplican si las aceptas y se explican en la ficha.
+
 ## Modelo común (RADAR v2)
 
 `unificar.py` junta todas las fuentes en `docs/data/oportunidades.json`: cada
