@@ -101,11 +101,13 @@ function analizarConvocatoria(texto, ctx) {
 
   // Pruebas (turno libre si lo hay)
   const tramo = tramoLibre(texto).replace(/\s+/g, ' ');
-  const rxP = /(Primer[oa]?|Segund[oa]|Tercer[oa]?|Cuart[oa]|Quint[oa])\s+(prueba|ejercicio)\s*[.:]?\s*[—–-]+\s*/gi;
+  const rxP = /(?:\b[a-e]\)\s*)?(Primer[oa]?|Segund[oa]|Tercer[oa]?|Cuart[oa]|Quint[oa])\s+(prueba|ejercicio)\s*(?:[.:]\s*[—–-]*|[—–-]+)\s*(?=[A-ZÁÉÍÓÚ(«"])|(?:Prueba|Ejercicio)\s+(primer[oa]?|segund[oa]|tercer[oa]?|cuart[oa])\s*[.:—–-]+\s*/g;
   const marcas = [...tramo.matchAll(rxP)];
   const vistos = new Set();
   marcas.forEach((m, i) => {
-    const nombre = (m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase()) + ' ' + m[2].toLowerCase();
+    const ord = m[1] || m[3];
+    const tipoP = m[2] || (/^ejercicio/i.test(m[0]) ? 'ejercicio' : 'prueba');
+    const nombre = (ord.charAt(0).toUpperCase() + ord.slice(1).toLowerCase()) + ' ' + tipoP.toLowerCase();
     if (vistos.has(nombre)) return;
     vistos.add(nombre);
     const cuerpo = tramo.slice(m.index + m[0].length, marcas[i + 1] ? marcas[i + 1].index : m.index + 2500);
@@ -132,15 +134,15 @@ function analizarConvocatoria(texto, ctx) {
   });
 
   // Temario (anexo del turno libre si lo hay)
-  const ia = texto.search(/\n\s*Anexo\s+[IVX]+\s*\n\s*PROGRAMA[^\n]*LIBRE/i);
-  const ib = ia >= 0 ? ia : texto.search(/\n\s*(Anexo\s+[IVX]+\s*\n\s*)?PROGRAMA\b/i);
+  const ia = texto.search(/\n\s*Anexo\s+[IVX]+\s*\n\s*(?:PROGRAMA|TEMARIO)[^\n]*LIBRE/i);
+  const ib = ia >= 0 ? ia : texto.search(/\n\s*(Anexo\s+[IVX]+\s*\n\s*)?(?:PROGRAMA|TEMARIO)\b/i);
   if (ib >= 0) {
     const resto = texto.slice(ib + 5);
     const fin = resto.search(/\n\s*Anexo\s+[IVX]+\s*\n/i);
     const prog = fin > 0 ? resto.slice(0, fin) : resto.slice(0, 60000);
     const temas = (prog.match(/\n\s*(?:Tema\s+)?\d{1,3}\s*[.:]?\s*[—–-]+\s*\S|\n\s*Tema\s+\d{1,3}[.:]/g) || []).length;
     const bloques = [...prog.matchAll(/\n\s*([IVX]{1,4})\s*\.?\s*[—–-]+\s*([^\n]{3,90})/g)].map((m) => `${m[1]}. ${m[2].trim().replace(/\.$/, '')}`);
-    if (temas) r.temario = { temas, bloques };
+    if (temas) r.temario = { temas, bloques, texto: prog.replace(/^[^\n]*\n/, '').trim() };
   }
   if (!r.temario) { const mt2 = n.match(/(\d{2,3}) temas/); if (mt2) r.temario = { temas: +mt2[1], bloques: [] }; }
   r.completo = r.pruebas.length > 0 || Boolean(r.temario);
@@ -164,6 +166,7 @@ function planPreparacion(a, o) {
       const porSemana = Math.ceil(a.temario.temas / utiles);
       pasos.push(`Tienes ${semanas} semanas hasta ${a.examen.fecha ? 'el examen' : 'la fecha más temprana posible del examen'}: ${porSemana === 1 ? 'un tema' : 'unos ' + porSemana + ' temas'} por semana para cubrir los ${a.temario.temas}, y deja las 2 últimas semanas para repasar y hacer simulacros.`);
     } else pasos.push(`Reparte los ${a.temario.temas} temas en un calendario semanal y reserva las últimas semanas para repaso y simulacros.`);
+    pasos.push('Descarga el temario (botón de «Pruebas y temario») y úsalo como índice: marca cada tema al estudiarlo y al repasarlo.');
   }
   a.pruebas.forEach((p) => {
     const t = p.tipo.join(' + ');
@@ -247,7 +250,17 @@ function pintarConvocatoria(o) {
       }
       if (a.temario) {
         pr.append(el('p', null, `Temario: ${a.temario.temas} temas${a.temario.bloques.length ? ' en ' + a.temario.bloques.length + ' bloques' : ''}.`));
+        const dl = el('div', 'acciones cv-temario');
+        if (a.temario.texto) dl.append(boton('Descargar temario (PDF)', 'btn mini', () => imprimirTemario(o, a)));
+        const of = enlaceOficial(o);
+        if (of) dl.append(enlace(of.url, of.texto, 'btn sec mini'));
+        pr.append(dl);
+        if (!a.temario.texto) pr.append(el('p', 'nota', 'El temario completo está en el anexo de las bases oficiales. Si pegas las bases con el anexo, RADAR te prepara un PDF solo con los temas.'));
         if (a.temario.bloques.length) { const ul = el('ul', 'cv-bloques'); a.temario.bloques.forEach((b) => ul.append(el('li', null, b))); pr.append(ul); }
+      } else {
+        const of = enlaceOficial(o);
+        pr.append(el('p', 'nota', 'No se ha encontrado el temario en este texto: está en el anexo de las bases oficiales.'));
+        if (of) { const dl = el('div', 'acciones cv-temario'); dl.append(enlace(of.url, of.texto, 'btn sec mini')); pr.append(dl); }
       }
       cont.append(pr);
     }
@@ -297,6 +310,40 @@ function abrirConvocatoria(id) {
   const d = $('#convocatoria');
   if (!d.open) d.showModal();
   d.scrollTop = 0;
+}
+
+/* Documento oficial con las bases (el temario va en un anexo). Solo se enlaza. */
+function enlaceOficial(o) {
+  const m = (o.origen?.clave || '').match(/^bopa-(\d{4}-\d{5})$/);
+  if (m && o.fechas.publicada) {
+    const [y, mo, d] = o.fechas.publicada.split('-');
+    return { url: `https://miprincipado.asturias.es/bopa/${y}/${mo}/${d}/${m[1]}.pdf`, texto: 'Bases y temario oficiales (BOPA, PDF) ↗' };
+  }
+  const u = o.accion?.url || o.fuentes[0]?.url;
+  return u ? { url: u, texto: 'Bases y temario oficiales ↗' } : null;
+}
+
+function imprimirTemario(o, a) {
+  const w = window.open('', '_blank');
+  if (!w) return;
+  const esc2 = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const lineas = a.temario.texto.split('\n').map((x) => x.trim()).filter((x) => x && !/^(temario|programa)\b[^.]{0,40}$/i.test(x));
+  const html = lineas.map((l) => {
+    if (/^[IVX]{1,4}\s*\.?\s*[—–-]+/.test(l)) return `<h2>${esc2(l.replace(/\s*[—–-]+\s*/, '. '))}</h2>`;
+    const t = l.match(/^(?:Tema\s+)?(\d{1,3})\s*[.:]?\s*[—–-]*\s*(.+)$/i);
+    if (t) return `<p class="tema"><span class="c">☐</span><b>${t[1]}.</b> ${esc2(t[2])}</p>`;
+    return `<p class="nota">${esc2(l)}</p>`;
+  }).join('');
+  const of = enlaceOficial(o);
+  w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Temario - ${esc2(o.titulo)}</title>
+<style>@page{size:A4;margin:16mm 16mm}body{font:10.5pt/1.45 "IBM Plex Sans","Segoe UI",sans-serif;color:#18232d;max-width:178mm;margin:0 auto}
+h1{font-size:15pt;margin:0 0 2mm}.sub{color:#5d6a75;margin:0 0 6mm;font-size:9.5pt}h2{font-size:11.5pt;margin:6mm 0 2mm;padding-bottom:1mm;border-bottom:1.5px solid #0e9f97;color:#0b2545}
+.tema{margin:0 0 1.6mm;padding-left:7mm;text-indent:-7mm;break-inside:avoid}.c{display:inline-block;width:5mm;color:#c2255c}.nota{color:#5d6a75;font-size:9pt;margin:0 0 2mm}</style></head><body>
+<h1>Temario · ${esc2(o.titulo)}</h1>
+<p class="sub">${esc2([o.organizacion.nombre, a.temario.temas + ' temas', 'extraído de las bases que pegaste en RADAR'].filter(Boolean).join(' · '))}${of ? '<br>Texto oficial: ' + esc2(of.url) : ''}</p>
+${html}
+<script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close();
 }
 
 /* Resumen corto para la ficha. */
