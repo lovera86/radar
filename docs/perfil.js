@@ -4,7 +4,7 @@
    y mismo almacenamiento que antes (radar-perfil y radar-pesos en el navegador). */
 
 let PF_TAB = (() => { try { return localStorage.getItem('radar-perfil-tab') || 'busco'; } catch (e) { return 'busco'; } })();
-const PF_TABS = [['busco', 'Qué busco'], ['roles', 'Roles'], ['puntua', 'Cómo puntúa RADAR'], ['cv', 'Mi CV'], ['datos', 'Mis datos']];
+const PF_TABS = [['busco', 'Qué busco'], ['roles', 'Roles'], ['puntua', 'Cómo puntúa RADAR'], ['cv', 'Mi CV'], ['aprende', 'Aprendizaje'], ['datos', 'Mis datos']];
 const PF_ICO = {
   remoto: '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>',
   hibrido: '<svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7M5 10v10h5v-6h4v6h5V10"/></svg>',
@@ -235,6 +235,8 @@ function pintarPerfil() {
     ch.append(el('span', 'pf-pill', CV.extra));
     id2.append(ch);
   }
+
+  if (PF_TAB === 'aprende' && typeof seccionAprendizaje === 'function') seccionAprendizaje(tarjeta, () => { pfGuardado(); pintar(); });
 
   if (PF_TAB === 'datos') {
     const d = tarjeta('Dónde se guardan tus datos', 'Tus preferencias, favoritos, candidaturas, notas, entrevistas, ofertas analizadas y cartas se guardan solo en este navegador. La web es pública pero no contiene nada tuyo salvo el CV sin teléfono.');

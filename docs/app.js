@@ -146,6 +146,7 @@ function ajustados(o) {
     const e = evitar.find((x) => t.includes(x));
     if (e) { c.encaje.valor = Math.max(0, (c.encaje.valor ?? 0) - 0.3); c.encaje.motivos.push(`contiene «${e}», que no quieres priorizar`); }
   }
+  if (typeof aplicarAprendizaje === 'function') aplicarAprendizaje(o, c);
   return c;
 }
 

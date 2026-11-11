@@ -216,6 +216,8 @@ function pintarRadarDiario() {
     kpi('maleta', alto.length, 'Con encaje alto', 'Prioridad 70 o más y aún sin decidir', ir('explorar', () => F.rapidos.add('alto'))),
     kpi('calendario', accionesPend, accionesPend === 1 ? 'Acción pendiente' : 'Acciones pendientes', 'Candidaturas con un siguiente paso por dar', () => { location.hash = 'guardados'; }));
   cont.append(kpis);
+  const apr = typeof avisoAprendizaje === 'function' ? avisoAprendizaje() : null;
+  if (apr) cont.append(apr);
 
   const grid = el('div', 'r2-grid2');
   const pr = el('div', 'r2-p');
