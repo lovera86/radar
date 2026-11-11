@@ -233,7 +233,7 @@ function nubePedirConsentimiento() {
     const d = nubeDialogo('nube-rgpd');
     const h = el('h2', null, 'Antes de empezar: tus datos');
     const ul = el('ul', 'bv-lista');
-    ['Guardamos tu perfil, tu CV y lo que haces en RADAR (guardadas, estados, notas) en un servidor de Supabase en la Unión Europea (Frankfurt).',
+    ['Guardamos tu perfil, tu CV y lo que haces en RADAR (guardadas, estados, notas) en un servidor de Supabase en la Unión Europea (Estocolmo, Suecia).',
       'Solo tú ves tus notas y tus candidaturas. Rocío, como responsable del piloto, ve tu perfil y cuántas oportunidades guardas o envías, para medir el piloto.',
       'Nada se envía a empresas ni a terceros. No se usan tus datos para publicidad.',
       'Puedes descargar tus datos o borrar tu cuenta cuando quieras, desde Mi perfil → Mis datos.']

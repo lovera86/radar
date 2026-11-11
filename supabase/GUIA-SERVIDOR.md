@@ -7,7 +7,7 @@ Ninguna clave se pega en el chat.
 
 - La web sigue en https://lovera86.github.io/radar/ (GitHub Pages). Las ofertas, oposiciones y
   licitaciones son datos públicos y se siguen publicando cada mañana como ahora.
-- Lo personal va a **Supabase** (servidor en Frankfurt):
+- Lo personal va a **Supabase** (servidor en la UE, en Estocolmo):
   - cuentas con entrada por código al correo, sin contraseñas;
   - perfil de cada persona y CV originales, en un almacén privado;
   - lo que cada persona hace en RADAR, sincronizado entre el móvil y el ordenador.
@@ -21,7 +21,7 @@ Ninguna clave se pega en el chat.
 2. **New project**:
    - Name: `radar`
    - Database password: genera una y guárdala en tu gestor de contraseñas. RADAR no la usa.
-   - Region: **Central EU (Frankfurt)**
+   - Region: una de la UE (el proyecto de RADAR está en North EU, Estocolmo)
    - Plan: Free (vale para el piloto; ver «Costes» abajo).
 3. Espera a que el proyecto esté listo (1–2 minutos).
 
