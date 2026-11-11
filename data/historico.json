@@ -2182,5 +2182,162 @@
    "realidad aumentada",
    "CPV 79952000,92000000"
   ]
+ },
+ {
+  "id": "19931304",
+  "expediente": "2249/2026",
+  "estado": "ADJ",
+  "titulo": "Suministros y servicios necesarios para la ejecución del proyecto museográfico del Museo del Turismo de Zafra",
+  "tipo": "1",
+  "cpv": [
+   "39154000",
+   "31500000",
+   "92521100"
+  ],
+  "region_nuts": "ES431",
+  "region": "Badajoz",
+  "organo": "Junta de Gobierno Local del Ayuntamiento de Zafra",
+  "importe": 270570.0,
+  "adjudicatario": "Reinadecorazones Cultura de Proyectos S.L.",
+  "nif": "B06485866",
+  "ciudad_empresa": "Badajoz",
+  "fecha_adjudicacion": "2026-11-06",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=tSgg8b8an5z10HRJw8TEnQ%3D%3D",
+  "actualizado": "2026-11-10T08:43:47.633+01:00",
+  "plazo": "2026-07-23",
+  "criterios": [],
+  "clave": "2249/2026|B06485866",
+  "puntuacion": 63,
+  "motivos": [
+   "museograf",
+   "museo",
+   "CPV 39154000,31500000,92521100"
+  ]
+ },
+ {
+  "id": "20384711",
+  "expediente": "006_26001723",
+  "estado": "ADJ",
+  "titulo": "Contracte mixt de subministraments i serveis per a la realització de la producció i instal·lació de la museografia permanentdedicada a Sor Eulàlia Anzizu, que es podrà visitar a la cel·la de Santes Creus i sala de l'abadia del Monestir de Pedralbes",
+  "tipo": "1",
+  "cpv": [
+   "39154000",
+   "92521100"
+  ],
+  "region_nuts": "ES511",
+  "region": "",
+  "organo": "Institut de Cultura de Barcelona",
+  "importe": 32400.49,
+  "adjudicatario": "MARCOS ALARCON GARCIA",
+  "nif": "B58670068",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contractaciopublica.cat/ca/detall-publicacio/e21daffa-8a19-432f-87fe-48afe3ff28b3/300933917",
+  "actualizado": "2026-11-10T12:02:46.690+01:00",
+  "plazo": "2026-09-29",
+  "criterios": [],
+  "clave": "006_26001723|B58670068",
+  "puntuacion": 58,
+  "motivos": [
+   "museograf",
+   "museo",
+   "CPV 39154000,92521100"
+  ]
+ },
+ {
+  "id": "20877260",
+  "expediente": "NEG06/2026",
+  "estado": "RES",
+  "titulo": "Servicio, con suministro de materiales, para el montaje de la exposición temporal «Rossy de Palma. Alcanzar la orilla» en el Centro Atlántico de Arte Moderno (CAAM, Balcones 11-13), de conformidad con las condiciones establecidas en el presente Pliego de Cláusulas Administrativas Particulares y en el Pliego de Prescripciones Técnicas Particulares.",
+  "tipo": "2",
+  "cpv": [
+   "92521100",
+   "39154000",
+   "79950000",
+   "45212313"
+  ],
+  "region_nuts": "ES70",
+  "region": "Canarias",
+  "organo": "Gerencia del Centro Atlántico de Arte Moderno SAU",
+  "importe": 33000.0,
+  "adjudicatario": "EL PARAGUAS EVENTS, SL",
+  "nif": "B76242098",
+  "ciudad_empresa": "AGUIMES",
+  "fecha_adjudicacion": "2026-10-30",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=TkzXs3g93E2AAM7L03kM8A%3D%3D",
+  "actualizado": "2026-11-10T12:26:04.691+01:00",
+  "plazo": "2026-09-25",
+  "criterios": [],
+  "clave": "NEG06/2026|B76242098",
+  "puntuacion": 42,
+  "motivos": [
+   "exposicion",
+   "CPV 92521100,39154000,79950000"
+  ]
+ },
+ {
+  "id": "20881412",
+  "expediente": "202507-08",
+  "estado": "RES",
+  "titulo": "Servicio de carpintería, montaje y desmontaje museográfico de la exposición de JAMES BENNING en la Sala Z de Artium Museoa",
+  "tipo": "2",
+  "cpv": [
+   "39154000"
+  ],
+  "region_nuts": "ES211",
+  "region": "",
+  "organo": "Fundación Artium de Álava-Directora",
+  "importe": 1789.0,
+  "adjudicatario": "GIROA, S.A.",
+  "nif": "A20071429",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.contratacion.euskadi.eus/webkpe00-kpeperfi/es/contenidos/anuncio_contratacion/expjaso747588/es_doc/index.html",
+  "actualizado": "2026-11-10T13:26:36.975+01:00",
+  "plazo": "2026-10-16",
+  "criterios": [],
+  "clave": "202507-08|A20071429",
+  "puntuacion": 40,
+  "motivos": [
+   "museograf",
+   "museo",
+   "exposicion",
+   "ES21"
+  ]
+ },
+ {
+  "id": "19925397",
+  "expediente": "2026000277",
+  "estado": "ADJ",
+  "titulo": "Suministro de un carro de varada autoportante para el puerto pesquero de San Juan de la Arena",
+  "tipo": "1",
+  "cpv": [
+   "42414000",
+   "34931000",
+   "42418000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Consejería de Medio Rural y Política Agraria",
+  "importe": 328000.0,
+  "adjudicatario": "AB8 MARINE, S.L.",
+  "nif": "B70856778",
+  "ciudad_empresa": "Vigo (Pontevedra)",
+  "fecha_adjudicacion": "2026-10-15",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=%2B7rg40gbyVZ4zIRvjBVCSw%3D%3D",
+  "actualizado": "2026-11-10T10:38:16.391+01:00",
+  "plazo": "2026-07-28",
+  "criterios": [
+   {
+    "texto": "Servicio técnico",
+    "peso": 10.0
+   }
+  ],
+  "clave": "2026000277|B70856778",
+  "puntuacion": 30,
+  "motivos": [
+   "puerto",
+   "Asturias"
+  ]
  }
 ]

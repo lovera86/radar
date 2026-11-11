@@ -98,7 +98,7 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=QpI2j13vl8Qtm4eBPtV6eQ%3D%3D",
-  "actualizado": "2026-10-28T10:34:24.999+01:00",
+  "actualizado": "2026-11-10T12:38:54.030+01:00",
   "plazo": "2026-11-12",
   "criterios": [],
   "pide_pm": false,
@@ -276,34 +276,6 @@
   ]
  },
  {
-  "id": "19930945",
-  "expediente": "2026000538",
-  "estado": "PUB",
-  "titulo": "suministro de víveres y asistencia técnica en actividades de restauración con destino a centros adscritos al Organismo Autónomo Establecimientos a adjudicar mediante procedimiento abierto, varios criterios de adjudicación y expediente de anticipado de gasto",
-  "tipo": "1",
-  "cpv": [
-   "15800000"
-  ],
-  "region_nuts": "ES120",
-  "region": "Asturias",
-  "organo": "Organismo Autónomo Establecimientos Residenciales para Ancianos de Asturias",
-  "importe": 9638167.66,
-  "adjudicatario": "",
-  "nif": "",
-  "ciudad_empresa": "",
-  "fecha_adjudicacion": "",
-  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Kdd%2Bgq%2BnhN7N3k3tjedSGw%3D%3D",
-  "actualizado": "2026-10-29T11:14:05.577+01:00",
-  "plazo": "2026-11-16",
-  "criterios": [],
-  "pide_pm": false,
-  "puntuacion": 40,
-  "motivos": [
-   "asistencia tecnica",
-   "Asturias"
-  ]
- },
- {
   "id": "20780399",
   "expediente": "CON/2026/250",
   "estado": "PUB",
@@ -459,8 +431,8 @@
   "tipo": "2",
   "cpv": [
    "72220000",
-   "72224000",
-   "72266000"
+   "72266000",
+   "72224000"
   ],
   "region_nuts": "ES300",
   "region": "",
@@ -471,13 +443,13 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contratos-publicos.comunidad.madrid/contrato-publico/sg-42026-servicio-asistencia-tecnica-consorcio-regional-transportes-madrid-crtm",
-  "actualizado": "2026-10-25T09:26:11.732+01:00",
+  "actualizado": "2026-11-10T15:26:05.217+01:00",
   "plazo": "2026-11-17",
   "criterios": [],
   "pide_pm": false,
   "puntuacion": 40,
   "motivos": [
-   "CPV 72220000,72224000,72266000"
+   "CPV 72220000,72266000,72224000"
   ]
  },
  {
@@ -696,6 +668,34 @@
   "puntuacion": 25,
   "motivos": [
    "puerto",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "19930945",
+  "expediente": "2026000538",
+  "estado": "PUB",
+  "titulo": "suministro de víveres y asistencia técnica en actividades de restauración con destino a centros adscritos al Organismo Autónomo Establecimientos a adjudicar mediante procedimiento abierto, varios criterios de adjudicación y expediente de anticipado de gasto",
+  "tipo": "1",
+  "cpv": [
+   "15800000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Organismo Autónomo Establecimientos Residenciales para Ancianos de Asturias",
+  "importe": 9638167.66,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Kdd%2Bgq%2BnhN7N3k3tjedSGw%3D%3D",
+  "actualizado": "2026-11-10T08:52:22.489+01:00",
+  "plazo": "2026-11-23",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "asistencia tecnica",
    "Asturias"
   ]
  },
@@ -1191,7 +1191,7 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=n0PyfH2lQKgXhk1FZxEyvw%3D%3D",
-  "actualizado": "2026-11-04T15:25:07.816+01:00",
+  "actualizado": "2026-11-10T08:05:23.245+01:00",
   "plazo": "2026-12-14",
   "criterios": [
    {
@@ -1205,6 +1205,65 @@
    "redaccion del proyecto",
    "ES12",
    "puntúa el jefe de proyecto"
+  ]
+ },
+ {
+  "id": "20881470",
+  "expediente": "CONTR 2026 0000311286",
+  "estado": "PUB",
+  "titulo": "bcu produccion. vuelo fotogramétrico, ortofotografía y base cartog.",
+  "tipo": "2",
+  "cpv": [
+   "71354100",
+   "71354000"
+  ],
+  "region_nuts": "ES618",
+  "region": "",
+  "organo": "Instituto de Estadística y Cartografía de Andalucía",
+  "importe": 1900826.44,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.juntadeandalucia.es/haciendayadministracionpublica/apl/pdc_sirec/perfiles-licitaciones/detalle-licitacion.jsf?idExpediente=1036722",
+  "actualizado": "2026-11-10T11:42:04.538+01:00",
+  "plazo": "2026-12-15",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 100,
+  "motivos": [
+   "fotogrametr",
+   "ortofoto",
+   "CPV 71354100,71354000"
+  ]
+ },
+ {
+  "id": "20881472",
+  "expediente": "CONTR 2026 0000311365",
+  "estado": "PUB",
+  "titulo": "bcu calidad. calidad y difusion del dato cartografico urbano escala 1:1.000",
+  "tipo": "2",
+  "cpv": [
+   "71354000",
+   "71354100"
+  ],
+  "region_nuts": "ES618",
+  "region": "",
+  "organo": "Instituto de Estadística y Cartografía de Andalucía",
+  "importe": 247107.44,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.juntadeandalucia.es/haciendayadministracionpublica/apl/pdc_sirec/perfiles-licitaciones/detalle-licitacion.jsf?idExpediente=1036736",
+  "actualizado": "2026-11-10T11:41:58.474+01:00",
+  "plazo": "2026-12-15",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 50,
+  "motivos": [
+   "cartograf",
+   "CPV 71354000,71354100"
   ]
  },
  {
