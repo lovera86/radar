@@ -11,11 +11,22 @@
 const NUBE_CLAVES = ['radar-v2', 'radar-perfil', 'radar-pesos'];
 const NUBE_LOCALES = ['radar-usuario', 'radar-v2', 'radar-perfil', 'radar-pesos', 'radar-demo', 'radar-primeros-pasos', 'radar-nube'];
 const NUBE_PRIVACIDAD = '2026-11';
+/* Si se entra con el enlace del correo, la dirección trae los datos de la sesión (o un error)
+   tras «#». Se recogen antes de que RADAR use «#» para sus vistas y se limpia la dirección. */
+const NUBE_VUELTA = (() => {
+  const h = location.hash.slice(1);
+  if (!/(^|&)(access_token|error_code|error_description)=/.test(h)) return null;
+  const p = Object.fromEntries(new URLSearchParams(h));
+  history.replaceState(null, '', location.pathname + location.search + '#radar');
+  return p;
+})();
+const NUBE_VOLVER = location.origin + location.pathname.replace(/[^/]*$/, '');
+
 const RADAR_NUBE = (() => {
   const c = typeof RADAR_SUPABASE === 'object' ? RADAR_SUPABASE : null;
   if (!c || !c.url || !c.clave || !window.supabase || !window.supabase.createClient) return null;
   try {
-    return window.supabase.createClient(c.url, c.clave, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: 'radar-sesion' } });
+    return window.supabase.createClient(c.url, c.clave, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'radar-sesion' } });
   } catch (e) { return null; }
 })();
 
@@ -89,6 +100,16 @@ function nubeLimpiarLocal() {
 /* Al abrir RADAR con sesión: consentimiento, perfil y estado. Recarga una vez si algo cambió. */
 async function nubeIniciar() {
   if (!RADAR_NUBE) return;
+  if (NUBE_VUELTA) {
+    if (NUBE_VUELTA.access_token && NUBE_VUELTA.refresh_token) {
+      const r = await RADAR_NUBE.auth.setSession({ access_token: NUBE_VUELTA.access_token, refresh_token: NUBE_VUELTA.refresh_token });
+      if (r.error) alert('El enlace para entrar no es válido. Pide un código nuevo desde «Entrar con mi correo».');
+    } else {
+      alert(/expired|caduc/i.test(NUBE_VUELTA.error_description || NUBE_VUELTA.error_code || '')
+        ? 'El enlace para entrar ha caducado o ya se usó. Pide un código nuevo desde «Entrar con mi correo».'
+        : 'No se ha podido entrar con ese enlace. Pide un código nuevo desde «Entrar con mi correo».');
+    }
+  }
   const { data } = await RADAR_NUBE.auth.getSession();
   NUBE_SESION = data.session;
   RADAR_NUBE.auth.onAuthStateChange((ev, s) => { NUBE_SESION = s; });
@@ -193,7 +214,7 @@ function nubeFormularioEntrar(alEntrar) {
     e.preventDefault();
     if (!paso1.hidden) {
       enviar.disabled = true; msg.textContent = 'Enviando…';
-      const { error } = await RADAR_NUBE.auth.signInWithOtp({ email: correo.value.trim(), options: { shouldCreateUser: false } });
+      const { error } = await RADAR_NUBE.auth.signInWithOtp({ email: correo.value.trim(), options: { shouldCreateUser: false, emailRedirectTo: NUBE_VOLVER } });
       enviar.disabled = false;
       if (error) {
         msg.textContent = /signup|not allowed|not found|otp_disabled/i.test(error.message)
@@ -205,7 +226,12 @@ function nubeFormularioEntrar(alEntrar) {
       msg.textContent = `Te hemos enviado un código a ${correo.value.trim()}. Mira también en spam. Caduca en una hora.`;
     } else {
       entrar.disabled = true; msg.textContent = 'Comprobando…';
-      const { error } = await RADAR_NUBE.auth.verifyOtp({ email: correo.value.trim(), token: cod.value.trim(), type: 'email' });
+      // El código puede venir del correo de entrada, de confirmación de registro o de invitación.
+      let error = null;
+      for (const type of ['email', 'signup', 'invite', 'magiclink']) {
+        ({ error } = await RADAR_NUBE.auth.verifyOtp({ email: correo.value.trim(), token: cod.value.trim(), type }));
+        if (!error) break;
+      }
       entrar.disabled = false;
       if (error) { msg.textContent = 'El código no es correcto o ha caducado. Revísalo o pide otro.'; return; }
       msg.textContent = '✓ Dentro. Cargando tu RADAR…';
