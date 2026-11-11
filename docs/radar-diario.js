@@ -135,12 +135,14 @@ function insight(lista) {
   return null;
 }
 
-function tarjetaPrincipal(o) {
+let HOY_IDX = 0;
+
+function tarjetaPrincipal(o, nav) {
   const ind = indicadores3(o);
-  const c = el('article', 'r-mejor');
+  const c = el('article', 'r-mejor' + (nav?.dir ? ' entra-' + nav.dir : ''));
   c.tabIndex = 0;
   const cu = el('div', 'r-mejor-c');
-  const badge = el('span', 'r-badge'); badge.append(icoR('rayo'), 'Tu mejor oportunidad'); cu.append(badge);
+  const badge = el('span', 'r-badge'); badge.append(icoR('rayo'), !nav || nav.pos === 0 ? 'Tu mejor oportunidad' : `Otra opción para ti · ${nav.pos + 1}.ª`); cu.append(badge);
   cu.append(el('h2', null, o.titulo));
   cu.append(el('p', 'r-mejor-org', [o.organizacion.nombre, lugarYModalidad(o)].filter(Boolean).join(' · ')));
   cu.append(el('p', 'r-mejor-exp', explicacion(o)));
@@ -152,12 +154,33 @@ function tarjetaPrincipal(o) {
   const pie = el('div', 'r-mejor-pie');
   const det = el('span', 'r-det'); det.append(icoR('calendario'), 'Detectada ' + relativo((o.fechas.detectada || o.fechas.consultada) + 'T08:00:00Z'));
   const cta = boton('', 'btn grande r-cta', () => abrirFicha(o.id)); cta.append(el('span', null, 'Ver oportunidad'), icoR('flecha'));
-  pie.append(det, cta);
+  pie.append(det);
+  if (nav && nav.total > 1) {
+    const nv = el('div', 'r-nav');
+    const flecha = (d, txt) => { const b = boton('', 'r-nav-b', () => nav.mover(d)); b.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d < 0 ? 'm15 6-6 6 6 6' : 'm9 6 6 6-6 6'}"/></svg>`; b.setAttribute('aria-label', txt); b.dataset.dir = d; return b; };
+    nv.append(flecha(-1, 'Oportunidad anterior'), el('span', 'r-nav-n', `${nav.pos + 1} / ${nav.total}`), flecha(1, 'Siguiente oportunidad'));
+    pie.append(nv);
+  }
+  pie.append(cta);
   cu.append(pie);
   const nota = el('div', 'r-nota'); nota.append(el('b', null, String(ind.prioridad)), el('span', null, '/ 100 prioridad'));
   nota.title = 'Prioridad: dónde invertir tu tiempo. No es una probabilidad de contratación.';
   c.append(cu, nota);
-  c.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target === c) abrirFicha(o.id); });
+  c.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target === c) abrirFicha(o.id);
+    if (nav && e.key === 'ArrowRight') { e.preventDefault(); nav.mover(1); }
+    if (nav && e.key === 'ArrowLeft') { e.preventDefault(); nav.mover(-1); }
+  });
+  if (nav) {  // deslizar con el dedo en el móvil
+    let x0 = null, y0 = null;
+    c.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    c.addEventListener('touchend', (e) => {
+      if (x0 == null) return;
+      const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) nav.mover(dx < 0 ? 1 : -1);
+      x0 = null;
+    }, { passive: true });
+  }
   return c;
 }
 
@@ -196,7 +219,15 @@ function pintarRadarDiario() {
 
   const grid = el('div', 'r2-grid2');
   const pr = el('div', 'r2-p');
-  if (principal) pr.append(tarjetaPrincipal(principal));
+  const destacadas = (pendientes.length ? pendientes : ordenar(lista.filter((o) => !decidida(o)))).slice(0, 10);
+  const mostrar = (i, dir) => {
+    HOY_IDX = (i + destacadas.length) % destacadas.length;
+    const enFoco = pr.contains(document.activeElement) ? document.activeElement.dataset?.dir : null;
+    pr.replaceChildren(tarjetaPrincipal(destacadas[HOY_IDX], { pos: HOY_IDX, total: destacadas.length, dir, mover: (d) => mostrar(HOY_IDX + d, d > 0 ? 'der' : 'izq') }));
+    if (enFoco) pr.querySelector(`.r-nav-b[data-dir="${enFoco}"]`)?.focus();
+  };
+  if (principal && destacadas.length) mostrar(Math.min(HOY_IDX, destacadas.length - 1));
+  else if (principal) pr.append(tarjetaPrincipal(principal));
   else { const v = el('div', 'vacio'); v.append(el('p', null, 'Has revisado todo lo prioritario. Vuelve mañana o amplía tus preferencias.'), boton('Ver todas las oportunidades', 'btn', () => { location.hash = 'explorar'; })); pr.append(v); }
   grid.append(pr);
 

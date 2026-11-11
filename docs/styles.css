@@ -970,3 +970,17 @@ html, body { overflow-x: clip; }
 .cv-resumen .btn { justify-self: start; margin-top: 6px; }
 @media (max-width: 640px) { .cv-fechas { grid-template-columns: 1fr; } }
 @media (max-width: 1150px) { .barra .actualizado { display: none; } }
+/* Hoy: pasar entre oportunidades */
+.r-mejor-pie { flex-wrap: wrap; }
+.r-nav { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
+.r-nav-b { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--turq-line); background: var(--surface); color: var(--turq); cursor: pointer; transition: background .15s, transform .1s; }
+.r-nav-b:hover { background: var(--turq); color: #fff; }
+.r-nav-b:active { transform: scale(.94); }
+.r-nav-b svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.r-nav-n { font: 600 13px var(--mono); color: var(--muted); min-width: 44px; text-align: center; }
+.r-mejor.entra-der { animation: entraDer .22s ease-out; }
+.r-mejor.entra-izq { animation: entraIzq .22s ease-out; }
+@keyframes entraDer { from { transform: translateX(24px); opacity: .3; } }
+@keyframes entraIzq { from { transform: translateX(-24px); opacity: .3; } }
+@media (prefers-reduced-motion: reduce) { .r-mejor.entra-der, .r-mejor.entra-izq { animation: none; } }
+@media (max-width: 760px) { .r-nav { margin-left: 0; order: 2; width: 100%; justify-content: center; } .r-mejor-pie .r-cta { order: 3; } }
