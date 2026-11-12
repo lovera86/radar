@@ -19,7 +19,7 @@ import Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
 const MODELO = "claude-opus-5-5";
-const LIMITE_DIARIO = 40;
+const LIMITE_DIARIO = 15;
 const ORIGENES = ["https://lovera86.github.io", "http://localhost:8765"];
 
 const cors = (origen: string | null) => ({

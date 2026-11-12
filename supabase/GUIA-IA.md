@@ -15,13 +15,13 @@ archivos del repositorio.
   con sus señales y con hechos de tu perfil. Muestra en qué datos se basa.
 
 La clave de Claude vive solo en el servidor (Supabase). Solo la usa tu cuenta de
-administración, con un máximo de 40 usos al día.
+administración, con un máximo de 15 usos al día.
 
 ## 1. Cuenta y clave de Claude
 
 1. Entra en https://console.anthropic.com y crea tu cuenta.
-2. **Billing**: añade crédito (con 10 $ hay para meses de uso personal) y, en **Limits**, pon un
-   límite de gasto mensual, por ejemplo 15 $.
+2. **Billing**: añade crédito (con 5 $ hay para un mes de prueba) y, en **Limits**, pon un
+   límite de gasto mensual, por ejemplo 5 $.
 3. **API Keys → Create Key**, nombre `radar-supabase`. Copia la clave: solo se muestra una vez.
 
 Coste orientativo con Claude Opus 5.5: leer un CV unos 0,10 $, investigar una empresa entre 0,10
