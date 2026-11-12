@@ -1315,3 +1315,25 @@ body[data-vista="bandeja"] .buscador-zona, body[data-vista="bandeja"] .res-ctl, 
 .ia-rev .ia-item small { color: var(--muted); font-style: italic; }
 .ia-rev .ia-item.dudoso b { color: var(--warn); }
 .ia-rev .ia-sub { padding-left: 26px; border-left: 2px solid var(--line); margin-left: 6px; }
+
+/* ---------- Equipo de agentes (agentes.js) ---------- */
+.ag { display: grid; gap: 12px; }
+.ag-estado { display: flex; gap: 12px; align-items: center; }
+.ag-estado div { display: grid; }
+.ag-estado small, .ag-equipo small, .ag-tareas small { color: var(--muted); }
+.ag-luz { width: 12px; height: 12px; border-radius: 50%; flex: none; background: var(--line2); }
+.ag-luz.on { background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 20%, transparent); }
+.ag-det summary { cursor: pointer; font-weight: 600; }
+.ag-config { display: grid; gap: 12px; max-width: 520px; margin-top: 12px; }
+.ag-config label, .ag-campo { display: grid; gap: 4px; font-size: 14px; }
+.ag-config label > span, .ag-campo > span { font-weight: 600; }
+.ag-config small { color: var(--muted); }
+.ag-config select, .ag-config input[type="number"] { font: inherit; padding: 8px 10px; border: 1px solid var(--line2); border-radius: 10px; background: var(--surface); color: var(--ink); max-width: 200px; }
+.ag-dias { display: flex; flex-wrap: wrap; gap: 10px; }
+.ag-dias label { display: flex; gap: 4px; align-items: center; font-weight: 400; }
+.ag-config .btn { justify-self: start; }
+.ag-equipo, .ag-tareas { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ag-equipo li { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--soft); }
+.ag-equipo li.pronto { opacity: .7; }
+.ag-equipo li div, .ag-tareas li { display: grid; gap: 2px; }
+.ag-detalle h4 { margin: 14px 0 6px; }

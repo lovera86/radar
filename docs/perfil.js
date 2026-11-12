@@ -5,7 +5,7 @@
 
 let PF_TAB = (() => { try { return localStorage.getItem('radar-perfil-tab') || 'busco'; } catch (e) { return 'busco'; } })();
 const PF_TABS_BASE = [['busco', 'Qué busco'], ['roles', 'Roles'], ['puntua', 'Cómo puntúa RADAR'], ['cv', 'Mi CV'], ['aprende', 'Aprendizaje'], ['datos', 'Mis datos']];
-const pfTabs = () => (typeof NUBE_ADMIN !== 'undefined' && NUBE_ADMIN ? [...PF_TABS_BASE, ['piloto', 'Piloto']] : PF_TABS_BASE);
+const pfTabs = () => (typeof NUBE_ADMIN !== 'undefined' && NUBE_ADMIN ? [...PF_TABS_BASE, ['agentes', 'Agentes'], ['piloto', 'Piloto']] : PF_TABS_BASE);
 const PF_ICO = {
   remoto: '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>',
   hibrido: '<svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7M5 10v10h5v-6h4v6h5V10"/></svg>',
@@ -257,6 +257,7 @@ function pintarPerfil() {
   }
 
   if (PF_TAB === 'piloto' && typeof seccionPiloto === 'function') seccionPiloto(tarjeta);
+  if (PF_TAB === 'agentes' && typeof seccionAgentes === 'function') seccionAgentes(tarjeta);
 
   $('#rejilla').replaceChildren(cont);
 }
