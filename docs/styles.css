@@ -1303,3 +1303,15 @@ body[data-vista="bandeja"] .buscador-zona, body[data-vista="bandeja"] .res-ctl, 
 .bj-hist small { color: var(--muted); }
 .bj-mini { width: min(520px, calc(100vw - 24px)); border-radius: 18px; padding: 22px; }
 .bj-mini h3 { margin: 0 0 4px; font: 600 19px var(--display); }
+
+/* ---------- RADAR 2.0 · IA (ia.js) ---------- */
+.bj-resumen { font-size: 14px; }
+.ia-propuesta { display: grid; gap: 6px; padding: 12px 14px; border-radius: 12px; border: 1px dashed var(--c-publico); background: color-mix(in srgb, var(--c-publico) 8%, var(--surface)); }
+.ia-propuesta ul, .ia-dudas, .ia-base { margin: 0; padding-left: 18px; display: grid; gap: 3px; font-size: 14px; }
+.ia-propuesta p { margin: 0; }
+.ia-base { color: var(--muted); }
+.ia-rev .ia-item { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: start; padding: 6px 0; font-size: 14.5px; }
+.ia-rev .ia-item span { display: grid; gap: 2px; }
+.ia-rev .ia-item small { color: var(--muted); font-style: italic; }
+.ia-rev .ia-item.dudoso b { color: var(--warn); }
+.ia-rev .ia-sub { padding-left: 26px; border-left: 2px solid var(--line); margin-left: 6px; }

@@ -200,6 +200,7 @@ function pintarPerfil() {
   }
 
   if (PF_TAB === 'cv') {
+    if (typeof iaTarjetaCV === 'function') iaTarjetaCV(tarjeta);
     const enl = el('div', 'acciones pf-cv-acc');
     enl.append(enlace('cv.html', 'Ver mi CV general ↗', 'btn sec mini'), enlace('cv.html?lang=en', 'CV en inglés ↗', 'btn sec mini'));
     const e = tarjeta('Tu experiencia', 'Es lo que RADAR usa para la propuesta de valor, el CV adaptado y la carta. Desactiva lo que no quieras que se use. Para corregir o añadir algo, pídemelo y lo actualizo en el CV.');

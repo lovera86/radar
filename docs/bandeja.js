@@ -330,7 +330,8 @@ function bjPintarFicha(op, previa, e) {
   const deducciones = orden.filter((x) => x.inferida);
   orden.filter((x) => !x.inferida || deducciones.indexOf(x) < 3).forEach((s) => {
     const li = el('li', s.aviso ? 'aviso' : s.inferida ? 'inferida' : 'hecho');
-    li.append(el('span', 'bj-tag', s.aviso ? 'Aviso' : s.inferida ? 'Deducción de RADAR' : 'Hecho verificado'), el('b', null, s.titulo));
+    li.append(el('span', 'bj-tag', s.aviso ? 'Aviso' : s.inferida ? 'Deducción de RADAR' : s.ia ? 'Encontrado con IA · comprueba la fuente' : s.tipo === 'manual' ? 'Añadido por ti' : 'Hecho verificado'), el('b', null, s.titulo));
+    if (s.resumen) li.append(el('span', 'bj-resumen', s.resumen));
     const meta = el('small');
     meta.append(fecha(s.fecha) + ' · ');
     if (s.fuente?.url) meta.append(enlace(s.fuente.url, (s.fuente.nombre || 'Fuente') + ' ↗', 'enlace'));
@@ -357,6 +358,7 @@ function bjPintarFicha(op, previa, e) {
   // Contacto
   const b3 = bjBloque(cuerpo, 'Contacto', 'Solo datos profesionales de fuentes legítimas, siempre con su fuente. RADAR no adivina correos.');
   b3.append(bjContacto(op, previa));
+  if (!previa && typeof iaBloqueInvestigacion === 'function') iaBloqueInvestigacion(op, bjBloque(cuerpo, 'Investigación con IA', 'Busca en la web su sitio oficial, señales recientes con fuente y un canal de contacto publicado. Solo se guardan fuentes que la búsqueda ha visitado de verdad.'));
 
   // Mensaje
   if (!previa) {
@@ -506,7 +508,12 @@ function bjMensaje(op) {
   const m = op.mensajes?.[op.mensajes.length - 1];
   if (!m) {
     w.append(el('p', 'nota', op.contacto ? 'Aún no hay presentación.' : 'Primero añade un contacto con su fuente; después genera la presentación.'));
-    if (op.estado !== 'descartada') w.append(boton('Generar presentación', 'btn sec', () => { bjGenerarMensaje(op); bjCambiarEstado(op, 'borrador', 'Presentación generada (versión 1)'); }));
+    if (op.estado !== 'descartada') {
+      const a = el('div', 'acciones');
+      a.append(boton('Generar con plantilla', 'btn sec', () => { bjGenerarMensaje(op); bjCambiarEstado(op, 'borrador', 'Presentación generada (versión 1)'); }));
+      if (typeof iaBotonRedactar === 'function') iaBotonRedactar(op, a);
+      w.append(a);
+    }
     return w;
   }
   const aprobado = m.estado === 'aprobado' || m.estado === 'enviado';
@@ -514,6 +521,8 @@ function bjMensaje(op) {
   const asunto = el('input'); asunto.id = 'bjm-asunto'; asunto.value = m.asunto; asunto.disabled = aprobado;
   const cuerpo = el('textarea'); cuerpo.id = 'bjm-cuerpo'; cuerpo.rows = 14; cuerpo.value = m.cuerpo; cuerpo.disabled = aprobado;
   const campo = (t, i) => { const l = el('label', 'bj-campo'); l.append(el('span', null, t), i); w.append(l); };
+  if (m.ia) w.append(el('p', 'bj-tag', 'Redactado con IA a partir de estos datos:'));
+  if (m.base?.length) { const u = el('ul', 'ia-base'); m.base.forEach((x) => u.append(el('li', null, x))); w.append(u); }
   campo('Para', para); campo('Asunto', asunto); campo(`Mensaje · versión ${m.v}${m.estado === 'enviado' ? ' · enviada el ' + fecha(m.enviado) : aprobado ? ' · aprobada' : ''}`, cuerpo);
   const adj = el('p', 'nota');
   const cvLink = op.fuenteOp ? cvUrl(op.fuenteOp.lista, op.fuenteOp.clave, op.empresa) : 'cv.html';
@@ -532,6 +541,7 @@ function bjMensaje(op) {
   };
   if (!aprobado) {
     acc.append(boton('Guardar cambios', 'btn sec', () => { guardarVersion(); bjGuardar(); bjPintarFicha(op, false); }));
+    if (typeof iaBotonRedactar === 'function') iaBotonRedactar(op, acc);
     acc.append(boton('Aprobar este mensaje', 'btn', () => {
       const n = guardarVersion();
       if (!n.destinatario && !op.contacto?.formulario) { alert('Falta el destinatario. Añade un contacto con su fuente o usa su formulario web.'); return; }
