@@ -587,34 +587,47 @@ function bjMensaje(op) {
 }
 
 /* ---------- Añadir a mano ---------- */
+/* Basta con el nombre. Si la IA está activa, RADAR la investiga sola al añadirla; si no,
+   queda «pendiente de investigar» hasta que tenga al menos una señal con fuente. */
 function bjAnadirManual() {
   const d = el('dialog', 'bj-mini');
   const f = el('form', 'adm-form');
   const campo = (id, t, tipo, req, ph) => { const l = el('label'); const i = el('input'); i.id = id; i.type = tipo || 'text'; if (req) i.required = true; if (ph) i.placeholder = ph; l.append(el('span', null, t), i); f.append(l); return i; };
-  const nombre = campo('bjm-empresa', 'Empresa', 'text', true);
-  const ciudad = campo('bjm-ciudad', 'Ciudad o zona', 'text');
-  const senal = campo('bjm-senal', 'Señal: qué ha pasado', 'text', true, 'p. ej. abre una planta en Avilés');
-  const url = campo('bjm-url', 'Fuente (enlace a la noticia, registro o web)', 'url', true);
-  const fch = campo('bjm-fecha', 'Fecha de la señal', 'date', true); fch.value = hoyISO();
+  const nombre = campo('bjm-empresa', 'Empresa', 'text', true, 'p. ej. TOPCAD Ingeniería');
+  const ciudad = campo('bjm-ciudad', 'Ciudad o zona (opcional)', 'text');
+  const web = campo('bjm-web', 'Web de la empresa (opcional)', 'url', false, 'https://…');
+  const conIA = typeof iaActiva === 'function' && iaActiva();
   const acc = el('div', 'acciones');
-  const ok = el('button', 'btn', 'Añadir a mi bandeja'); ok.type = 'submit';
+  const ok = el('button', 'btn', conIA ? 'Añadir e investigar con IA' : 'Añadir a mi bandeja'); ok.type = 'submit';
   acc.append(ok, boton('Cancelar', 'btn sec', () => d.close()));
   f.append(acc);
-  d.append(el('h3', null, 'Añadir una empresa'), el('p', 'nota', 'Cada oportunidad necesita al menos una señal concreta con fuente y fecha.'), f);
+  d.append(el('h3', null, 'Añadir una empresa'), el('p', 'nota', conIA
+    ? 'Solo el nombre. RADAR buscará su web, señales recientes con fuente y un contacto publicado.'
+    : 'Solo el nombre. Quedará pendiente de investigar hasta que tenga una señal con fuente.'), f);
   f.addEventListener('submit', (ev) => {
     ev.preventDefault();
     const k = 'manual:' + norm(nombre.value).replace(/[^a-z0-9]/g, '');
-    if (bjDatos()[k]) { alert('Esa empresa ya está en tu bandeja.'); return; }
+    const ya = Object.values(bjDatos()).find((o) => o.k === k || norm(o.empresa).replace(/[^a-z0-9]/g, '').startsWith(k.slice(7)));
+    if (ya) { d.close(); bjAbrir(ya.k); return; }
     const e = { k, nombre: nombre.value.trim(), ciudad: ciudad.value.trim(), ganados: [], candidata: [], borme: [], contacto: null };
     const op = bjNueva(e);
     op.origen = 'manual';
-    let host = ''; try { host = new URL(url.value).hostname.replace(/^www\./, ''); } catch (x) { host = 'enlace'; }
-    op.senales = [{ tipo: 'manual', fecha: fch.value, titulo: senal.value.trim(), fuente: { nombre: host, url: url.value, consultada: hoyISO() }, motivo: 'Señal añadida por ti: valora si genera una necesidad de perfiles como el tuyo.' }];
-    op.encaje = bjEncaje({ ...e, borme: [{ objeto: senal.value }] });
-    bjEvento(op, 'alta', 'Añadida a mano con fuente ' + host);
+    op.senales = [];
+    if (web.value) op.contacto = { nombre: '', cargo: '', email: '', web: web.value.trim(), formulario: '', fuente: 'Indicada por ti', comprobado: hoyISO() };
+    op.siguiente = { accion: 'Investigar la empresa', fecha: hoyISO() };
+    bjEvento(op, 'alta', 'Añadida a mano');
     bjDatos()[k] = op; bjGuardar(); d.close(); BJ_PESTANA = 'bandeja'; pintar(); bjAbrir(k);
+    if (conIA && typeof iaInvestigar === 'function') iaInvestigar(op);
   });
   d.addEventListener('close', () => d.remove());
   document.body.append(d);
   d.showModal();
+}
+
+/* Encaje de una empresa añadida a mano: se recalcula con lo que se sabe de ella. */
+function bjRecalcularManual(op) {
+  if (op.origen !== 'manual') return;
+  op.encaje = bjEncaje({ k: op.k, nombre: op.empresa, ciudad: op.ciudad, ganados: [], candidata: [], contacto: op.contacto,
+    borme: op.senales.map((s) => ({ objeto: `${s.titulo} ${s.resumen || ''} ${op.investigacion?.actividad || ''}`, fecha: s.fecha })) });
+  if (!op.senales.length) op.encaje.dudas.unshift('Aún no tiene ninguna señal con fuente: pendiente de investigar.');
 }

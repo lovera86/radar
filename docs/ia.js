@@ -89,9 +89,19 @@ function iaBloqueInvestigacion(op, bloque) {
     if (inv.dudas?.length) { const u = el('ul', 'ia-dudas'); inv.dudas.forEach((d) => u.append(el('li', null, d))); bloque.append(el('p', 'nota', 'Lo que no se ha podido confirmar:'), u); }
   }
   if (!iaActiva()) { bloque.append(el('p', 'nota', iaMotivo())); return; }
-  const b = boton(inv ? 'Volver a investigar con IA' : 'Investigar con IA', inv ? 'btn sec mini' : 'btn mini', async () => {
-    const fin = iaBotonOcupado(b, 'Investigando en la web… (hasta 1 minuto)');
-    try {
+  const b = boton(inv ? 'Volver a investigar con IA' : 'Investigar con IA', inv ? 'btn sec mini' : 'btn mini', () => iaInvestigar(op));
+  if (IA_EN_CURSO.has(op.k)) { b.disabled = true; b.textContent = 'Investigando en la web… (hasta 1 minuto)'; }
+  bloque.append(b);
+}
+
+/* Investiga la empresa en la web y guarda señales con fuente y la propuesta de contacto. */
+const IA_EN_CURSO = new Set();
+async function iaInvestigar(op) {
+  if (IA_EN_CURSO.has(op.k)) return;
+  IA_EN_CURSO.add(op.k);
+  if ($('#bj-ficha')?.open) bjPintarFicha(op, false);
+  try {
+    {
       const r = await iaLlamar({ accion: 'investigar', empresa: op.empresa, ciudad: op.ciudad, web: op.contacto?.web || '', senales: op.senales.filter((s) => !s.inferida).map((s) => `${s.titulo} (${s.fuente?.nombre || ''}, ${s.fecha || ''})`) });
       const inv2 = r.investigacion;
       op.investigacion = inv2;
@@ -103,11 +113,12 @@ function iaBloqueInvestigacion(op, bloque) {
         nuevas++;
       });
       if (op.estado === 'detectada') op.estado = 'investigando';
+      if (typeof bjRecalcularManual === 'function') bjRecalcularManual(op);
       bjEvento(op, 'investigacion', `Investigación con IA: ${nuevas} señal${nuevas === 1 ? '' : 'es'} nueva${nuevas === 1 ? '' : 's'} con fuente; contacto ${inv2.contacto?.email || inv2.contacto?.formulario || inv2.contacto?.pagina ? 'propuesto' : 'no encontrado'}`);
-      bjGuardar(); bjPintarFicha(op, false); pintar();
-    } catch (e) { fin(); alert(e.message); }
-  });
-  bloque.append(b);
+    }
+  } catch (e) { alert(e.message); }
+  IA_EN_CURSO.delete(op.k);
+  bjGuardar(); if ($('#bj-ficha')?.open) bjPintarFicha(op, false); pintar();
 }
 
 /* ---------- Oportunidades: redactar ---------- */
