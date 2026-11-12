@@ -33,19 +33,20 @@ const ESTADOS = [
 const NOMBRE_ESTADO = Object.fromEntries(ESTADOS);
 const MODALIDAD = { remoto: 'Remoto', hibrido: 'Híbrido', presencial: 'Presencial', desconocida: 'Modalidad sin indicar' };
 const VISTAS = {
-  explorar: { titulo: 'Oportunidades', intro: 'Empleo, proyectos, licitaciones y adjudicaciones, ordenados por lo que más te conviene.' },
-  empleo: { titulo: 'Oportunidades', intro: 'Ofertas publicadas y plazas públicas: vacantes confirmadas a las que puedes inscribirte.', tipo: 'empleo' },
-  publico: { titulo: 'Oportunidades', intro: 'Oposiciones y plazas públicas del BOE, el BOPA (Principado y ayuntamientos de Asturias), los boletines de Cantabria, Galicia y Castilla y León, y la Universidad de Oviedo.', tipo: 'empleo', solo: ['oposicion', 'contrato_publico'] },
-  proyectos: { titulo: 'Oportunidades', intro: 'Licitaciones abiertas y contratos adjudicados: no son vacantes, son proyectos que alguien tendrá que dirigir.', tipo: 'proyecto' },
-  empresas: { titulo: 'Empresas', intro: 'Empresas con actividad verificable en tu sector. Una señal no es una vacante: es un buen motivo para escribirles.' },
-  mapa: { titulo: 'Oportunidades', intro: 'Dónde están. Las remotas o sin ubicación fiable aparecen en la lista, sin marcador.' },
+  explorar: { titulo: 'Ofertas', intro: 'Empleo, proyectos, licitaciones y adjudicaciones, ordenados por lo que más te conviene.' },
+  empleo: { titulo: 'Ofertas', intro: 'Ofertas publicadas y plazas públicas: vacantes confirmadas a las que puedes inscribirte.', tipo: 'empleo' },
+  publico: { titulo: 'Ofertas', intro: 'Oposiciones y plazas públicas del BOE, el BOPA (Principado y ayuntamientos de Asturias), los boletines de Cantabria, Galicia y Castilla y León, y la Universidad de Oviedo.', tipo: 'empleo', solo: ['oposicion', 'contrato_publico'] },
+  proyectos: { titulo: 'Ofertas', intro: 'Licitaciones abiertas y contratos adjudicados: no son vacantes, son proyectos que alguien tendrá que dirigir.', tipo: 'proyecto' },
+  empresas: { titulo: 'Señales de empresas', intro: 'Todas las empresas con actividad verificable en tu sector. Una señal no es una vacante: es un buen motivo para escribirles.' },
+  bandeja: { titulo: 'Oportunidades', intro: 'Empresas con una señal verificable que podrían necesitar tu perfil aunque no tengan una oferta publicada. Investiga, prepara la presentación y apruébala antes de enviarla.' },
+  mapa: { titulo: 'Ofertas', intro: 'Dónde están. Las remotas o sin ubicación fiable aparecen en la lista, sin marcador.' },
   guardados: { titulo: 'Seguimiento', intro: 'Tus candidaturas, guardadas y notas, con el siguiente paso de cada una.' },
   radar: { titulo: 'Hoy', intro: '' },
-  descubrir: { titulo: 'Oportunidades', intro: 'Una cada vez, de la que más encaja a la que menos. Solo salen las que aún no has revisado.' },
+  descubrir: { titulo: 'Ofertas', intro: 'Una cada vez, de la que más encaja a la que menos. Solo salen las que aún no has revisado.' },
   perfil: { titulo: 'Mi perfil y ajustes', intro: 'Lo que RADAR sabe de ti y cómo lo usa. Los cambios se aplican al momento y se guardan solo en este navegador.' },
 };
 /* Cuatro espacios principales; el resto vive dentro de ellos. */
-const SECCION = { radar: 'radar', explorar: 'explorar', empleo: 'explorar', publico: 'explorar', proyectos: 'explorar', mapa: 'explorar', descubrir: 'explorar', empresas: 'empresas', guardados: 'guardados', perfil: 'perfil' };
+const SECCION = { radar: 'radar', explorar: 'explorar', empleo: 'explorar', publico: 'explorar', proyectos: 'explorar', mapa: 'explorar', descubrir: 'explorar', empresas: 'bandeja', bandeja: 'bandeja', guardados: 'guardados', perfil: 'perfil' };
 
 /* ---------- utilidades ---------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -522,6 +523,7 @@ function pintar() {
       enlace('https://www.tecnoempleo.com/ofertas-trabajo/?te=project+manager', 'Tecnoempleo', 'btn sec mini'));
   }
   if (VISTA === 'empresas') { $('#mejores').hidden = true; return pintarEmpresas(); }
+  if (VISTA === 'bandeja') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarBandeja(); }
   if (VISTA === 'radar') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarRadarDiario(); }
   if (VISTA === 'descubrir') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarDescubrir(); }
   if (VISTA === 'perfil') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarPerfil(); }
@@ -562,8 +564,9 @@ function pintarVistaMapa(lista) {
   });
 }
 
-function pintarEmpresas() {
-  $('#rejilla').hidden = false; $('#vista-mapa').hidden = true;
+/* Empresas con señales (adjudicaciones, licitaciones en las que suele presentarse, BORME),
+   agrupadas por empresa. La usan la vista Empresas y la bandeja de Oportunidades. */
+function empresasDetectadas() {
   const emp = new Map();
   const clave = (nombre, nif) => nif || norm(nombre).replace(/[^a-z0-9]/g, '');
   D.ops.forEach((o) => {
@@ -595,8 +598,14 @@ function pintarEmpresas() {
     }
     (e.borme = e.borme || []).push(g);
   });
+  emp.forEach((e, k) => { e.k = k; });
+  return [...emp.values()];
+}
+
+function pintarEmpresas() {
+  $('#rejilla').hidden = false; $('#vista-mapa').hidden = true;
   const t = norm(F.que);
-  const lista = [...emp.values()]
+  const lista = empresasDetectadas()
     .filter((e) => !t || norm(e.nombre + ' ' + e.ganados.map((g) => g.titulo).join(' ')).includes(t))
     .filter((e) => !F.rapidos.has('contacto') || e.contacto?.email)
     .filter((e) => !F.rapidos.has('asturias') && F.donde !== 'asturias' || e.ganados.some((g) => g.ubicacion.comunidad === REGION))
