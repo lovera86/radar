@@ -1,83 +1,5 @@
 [
  {
-  "id": "20677104",
-  "expediente": "SER/2026/0000122251",
-  "estado": "PUB",
-  "titulo": "Asistencia tecnica a la produccion estadistica del Instituto Canario de Estadistica",
-  "tipo": "2",
-  "cpv": [
-   "72310000",
-   "79330000",
-   "72311000",
-   "72330000",
-   "73100000",
-   "72311200",
-   "72312100",
-   "79311400",
-   "79421000",
-   "72316000",
-   "72322000",
-   "79311000",
-   "79311410",
-   "72311100",
-   "72320000"
-  ],
-  "region_nuts": "ES70",
-  "region": "Canarias",
-  "organo": "Director del Instituto Canario de Estadística (ISTAC)",
-  "importe": 2703076.69,
-  "adjudicatario": "",
-  "nif": "",
-  "ciudad_empresa": "",
-  "fecha_adjudicacion": "",
-  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=4RMgcGMsKrfs%2BnLj3vAg5A%3D%3D",
-  "actualizado": "2026-11-04T13:50:05.632+01:00",
-  "plazo": "2026-11-11",
-  "criterios": [
-   {
-    "texto": "10. Número de personas tituladas Nivel 4 MECES entre el equipo mínimo estable",
-    "peso": 4.0
-   },
-   {
-    "texto": "11. Nivel de inglés en el equipo",
-    "peso": 4.0
-   }
-  ],
-  "pide_pm": false,
-  "puntuacion": 40,
-  "motivos": [
-   "CPV 72310000,79330000,72311000"
-  ]
- },
- {
-  "id": "20788119",
-  "expediente": "C-4505-26/D-4010",
-  "estado": "PUB",
-  "titulo": "Trabajos de apoyo en el archivo histórico de hunosa: tratamiento documental, digitalización y difusión  archivo histórico. -CONTRATO RESERVADO A CENTROS ESPECIALES DE EMPLEO DE INICIATIVA -SOCIAL Y EMPRESAS DE INSERCIÓN, reguladas en la Disposición Adicional -cuarta de la Ley 9/2017, de 8 de noviembre, de Contratos del Sector Público",
-  "tipo": "2",
-  "cpv": [
-   "79560000"
-  ],
-  "region_nuts": "ES12",
-  "region": "Principado de Asturias",
-  "organo": "Hulleras del Norte S.A.",
-  "importe": 540000.0,
-  "adjudicatario": "",
-  "nif": "",
-  "ciudad_empresa": "",
-  "fecha_adjudicacion": "",
-  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=UmLWKniHc7wadbH3CysQuQ%3D%3D",
-  "actualizado": "2026-10-27T12:18:40.471+01:00",
-  "plazo": "2026-11-11",
-  "criterios": [],
-  "pide_pm": false,
-  "puntuacion": 50,
-  "motivos": [
-   "digitalizacion",
-   "Principado de Asturias"
-  ]
- },
- {
   "id": "20798240",
   "expediente": "1870/26",
   "estado": "PUB",
@@ -98,7 +20,7 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=QpI2j13vl8Qtm4eBPtV6eQ%3D%3D",
-  "actualizado": "2026-11-10T12:38:54.030+01:00",
+  "actualizado": "2026-11-11T14:07:50.138+01:00",
   "plazo": "2026-11-12",
   "criterios": [],
   "pide_pm": false,
@@ -166,6 +88,48 @@
   "motivos": [
    "exposicion",
    "CPV 60000000,92521100,45255400"
+  ]
+ },
+ {
+  "id": "19806601",
+  "expediente": "PA-SARA-LIC/2026/000010",
+  "estado": "PUB",
+  "titulo": "Obras de remodelación antiguo IES Valliniello (Avilés) para la creación de un espacio para la innovación y la investigación industrial denominado Manzana del Talento y el emprendimiento industrial cofinanciado por el Fondo de Transición Justa (FTJ).",
+  "tipo": "3",
+  "cpv": [
+   "45000000",
+   "45213150",
+   "45210000",
+   "45214620",
+   "45213000",
+   "45200000"
+  ],
+  "region_nuts": "ES120",
+  "region": "",
+  "organo": "Agencia de Ciencia, Competitividad Empresarial e Innovación Asturiana",
+  "importe": 5134027.86,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=nCZYzecA0iQzjChw4z%2FXvw%3D%3D",
+  "actualizado": "2026-11-11T14:05:56.386+01:00",
+  "plazo": "2026-11-12",
+  "criterios": [
+   {
+    "texto": "Experiencia del Jefe de obra",
+    "peso": 15.0
+   },
+   {
+    "texto": "Experiencia del Encargado de obra",
+    "peso": 15.0
+   }
+  ],
+  "pide_pm": false,
+  "puntuacion": 52,
+  "motivos": [
+   "innovacion",
+   "ES12"
   ]
  },
  {
@@ -430,9 +394,9 @@
   "titulo": "El objeto del presente contrato es la prestación de servicios de asistencia técnica, supervisión,&nbsp;seguimiento y apoyo técnico especializado en el marco del proyecto de implantación de un nuevo Centro de Información del Transporte de Madrid (CITRAM) en la Comunidad de Madrid, con los alcances establecidos en el Pliego de Prescripciones Técnicas Particulares.",
   "tipo": "2",
   "cpv": [
-   "72220000",
    "72266000",
-   "72224000"
+   "72224000",
+   "72220000"
   ],
   "region_nuts": "ES300",
   "region": "",
@@ -443,13 +407,13 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contratos-publicos.comunidad.madrid/contrato-publico/sg-42026-servicio-asistencia-tecnica-consorcio-regional-transportes-madrid-crtm",
-  "actualizado": "2026-11-10T15:26:05.217+01:00",
+  "actualizado": "2026-11-11T09:11:41.486+01:00",
   "plazo": "2026-11-17",
   "criterios": [],
   "pide_pm": false,
   "puntuacion": 40,
   "motivos": [
-   "CPV 72220000,72266000,72224000"
+   "CPV 72266000,72224000,72220000"
   ]
  },
  {
@@ -689,7 +653,7 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Kdd%2Bgq%2BnhN7N3k3tjedSGw%3D%3D",
-  "actualizado": "2026-11-10T08:52:22.489+01:00",
+  "actualizado": "2026-11-11T09:00:00.000+01:00",
   "plazo": "2026-11-23",
   "criterios": [],
   "pide_pm": false,
@@ -990,6 +954,64 @@
   ]
  },
  {
+  "id": "20886916",
+  "expediente": "CM 75/26",
+  "estado": "PUB",
+  "titulo": "Servicio de información y asistencia al público en la sala inmersiva del Museo Jurásico de Asturias",
+  "tipo": "2",
+  "cpv": [
+   "63514000",
+   "63513000",
+   "79342320"
+  ],
+  "region_nuts": "ES120",
+  "region": "",
+  "organo": "Sociedad Pública de Gestión y Promoción Turística y Cultural del Principado de Asturias S.A.U.",
+  "importe": 24600.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=B9vvJLeaHmbzAq95uGTrDQ%3D%3D",
+  "actualizado": "2026-11-11T14:28:55.485+01:00",
+  "plazo": "2026-11-26",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 33,
+  "motivos": [
+   "museo",
+   "ES12"
+  ]
+ },
+ {
+  "id": "20887272",
+  "expediente": "1286733E",
+  "estado": "PUB",
+  "titulo": "Servicio de atención al visitante en los Museos de Alcantarilla",
+  "tipo": "2",
+  "cpv": [
+   "92521000"
+  ],
+  "region_nuts": "ES620",
+  "region": "",
+  "organo": "Alcaldía del Ayuntamiento de Alcantarilla",
+  "importe": 208381.34,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=5UEc9dvHLJaP%2Bo96UAV7cQ%3D%3D",
+  "actualizado": "2026-11-11T11:05:09.473+01:00",
+  "plazo": "2026-11-26",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 43,
+  "motivos": [
+   "museo",
+   "CPV 92521000"
+  ]
+ },
+ {
   "id": "20788179",
   "expediente": "C4301/2026/000019",
   "estado": "PUB",
@@ -1115,6 +1137,47 @@
   "motivos": [
    "museo",
    "CPV 92521000,92000000"
+  ]
+ },
+ {
+  "id": "20887250",
+  "expediente": "PA-S 2027/000011",
+  "estado": "PUB",
+  "titulo": "Servicio de Consultoría para la Evaluación y Diagnóstico de los riesgos psicosociales en la Universidad de Oviedo.",
+  "tipo": "2",
+  "cpv": [
+   "71317000",
+   "71317200",
+   "90711100"
+  ],
+  "region_nuts": "ES120",
+  "region": "",
+  "organo": "Rectorado de la Universidad de Oviedo",
+  "importe": 35000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=xR8AnccZuvR70UvEyYJSGw%3D%3D",
+  "actualizado": "2026-11-11T11:19:15.029+01:00",
+  "plazo": "2026-11-30",
+  "criterios": [
+   {
+    "texto": "Dimensionamiento equipo experto",
+    "peso": 15.0
+   },
+   {
+    "texto": "Experiencia específica del equipo de trabajo",
+    "peso": 10.0
+   }
+  ],
+  "pide_pm": true,
+  "puntuacion": 60,
+  "motivos": [
+   "consultoria",
+   "CPV 71317000,71317200,90711100",
+   "ES12",
+   "puntúa el jefe de proyecto"
   ]
  },
  {
@@ -1286,7 +1349,7 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Nq%2BZC7erWbVxseVhcqrkhw%3D%3D",
-  "actualizado": "2026-11-05T09:15:15.669+01:00",
+  "actualizado": "2026-11-11T14:38:02.132+01:00",
   "plazo": "2027-01-04",
   "criterios": [],
   "pide_pm": false,

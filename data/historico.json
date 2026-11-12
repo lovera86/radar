@@ -2339,5 +2339,159 @@
    "puerto",
    "Asturias"
   ]
+ },
+ {
+  "id": "20480929",
+  "expediente": "1644112P",
+  "estado": "RES",
+  "titulo": "Musealización del Centro de recepción de visitantes del Abrigo Grande de Minateda",
+  "tipo": "1",
+  "cpv": [
+   "39154000",
+   "32321200",
+   "92521100",
+   "45255400"
+  ],
+  "region_nuts": "ES421",
+  "region": "Albacete",
+  "organo": "Alcaldía del Ayuntamiento de Hellín",
+  "importe": 63602.0,
+  "adjudicatario": "MON GESTION Y PRODUCCION SL",
+  "nif": "B93825768",
+  "ciudad_empresa": "Pilas",
+  "fecha_adjudicacion": "2026-11-11",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=hOlPjasj0GR9PLkba5eRog%3D%3D",
+  "actualizado": "2026-11-11T14:22:52.417+01:00",
+  "plazo": "2026-10-05",
+  "criterios": [],
+  "clave": "1644112P|B93825768",
+  "puntuacion": 55,
+  "motivos": [
+   "musealiz",
+   "CPV 39154000,32321200,92521100"
+  ]
+ },
+ {
+  "id": "17802466",
+  "expediente": "PSS/2025/0000045979",
+  "estado": "RES",
+  "titulo": "Elaboración de la base topográfica armonizada de Extremadura a escala 1:5000 de Plasencia , Coria y otros (2 lotes)",
+  "tipo": "2",
+  "cpv": [
+   "71354100"
+  ],
+  "region_nuts": "ES43",
+  "region": "Extremadura",
+  "organo": "Consejería de Infraestructuras, Transporte y Vivienda",
+  "importe": 151790.38,
+  "adjudicatario": "UTE GEA-TCA BTA EXTREMADURA 1_5000",
+  "nif": "A41781774",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "2025-11-05",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=IrnKB9Zfm6mKeVWTb9Scog%3D%3D",
+  "actualizado": "2026-11-11T14:44:38.911+01:00",
+  "plazo": "2025-09-09",
+  "criterios": [],
+  "clave": "PSS/2025/0000045979|A41781774",
+  "puntuacion": 50,
+  "motivos": [
+   "topograf",
+   "CPV 71354100"
+  ]
+ },
+ {
+  "id": "20122847",
+  "expediente": "6370/2026",
+  "estado": "RES",
+  "titulo": "Serveis i subministraments necessaris per al muntatge, desmuntatge i adequació de les exposicions temporals que es duen a terme dins de l'equipament cultural del Castell de Vila-seca inclòs el subministrament de materials i les infraestructures necessàries per prestar aquest servei.",
+  "tipo": "2",
+  "cpv": [
+   "92521100",
+   "79800000",
+   "79956000"
+  ],
+  "region_nuts": "ES514",
+  "region": "",
+  "organo": "Ajuntament de Vila-seca",
+  "importe": 106389.08,
+  "adjudicatario": "CROQUIS, Dissenys, Muntatges i Realitzacions S.A",
+  "nif": "A08757957",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contractaciopublica.cat/ca/detall-publicacio/2770008a-8d5f-4ed9-a3a2-c803a626b2aa/300936025",
+  "actualizado": "2026-11-11T14:09:08.206+01:00",
+  "plazo": "2026-07-21",
+  "criterios": [],
+  "clave": "6370/2026|A08757957",
+  "puntuacion": 47,
+  "motivos": [
+   "exposicion",
+   "CPV 92521100,79800000,79956000"
+  ]
+ },
+ {
+  "id": "19846461",
+  "expediente": "O4S-044/2026",
+  "estado": "ADJ",
+  "titulo": "Obras de actuaciones de musealización para la apertura a la visita del público del Castillo de Planes, en el municipio de Planes (Alicante)",
+  "tipo": "3",
+  "cpv": [
+   "45212350",
+   "45454100",
+   "45262510",
+   "45262520"
+  ],
+  "region_nuts": "ES521",
+  "region": "Alicante/Alacant",
+  "organo": "Presidencia de la Diputación Provincial de Alicante",
+  "importe": 117561.17,
+  "adjudicatario": "Construccions M2 Planes SL",
+  "nif": "****2829*",
+  "ciudad_empresa": "Planes",
+  "fecha_adjudicacion": "2026-11-04",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=VkzrB1DizmR9Zh%2FyRJgM8w%3D%3D",
+  "actualizado": "2026-11-11T09:12:18.076+01:00",
+  "plazo": "2026-06-30",
+  "criterios": [],
+  "clave": "O4S-044/2026|****2829*",
+  "puntuacion": 45,
+  "motivos": [
+   "musealiz"
+  ]
+ },
+ {
+  "id": "20886812",
+  "expediente": "J26.041.10",
+  "estado": "ADJ",
+  "titulo": "Servicio integral de organización, gestión, difusión y ejecución de la participación de España como país invitado en la Feria Internacional Hannover Messe 2027",
+  "tipo": "2",
+  "cpv": [
+   "79952000",
+   "79950000",
+   "72224000",
+   "79956000"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Junta de Contratación del Ministerio de Industria y Turismo",
+  "importe": 1151446.65,
+  "adjudicatario": "METALIA GESTIÓN INTEGRAL SL",
+  "nif": "B83436501",
+  "ciudad_empresa": "San Fernando de Henares",
+  "fecha_adjudicacion": "2026-11-11",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=c8sDg%2B%2FS%2BpYmMOlAXxDEjw%3D%3D",
+  "actualizado": "2026-11-11T16:49:56.105+01:00",
+  "plazo": "2026-10-27",
+  "criterios": [
+   {
+    "texto": "Experiencia del equipo de trabajo",
+    "peso": 36.0
+   }
+  ],
+  "clave": "J26.041.10|B83436501",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 79952000,79950000,72224000"
+  ]
  }
 ]

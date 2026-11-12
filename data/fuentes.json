@@ -1,23 +1,23 @@
 {
  "Tecnoempleo": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T12:25:50+00:00",
-  "ultima_correcta": "2026-11-11T12:25:50+00:00",
-  "resultados": 398,
+  "ultima_consulta": "2026-11-12T06:18:03+00:00",
+  "ultima_correcta": "2026-11-12T06:18:03+00:00",
+  "resultados": 486,
   "error": "",
-  "detalle": "398 ofertas leídas"
+  "detalle": "486 ofertas leídas"
  },
  "Remotive": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T12:25:50+00:00",
-  "ultima_correcta": "2026-11-11T12:25:50+00:00",
+  "ultima_consulta": "2026-11-12T06:18:04+00:00",
+  "ultima_correcta": "2026-11-12T06:18:04+00:00",
   "resultados": 10,
   "error": "",
   "detalle": "10 ofertas leídas"
  },
  "InfoJobs (API)": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T12:26:08+00:00",
+  "ultima_consulta": "2026-11-12T06:18:13+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -25,7 +25,7 @@
  },
  "Jooble": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T12:26:08+00:00",
+  "ultima_consulta": "2026-11-12T06:18:13+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -33,7 +33,7 @@
  },
  "Adzuna": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T12:26:08+00:00",
+  "ultima_consulta": "2026-11-12T06:18:13+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -41,7 +41,7 @@
  },
  "Alertas de LinkedIn e InfoJobs (correo)": {
   "estado": "sin_configurar",
-  "ultima_consulta": "2026-11-11T12:26:08+00:00",
+  "ultima_consulta": "2026-11-12T06:18:14+00:00",
   "ultima_correcta": null,
   "resultados": 0,
   "error": "",
@@ -49,27 +49,27 @@
  },
  "BOE (oposiciones y concursos)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T07:56:30+00:00",
-  "ultima_correcta": "2026-11-11T07:56:30+00:00",
-  "resultados": 558,
+  "ultima_consulta": "2026-11-12T06:18:25+00:00",
+  "ultima_correcta": "2026-11-12T06:18:25+00:00",
+  "resultados": 56,
   "error": "",
-  "detalle": "558 convocatorias revisadas desde 2026-10-12"
+  "detalle": "56 convocatorias revisadas desde 2026-11-10"
  },
  "Universidad de Oviedo": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T07:56:31+00:00",
-  "ultima_correcta": "2026-11-11T07:56:31+00:00",
-  "resultados": 16,
+  "ultima_consulta": "2026-11-12T06:18:27+00:00",
+  "ultima_correcta": "2026-11-12T06:18:27+00:00",
+  "resultados": 0,
   "error": "",
-  "detalle": "16 plazas desde 2026-10-12"
+  "detalle": "0 plazas desde 2026-11-10"
  },
  "Noticias (Google News)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T06:19:11+00:00",
-  "ultima_correcta": "2026-11-11T06:19:11+00:00",
-  "resultados": 55,
+  "ultima_consulta": "2026-11-12T06:22:51+00:00",
+  "ultima_correcta": "2026-11-12T06:22:51+00:00",
+  "resultados": 51,
   "error": "",
-  "detalle": "55 titulares revisados; 0 noticias nuevas relevantes"
+  "detalle": "51 titulares revisados; 0 noticias nuevas relevantes"
  },
  "Portales corporativos (Greenhouse, Lever)": {
   "estado": "sin_configurar",
@@ -81,82 +81,82 @@
  },
  "BOPA (Asturias)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T07:57:20+00:00",
-  "ultima_correcta": "2026-11-11T07:57:20+00:00",
-  "resultados": 107,
+  "ultima_consulta": "2026-11-12T06:21:27+00:00",
+  "ultima_correcta": "2026-11-12T06:21:27+00:00",
+  "resultados": 0,
   "error": "",
-  "detalle": "107 convocatorias revisadas"
+  "detalle": "0 convocatorias revisadas"
  },
  "BOC (Cantabria)": {
-  "estado": "ok",
-  "ultima_consulta": "2026-11-11T07:57:20+00:00",
+  "estado": "error",
+  "ultima_consulta": "2026-11-12T06:22:27+00:00",
   "ultima_correcta": "2026-11-11T07:57:20+00:00",
-  "resultados": 17,
-  "error": "",
-  "detalle": "17 convocatorias revisadas"
+  "resultados": 0,
+  "error": "URLError: <urlopen error timed out>",
+  "detalle": ""
  },
  "DOG (Galicia)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T07:57:21+00:00",
-  "ultima_correcta": "2026-11-11T07:57:21+00:00",
+  "ultima_consulta": "2026-11-12T06:22:28+00:00",
+  "ultima_correcta": "2026-11-12T06:22:28+00:00",
   "resultados": 0,
   "error": "",
   "detalle": "0 convocatorias revisadas"
  },
  "BOCYL (Castilla y León)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T07:57:21+00:00",
-  "ultima_correcta": "2026-11-11T07:57:21+00:00",
+  "ultima_consulta": "2026-11-12T06:22:28+00:00",
+  "ultima_correcta": "2026-11-12T06:22:28+00:00",
   "resultados": 1,
   "error": "",
   "detalle": "1 convocatorias revisadas"
  },
  "Plataforma de Contratación del Sector Público": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T06:14:43+00:00",
-  "ultima_correcta": "2026-11-11T06:14:43+00:00",
-  "resultados": 5109,
+  "ultima_consulta": "2026-11-12T06:17:53+00:00",
+  "ultima_correcta": "2026-11-12T06:17:53+00:00",
+  "resultados": 4270,
   "error": "",
-  "detalle": "5109 contratos revisados; 5 adjudicaciones y 2 licitaciones nuevas que encajan"
+  "detalle": "4270 contratos revisados; 5 adjudicaciones y 4 licitaciones nuevas que encajan"
  },
  "BORME (Registro Mercantil)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T06:19:09+00:00",
-  "ultima_correcta": "2026-11-11T06:19:09+00:00",
-  "resultados": 9,
+  "ultima_consulta": "2026-11-12T06:22:49+00:00",
+  "ultima_correcta": "2026-11-12T06:22:49+00:00",
+  "resultados": 15,
   "error": "",
-  "detalle": "9 boletines provinciales leídos; 0 señales nuevas"
+  "detalle": "15 boletines provinciales leídos; 0 señales nuevas"
  },
  "EURES (SEPE y servicios públicos de empleo)": {
-  "estado": "ok",
-  "ultima_consulta": "2026-11-11T12:26:06+00:00",
+  "estado": "error",
+  "ultima_consulta": "2026-11-12T06:18:09+00:00",
   "ultima_correcta": "2026-11-11T12:26:06+00:00",
-  "resultados": 179,
-  "error": "",
-  "detalle": "179 ofertas leídas"
+  "resultados": 0,
+  "error": "HTTPError: HTTP Error 404: Not Found; HTTPError: HTTP Error 404: Not Found",
+  "detalle": "0 ofertas leídas"
  },
  "Himalayas (remoto)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T12:26:07+00:00",
-  "ultima_correcta": "2026-11-11T12:26:07+00:00",
-  "resultados": 90,
+  "ultima_consulta": "2026-11-12T06:18:12+00:00",
+  "ultima_correcta": "2026-11-12T06:18:12+00:00",
+  "resultados": 122,
   "error": "",
-  "detalle": "90 ofertas leídas"
+  "detalle": "122 ofertas leídas"
  },
  "Jobicy (remoto)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T12:26:08+00:00",
-  "ultima_correcta": "2026-11-11T12:26:08+00:00",
+  "ultima_consulta": "2026-11-12T06:18:13+00:00",
+  "ultima_correcta": "2026-11-12T06:18:13+00:00",
   "resultados": 50,
   "error": "",
   "detalle": "50 ofertas leídas"
  },
  "Portales de empresas (Greenhouse, Lever, Teamtailor, Workable, Recruitee, Personio, SmartRecruiters)": {
   "estado": "ok",
-  "ultima_consulta": "2026-11-11T12:26:26+00:00",
-  "ultima_correcta": "2026-11-11T12:26:26+00:00",
-  "resultados": 591,
+  "ultima_consulta": "2026-11-12T06:18:23+00:00",
+  "ultima_correcta": "2026-11-12T06:18:23+00:00",
+  "resultados": 596,
   "error": "",
-  "detalle": "591 ofertas leídas"
+  "detalle": "596 ofertas leídas"
  }
 }
