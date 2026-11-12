@@ -275,8 +275,9 @@ Deno.serve(async (req) => {
     if (admin !== true) return responder({ error: "La IA de RADAR solo está activada para la cuenta de administración." }, 403, origen);
 
     const hoy = new Date().toISOString().slice(0, 10);
-    const { count } = await sb.from("ia_uso").select("id", { count: "exact", head: true }).eq("user_id", u.user.id).gte("creado", hoy);
-    if ((count ?? 0) >= LIMITE_DIARIO) return responder({ error: `Has llegado al límite de ${LIMITE_DIARIO} usos de IA por hoy.` }, 429, origen);
+    // Si la tabla de uso aún no existe, no se bloquea (el crédito prepago ya pone el tope).
+    const { count, error: errUso } = await sb.from("ia_uso").select("id", { count: "exact", head: true }).eq("user_id", u.user.id).gte("creado", hoy);
+    if (!errUso && (count ?? 0) >= LIMITE_DIARIO) return responder({ error: `Has llegado al límite de ${LIMITE_DIARIO} usos de IA por hoy.` }, 429, origen);
 
     const body = await req.json();
     let resultado: { uso: Anthropic.Beta.BetaUsage } & Record<string, unknown>;
