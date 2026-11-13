@@ -61,7 +61,7 @@ export async function investigarEmpresa(d: { empresa: string; ciudad?: string; h
       output_config: { effort: "low" },
       tools: [
         { type: "web_search_20260209", name: "web_search", max_uses: 2, user_location: { type: "approximate", country: "ES" } },
-        { type: "web_fetch_20260209", name: "web_fetch", max_uses: 2, max_content_tokens: 6000 },
+        { type: "web_fetch_20260209", name: "web_fetch", max_uses: 2, max_content_tokens: 3500 },
       ],
     });
     usos.push(r.usage as Uso);

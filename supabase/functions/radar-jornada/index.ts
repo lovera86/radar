@@ -198,7 +198,9 @@ const AGENTES: Record<string, (ctx: Ctx, entrada: Record<string, unknown>, tarea
   async investigador(ctx, entrada, tarea_id) {
     const c = entrada as unknown as Candidata;
     const gastado = await gastadoHoy(ctx.user_id);
-    if (!quedaPresupuesto(ctx.config, gastado, COSTE_ESTIMADO_INVESTIGACION)) {
+    // Enviar tiene prioridad: se reserva el coste de redactar las presentaciones del día.
+    const reserva = (ctx.config.max_envios ?? 3) * COSTE_ESTIMADO_REDACCION;
+    if (!quedaPresupuesto(ctx.config, gastado + reserva, COSTE_ESTIMADO_INVESTIGACION)) {
       await srv.from("oportunidades").update({ estado: "priorizada", siguiente: "Investigar la empresa (sin presupuesto hoy)", actualizado: new Date().toISOString() }).eq("user_id", ctx.user_id).eq("clave", c.k);
       await evento(ctx, "investigador", "limite", `Sin presupuesto para investigar ${c.empresa}: gastado hoy ${gastado.toFixed(3)} $ de ${Number(ctx.config.presupuesto_dia).toFixed(2)} $`, null, tarea_id);
       return { salida: { empresa: c.empresa }, omitida: "Presupuesto del día agotado" };

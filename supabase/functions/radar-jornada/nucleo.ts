@@ -192,7 +192,7 @@ export function elegirCandidatas(items: ItemPuntuable[], yaVistas: Set<string>, 
 // Coste de una llamada de IA (precios de lista en dólares)
 // ---------------------------------------------------------------------------
 export const PRECIO = { entrada: 2 / 1e6, salida: 10 / 1e6, cache_escritura: 2.5 / 1e6, cache_lectura: 0.2 / 1e6, busqueda: 0.01 }; // Claude Sonnet 5.5
-export const COSTE_ESTIMADO_INVESTIGACION = 0.09;
+export const COSTE_ESTIMADO_INVESTIGACION = 0.11; // medido: ~0,108 $ por investigación
 export type Uso = { input_tokens?: number | null; output_tokens?: number | null; cache_creation_input_tokens?: number | null; cache_read_input_tokens?: number | null; server_tool_use?: { web_search_requests?: number | null } | null };
 export function costeDe(usos: Uso[]): number {
   let c = 0;
