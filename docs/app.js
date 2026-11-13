@@ -527,7 +527,7 @@ function pintar() {
   if (VISTA === 'radar') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarRadarDiario(); }
   if (VISTA === 'descubrir') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarDescubrir(); }
   if (VISTA === 'perfil') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; if (typeof nubePuerta === 'function' && nubePuerta('perfil')) return; return pintarPerfil(); }
-  if (VISTA === 'guardados') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarGuardados(); }
+  if (VISTA === 'guardados') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; if (typeof nubePuerta === 'function' && nubePuerta('guardados')) return; return pintarGuardados(); }
   const lista = ordenar(D.ops.filter((o) => pasa(o)));
   const total = D.ops.filter((o) => pasa(o, false) || true).length;
   $('#res-n').textContent = `${lista.length} de ${D.ops.filter((o) => (!v.tipo || o.tipo === v.tipo) && (!v.solo || v.solo.includes(o.subtipo))).length} oportunidades`;

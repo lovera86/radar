@@ -178,15 +178,15 @@ async function nubeIniciar() {
 }
 
 /* ---------- Zonas privadas: sin sesión no se enseñan ---------- */
-const NUBE_PRIVADAS = ['perfil', 'bandeja'];
+const NUBE_PRIVADAS = ['perfil', 'bandeja', 'guardados'];
 /* Si la vista es privada y no hay sesión, pinta la pantalla de entrada y devuelve true. */
 function nubePuerta(vista) {
   if (!RADAR_NUBE || !NUBE_PRIVADAS.includes(vista) || NUBE_SESION) return false;
   $('#res-n').textContent = '';
   const c = el('section', 'nube-puerta');
   if (!NUBE_COMPROBADA) { c.append(el('p', 'nota', 'Comprobando tu sesión…')); $('#rejilla').replaceChildren(c); return true; }
-  c.append(el('h2', null, vista === 'perfil' ? 'Entra para ver tu perfil' : 'Entra para ver tus oportunidades'),
-    el('p', 'bv-sub', 'Esta parte de RADAR es personal: tu perfil, tus oportunidades, tus agentes y tu configuración solo se ven con tu sesión iniciada.'),
+  c.append(el('h2', null, { perfil: 'Entra para ver tu perfil', bandeja: 'Entra para ver tus oportunidades', guardados: 'Entra para ver tu seguimiento' }[vista]),
+    el('p', 'bv-sub', 'Esta parte de RADAR es personal: tu perfil, tus oportunidades, tu seguimiento, tus agentes y tu configuración solo se ven con tu sesión iniciada.'),
     nubeFormularioEntrar());
   $('#rejilla').replaceChildren(c);
   return true;
