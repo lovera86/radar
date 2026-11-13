@@ -1,7 +1,7 @@
 // Pruebas del núcleo del orquestador. Ejecutar:  npx tsx --test supabase/functions/radar-jornada/nucleo.test.ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cerrarJornada, claveBandeja, claveEmpresa, correoDeItem, costeDe, firmaTexto, modoEnvio, seguimientosDebidos, sinTelefonos, textoSeguimiento, deduplicar, elegirCandidatas, esPersona, madrid, planificar, puntuar, quedaPresupuesto, senalDesdeItem, tocaJornada, trasFallo, type Config, type ItemPuntuable } from "./nucleo.ts";
+import { cerrarJornada, elegirOfertas, enAsturias, salarioValido, zonaEmpresa, zonaOferta, claveBandeja, claveEmpresa, correoDeItem, costeDe, firmaTexto, modoEnvio, seguimientosDebidos, sinTelefonos, textoSeguimiento, deduplicar, elegirCandidatas, esPersona, madrid, planificar, puntuar, quedaPresupuesto, senalDesdeItem, tocaJornada, trasFallo, type Config, type ItemPuntuable } from "./nucleo.ts";
 
 const base: Config = { hora: 7, dias: [1, 2, 3, 4, 5], presupuesto_dia: 0.2, max_ia: 2, max_tareas: 60, duracion_max_min: 90, umbral: 65, agentes_off: [], pausada: false };
 
@@ -137,4 +137,44 @@ test("seguimientosDebidos: uno solo, a los 10 días, sin respuesta y solo envío
   const lista = [e("1", {}), e("2", { enviado: "2026-11-10T09:00:00Z" }), e("3", { estado: "respondido" }), e("4", { modo: "ensayo" }), e("5", {}), e("6", { tipo: "seguimiento", en_respuesta_a: "5" })];
   assert.deepEqual(seguimientosDebidos(lista, new Date("2026-11-13T10:00:00Z")).map((x) => x.id), ["1"]);
   assert.match(textoSeguimiento({ empresa: "Topcad" }, { nombre: "Rocío" }), /Topcad[\s\S]*Rocío$/);
+});
+
+const oferta = (titulo: string, extra: Partial<ItemPuntuable> = {}): ItemPuntuable => ({
+  id: `emp:${titulo}`, tipo: "empleo", subtipo: "oferta", titulo, organizacion: { nombre: "Empresa SA" },
+  ubicacion: { texto: "Oviedo", comunidad: "Asturias" }, modalidad: "desconocida", contacto: { email: "rrhh@empresa.es" },
+  fuentes: [{ nombre: "EURES", url: "https://eures/x" }], fechas: { publicada: "2026-11-10" },
+  criterios: { encaje: { valor: 0.9 }, geografia: { valor: 1 }, necesidad: { valor: 1 }, acceso: { valor: 0.9 }, calidad: { valor: 0.8 } },
+  ...extra,
+});
+
+test("zonas: presencial solo en Asturias; fuera, solo remoto", () => {
+  assert.equal(zonaOferta(oferta("A")), true);
+  assert.equal(zonaOferta(oferta("B", { ubicacion: { texto: "Madrid", comunidad: "Madrid" }, modalidad: "presencial" })), false);
+  assert.equal(zonaOferta(oferta("C", { ubicacion: { texto: "Madrid", comunidad: "Madrid" }, modalidad: "hibrido" })), false);
+  assert.equal(zonaOferta(oferta("D", { ubicacion: { texto: "Remoto (abierto a España)", comunidad: "Remoto" }, modalidad: "remoto" })), true);
+  assert.equal(enAsturias("Pola de Siero"), true); assert.equal(enAsturias("Gijón"), true); assert.equal(enAsturias("A Coruña"), false);
+  assert.equal(zonaEmpresa(adj("X", "B1", 0.9, 1, { ubicacion: { comunidad: "Galicia", texto: "A Coruña" }, ciudad_empresa: "Lugo" })), false);
+  assert.equal(zonaEmpresa(adj("X", "B1", 0.9, 1, { ubicacion: { comunidad: "Galicia", texto: "A Coruña" }, ciudad_empresa: "Llanera (Asturias)" })), true);
+});
+
+test("salarioValido: desde 35.000 € cuando se publica", () => {
+  assert.equal(salarioValido(null), true);
+  assert.equal(salarioValido("30.000 - 34.000 € brutos/año"), false);
+  assert.equal(salarioValido("35.000-42.000 €"), true);
+  assert.equal(salarioValido("40k"), true);
+  assert.equal(salarioValido("1.800 € al mes"), false);   // 25.200 € al año
+  assert.equal(salarioValido("2.800 €/mes"), true);       // 39.200 € al año
+  assert.equal(salarioValido("según valía"), true);
+});
+
+test("elegirOfertas: correo de la oferta, zona, salario, sin piloto y sin repetir", () => {
+  const items = [
+    oferta("Project Manager"), oferta("PM Madrid", { ubicacion: { texto: "Madrid", comunidad: "Madrid" }, modalidad: "presencial" }),
+    oferta("Sin correo", { contacto: null }), oferta("Piloto", { solo_piloto: true }), oferta("Mal pagado", { salario: { texto: "20.000 €" } }),
+    oferta("Ya enviada"), oferta("Remota", { ubicacion: { texto: "Remoto", comunidad: "Remoto" }, modalidad: "remoto", contacto: { email: "jobs@remota.io" } }),
+  ];
+  const r = elegirOfertas(items, new Set(["emp:Ya enviada"]), 5, 70);
+  assert.deepEqual(r.map((c) => c.puesto), ["Project Manager", "Remota"]);
+  assert.equal(r[0].tipo, "oferta"); assert.equal(r[0].email, "rrhh@empresa.es");
+  assert.equal(elegirOfertas(items, new Set(["correo:rrhh@empresa.es"]), 5, 70).map((c) => c.puesto).join(), "Remota");
 });

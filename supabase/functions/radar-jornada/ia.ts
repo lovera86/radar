@@ -126,8 +126,29 @@ async function pedirJson<T>(system: string, user: string, schema: Record<string,
   try { return { datos: JSON.parse(texto) as T, coste }; } catch { throw Object.assign(new Error("La IA no devolvió el formato esperado."), { coste }); }
 }
 
-export async function redactarPresentacion(d: { empresa: string; senales: Hecho[]; hechos: Hecho[]; nombre: string }) {
+type Oferta = { puesto: string; descripcion?: string; url?: string };
+
+export async function redactarPresentacion(d: { empresa: string; senales: Hecho[]; hechos: Hecho[]; nombre: string; oferta?: Oferta }) {
   if (!d.senales.length || !d.hechos.length) throw new Error("Faltan señales de la empresa o hechos del perfil para redactar.");
+  if (d.oferta) return await pedirJson<{ asunto: string; cuerpo: string; hechos_usados: string[]; senal_usada: string }>(
+    [
+      "Redactas en español el cuerpo de un correo breve (110-170 palabras) con el que una persona se candidata a una oferta de empleo publicada y adjunta su CV.",
+      "Reglas estrictas:",
+      "- Usa solo los hechos del perfil que se te dan y lo que dice la oferta. No inventes experiencia, cifras, títulos, herramientas ni resultados.",
+      "- Empieza con «Buenos días:» y di a qué puesto te candidatas. Sigue con 2-3 hechos del perfil que respondan a lo que pide la oferta. Si la oferta pide algo que el perfil no tiene, no lo afirmes. Termina diciendo que adjuntas el CV y que quedas a su disposición para una entrevista.",
+      "- Trato de usted. Tono profesional, directo y sin halagos exagerados.",
+      "- NO escribas despedida ni firma ni datos de contacto: se añaden después.",
+      "- El asunto: «Candidatura: » seguido del nombre del puesto.",
+    ].join("\n"),
+    [
+      `Empresa: ${d.empresa}`, `Puesto: ${d.oferta.puesto}`,
+      d.oferta.descripcion ? `Texto de la oferta: ${d.oferta.descripcion}` : "",
+      `Persona que escribe: ${d.nombre}`,
+      "Datos de la oferta:", ...d.senales.map((x) => `[${x.id}] ${x.texto}`),
+      "Hechos del perfil:", ...d.hechos.map((x) => `[${x.id}] ${x.texto}`),
+    ].filter(Boolean).join("\n"),
+    ESQUEMA_REDACCION,
+  );
   return await pedirJson<{ asunto: string; cuerpo: string; hechos_usados: string[]; senal_usada: string }>(
     [
       "Redactas en español el cuerpo de un correo breve (110-170 palabras) con el que una persona se presenta a una empresa concreta y adjunta su CV.",
@@ -145,26 +166,28 @@ export async function redactarPresentacion(d: { empresa: string; senales: Hecho[
       "Señales de la empresa:", ...d.senales.map((x) => `[${x.id}] ${x.texto}`),
       "Hechos del perfil:", ...d.hechos.map((x) => `[${x.id}] ${x.texto}`),
     ].join("\n"),
-    {
-      type: "object", additionalProperties: false, required: ["asunto", "cuerpo", "hechos_usados", "senal_usada"],
-      properties: {
-        asunto: { type: "string" }, cuerpo: { type: "string" },
-        hechos_usados: { type: "array", items: { type: "string" }, description: "Identificadores de los hechos del perfil mencionados" },
-        senal_usada: { type: "string", description: "Identificador de la señal que motiva el contacto" },
-      },
-    },
+    ESQUEMA_REDACCION,
   );
 }
 
+const ESQUEMA_REDACCION = {
+  type: "object", additionalProperties: false, required: ["asunto", "cuerpo", "hechos_usados", "senal_usada"],
+  properties: {
+    asunto: { type: "string" }, cuerpo: { type: "string" },
+    hechos_usados: { type: "array", items: { type: "string" }, description: "Identificadores de los hechos del perfil mencionados" },
+    senal_usada: { type: "string", description: "Identificador de la señal o dato que motiva el contacto" },
+  },
+};
+
 /* Segundo repaso, independiente de quien redactó: si duda, no se envía. */
-export async function revisarPresentacion(d: { empresa: string; asunto: string; cuerpo: string; senales: Hecho[]; hechos: Hecho[] }) {
+export async function revisarPresentacion(d: { empresa: string; asunto: string; cuerpo: string; senales: Hecho[]; hechos: Hecho[]; oferta?: Oferta }) {
   return await pedirJson<{ aprobado: boolean; problemas: string[] }>(
     [
       "Revisas, antes de que se envíe sin supervisión humana, un correo en el que una persona se presenta a una empresa. Eres estricto: ante la duda, no se aprueba.",
       "Rechaza (aprobado = false) si ocurre cualquiera de estas cosas:",
       "- Afirma algo del perfil que no está en los hechos dados (experiencia, cifras, títulos, resultados, herramientas).",
       "- Afirma algo de la empresa que no está en las señales dadas.",
-      "- Dice o insinúa que la empresa tiene una vacante o necesita contratar.",
+      d.oferta ? "- Se candidata a un puesto distinto del de la oferta, o afirma requisitos de la oferta que el perfil no tiene." : "- Dice o insinúa que la empresa tiene una vacante o necesita contratar.",
       "- Tono inadecuado: halagos exagerados, presión, informalidad, errores de ortografía o gramática, o texto que suena a plantilla genérica.",
       "- Contiene marcadores sin rellenar, corchetes, datos de contacto inventados o un nombre de destinatario que no se ha dado.",
       "- Habla de otra empresa o mezcla datos.",
@@ -172,6 +195,7 @@ export async function revisarPresentacion(d: { empresa: string; asunto: string; 
     ].join("\n"),
     [
       `Empresa destinataria: ${d.empresa}`,
+      d.oferta ? `Es una candidatura a una oferta publicada. Puesto: ${d.oferta.puesto}. ${d.oferta.descripcion ? "Texto de la oferta: " + d.oferta.descripcion : ""}` : "Es un contacto proactivo: no hay vacante publicada.",
       "Señales de la empresa:", ...d.senales.map((x) => `[${x.id}] ${x.texto}`),
       "Hechos del perfil:", ...d.hechos.map((x) => `[${x.id}] ${x.texto}`),
       "", `Asunto: ${d.asunto}`, "Cuerpo:", d.cuerpo,

@@ -121,7 +121,8 @@ export function quedaPresupuesto(c: Config, gastado: number, estimado: number): 
 // ---------------------------------------------------------------------------
 type Criterio = { valor: number | null; motivos?: string[]; sin_info?: boolean };
 export type ItemPuntuable = Item & {
-  ubicacion?: { texto?: string; comunidad?: string }; importe?: number;
+  ubicacion?: { texto?: string; comunidad?: string }; importe?: number; modalidad?: string; solo_piloto?: boolean;
+  salario?: { texto?: string | null }; descripcion?: string;
   criterios?: Record<string, Criterio>; ciudad_empresa?: string;
 };
 export const PESOS: Record<string, number> = { encaje: 0.35, geografia: 0.25, necesidad: 0.15, acceso: 0.15, calidad: 0.1 };
@@ -150,6 +151,7 @@ export function puntuar(it: ItemPuntuable): { puntos: number; motivos: { criteri
 
 export type Candidata = {
   k: string; empresa: string; nif: string; ciudad: string; puntos: number; email?: string; email_fuente?: string;
+  tipo?: "empresa" | "oferta"; puesto?: string; url?: string; descripcion?: string;
   motivos: { criterio: string; valor: number; motivos: string[] }[]; sin_info: string[];
   hechos: string[]; fuentes: { nombre?: string; url?: string }[]; items: string[];
 };
@@ -252,4 +254,54 @@ export function textoSeguimiento(e: { empresa: string }, f: Firma): string {
     "Un saludo,",
     firmaTexto(f),
   ].join("\n");
+}
+
+// ---------------------------------------------------------------------------
+// Dónde y cómo trabaja Rocío: presencial solo en Asturias; fuera de Asturias, solo en remoto.
+// ---------------------------------------------------------------------------
+export const SALARIO_MINIMO = 35000;
+const ASTURIAS = /asturias|oviedo|uvieu|gij[oó]n|xix[oó]n|avil[eé]s|siero|pola de siero|langreo|la felguera|mieres|llanera|posada|corvera|castrill[oó]n|piedras blancas|nore[nñ]a|carre[nñ]o|cand[aá]s|villaviciosa|llanes|cangas de on[ií]s|cangas del narcea|\blena\b|pola de lena|aller|grado|pravia|vald[eé]s|luarca|navia|tineo|\bsalas\b|\bnava\b|pilo[nñ]a|parres|arriondas|ribadesella|colunga|goz[oó]n|luanco|soto del barco|cudillero|morc[ií]n|riosa|las regueras|candamo|san mart[ií]n del rey aurelio|sotrondio|laviana|castropol|vegadeo|tapia de casariego|el franco|coa[nñ]a|boal|somiedo|teverga|quir[oó]s|belmonte de miranda|ribera de arriba|bimenes|cabranes|sariego|\bonis\b|cabrales|pe[nñ]amellera|ribadedeva|allande|ibias|grandas de salime|villay[oó]n|illas|muros de nal[oó]n|caso|sobrescobio|amieva|ponga|proaza|santo adriano|yernes|degana|taramundi/i;
+export const enAsturias = (t?: string | null) => Boolean(t) && ASTURIAS.test(String(t).normalize("NFC"));
+
+/* Una oferta vale si es en remoto, o si es en Asturias (presencial, híbrida o sin especificar). */
+export function zonaOferta(it: ItemPuntuable): boolean {
+  if (it.modalidad === "remoto" || it.ubicacion?.comunidad === "Remoto") return true;
+  return it.ubicacion?.comunidad === "Asturias" || enAsturias(it.ubicacion?.texto);
+}
+
+/* Una empresa (presentación espontánea) vale si su sede o el contrato que ha ganado están en Asturias. */
+export function zonaEmpresa(it: ItemPuntuable): boolean {
+  return it.ubicacion?.comunidad === "Asturias" || enAsturias(it.ciudad_empresa) || enAsturias(it.ubicacion?.texto);
+}
+
+/* Salario: si la oferta lo publica y el máximo no llega al mínimo, se descarta. Si no lo publica, vale. */
+export function salarioValido(texto?: string | null, minimo = SALARIO_MINIMO): boolean {
+  if (!texto) return true;
+  const t = String(texto).replace(/(\d)[.\s](\d{3})\b/g, "$1$2");
+  const nums = [...t.matchAll(/(\d+(?:[.,]\d+)?)\s*(k\b|mil\b)?/gi)].map((m) => Number(m[1].replace(",", ".")) * (m[2] ? 1000 : 1)).filter((n) => n >= 1000);
+  if (!nums.length) return true;
+  const anual = Math.max(...nums) < 6000 ? Math.max(...nums) * 14 : Math.max(...nums); // salario mensual → anual
+  return anual >= minimo;
+}
+
+const RE_CORREO2 = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+/* Ofertas a las que se puede enviar el CV por correo porque la propia oferta lo indica. */
+export function elegirOfertas(items: ItemPuntuable[], no: Set<string>, max: number, umbral: number): Candidata[] {
+  const out: Candidata[] = [];
+  for (const it of items) {
+    if (it.tipo !== "empleo" || it.subtipo !== "oferta" || it.solo_piloto) continue;
+    const email = String(it.contacto?.email || "").toLowerCase().trim();
+    if (!RE_CORREO2.test(email) || no.has(it.id) || no.has(`correo:${email}`)) continue;
+    if (!zonaOferta(it) || !salarioValido(it.salario?.texto)) continue;
+    const p = puntuar(it);
+    if (p.puntos < umbral) continue;
+    out.push({
+      k: it.id, tipo: "oferta", empresa: it.organizacion?.nombre || email.split("@")[1], nif: "", ciudad: it.ubicacion?.texto || "",
+      puntos: p.puntos, motivos: p.motivos, sin_info: p.sin_info, puesto: it.titulo, url: it.fuentes?.[0]?.url || "",
+      descripcion: (it.descripcion || "").slice(0, 600), email, email_fuente: it.fuentes?.[0]?.url || "",
+      hechos: [`Oferta publicada: «${it.titulo}»${it.organizacion?.nombre ? ` en ${it.organizacion.nombre}` : ""}${it.ubicacion?.texto ? ` (${it.ubicacion.texto})` : ""}${it.fechas?.publicada ? `, ${it.fechas.publicada}` : ""}`],
+      fuentes: it.fuentes?.[0] ? [it.fuentes[0]] : [], items: [it.id],
+    });
+  }
+  return out.sort((a, b) => b.puntos - a.puntos).slice(0, Math.max(0, max));
 }

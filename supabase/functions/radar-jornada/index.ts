@@ -12,7 +12,7 @@
 // Nada de lo que hace esta función envía mensajes ni actúa fuera de RADAR.
 
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.45.4";
-import { cerrarJornada, COSTE_ESTIMADO_INVESTIGACION, deduplicar, elegirCandidatas, firmaTexto, madrid, modoEnvio, planificar, quedaPresupuesto, seguimientosDebidos, senalDesdeItem, sinTelefonos, textoSeguimiento, tocaJornada, trasFallo, type Candidata, type Config, type EnvioResumen, type ItemPuntuable } from "./nucleo.ts";
+import { cerrarJornada, COSTE_ESTIMADO_INVESTIGACION, deduplicar, elegirCandidatas, elegirOfertas, firmaTexto, madrid, modoEnvio, planificar, quedaPresupuesto, seguimientosDebidos, senalDesdeItem, sinTelefonos, textoSeguimiento, tocaJornada, zonaEmpresa, trasFallo, type Candidata, type Config, type EnvioResumen, type ItemPuntuable } from "./nucleo.ts";
 import { investigarEmpresa, redactarPresentacion, revisarPresentacion } from "./ia.ts";
 
 const WEB = "https://lovera86.github.io/radar";
@@ -69,8 +69,8 @@ async function noContactar(user_id: string): Promise<Set<string>> {
   const v = (est?.valor || {}) as { bandeja?: Record<string, { estado?: string }>; excluidas?: Record<string, unknown> };
   Object.keys(v.excluidas || {}).forEach((k) => no.add(k));
   Object.entries(v.bandeja || {}).forEach(([k, o]) => { if (ESTADOS_TRABAJADOS.has(String(o?.estado))) no.add(k); });
-  const { data: env } = await srv.from("envios").select("empresa_clave").eq("user_id", user_id).eq("tipo", "presentacion").in("estado", ["listo", "enviado", "respondido"]);
-  (env || []).forEach((e) => no.add(e.empresa_clave));
+  const { data: env } = await srv.from("envios").select("empresa_clave,para").eq("user_id", user_id).eq("tipo", "presentacion").in("estado", ["listo", "enviado", "respondido"]);
+  (env || []).forEach((e) => { no.add(e.empresa_clave); no.add(`correo:${e.para}`); });
   return no;
 }
 
@@ -154,7 +154,8 @@ const AGENTES: Record<string, (ctx: Ctx, entrada: Record<string, unknown>, tarea
     const { count: hoyYa } = await srv.from("oportunidades").select("clave", { count: "exact", head: true })
       .eq("user_id", uid).in("agente", ["analista", "investigador"]).gte("creado", desde);
     const cupo = Math.max(0, ctx.config.max_ia - (hoyYa || 0));
-    const { elegidas, por_encima } = elegirCandidatas(items, yaVistas, cupo, ctx.config.umbral);
+    const empresas = items.filter(zonaEmpresa); // presencial solo en Asturias
+    const { elegidas, por_encima } = elegirCandidatas(empresas, yaVistas, cupo, ctx.config.umbral);
     const investigar = !ctx.config.agentes_off.includes("investigador");
 
     if (elegidas.length) {
@@ -179,7 +180,11 @@ const AGENTES: Record<string, (ctx: Ctx, entrada: Record<string, unknown>, tarea
     // A quién presentarse hoy: encaje alto y correo comprobado en la web oficial de la empresa.
     const umbralEnvio = ctx.config.umbral_envio ?? 80;
     const no = await noContactar(uid);
-    const paraEnviar = elegirCandidatas(items, no, 50, umbralEnvio).elegidas.filter((c) => c.email && c.email_fuente);
+    const ofertas = elegirOfertas(items, no, 50, umbralEnvio);
+    const paraEnviar = [
+      ...ofertas, // candidaturas a ofertas que dan un correo: van primero
+      ...elegirCandidatas(empresas, no, 50, umbralEnvio).elegidas.filter((c) => c.email && c.email_fuente && !no.has(`correo:${c.email}`)),
+    ];
     const enviar = await encolarComercial(ctx, paraEnviar, tarea_id);
     const lista = elegidas.map((c) => `${c.empresa} (${c.puntos})`).join(", ");
     await evento(ctx, "analista", "priorizacion", elegidas.length
@@ -232,7 +237,9 @@ const AGENTES: Record<string, (ctx: Ctx, entrada: Record<string, unknown>, tarea
     const omitir = async (motivo: string) => { await evento(ctx, "comercial", "aviso", `${c.empresa}: ${motivo}`, null, tarea_id); return { salida: { empresa: c.empresa }, omitida: motivo }; };
     if (modo === "apagado") return omitir("el envío automático está apagado");
     if (!c.email || !c.email_fuente) return omitir("no hay un correo publicado por la empresa");
-    if ((await noContactar(ctx.user_id)).has(c.k)) return omitir("ya se le escribió o la descartaste");
+    const noC = await noContactar(ctx.user_id);
+    if (noC.has(c.k) || noC.has(`correo:${c.email}`)) return omitir("ya se le escribió o la descartaste");
+    const oferta = c.tipo === "oferta" ? { puesto: c.puesto || "", descripcion: c.descripcion, url: c.url } : undefined;
     const hechos = (cfg.perfil_hechos || []).slice(0, 25);
     const firma = cfg.firma || {};
     if (hechos.length < 3 || !firma.nombre || !firma.email) return omitir("faltan tu perfil o tu firma: abre RADAR una vez con tu sesión y se copian solos");
@@ -242,20 +249,20 @@ const AGENTES: Record<string, (ctx: Ctx, entrada: Record<string, unknown>, tarea
     const { data: op } = await srv.from("oportunidades").select("datos").eq("user_id", ctx.user_id).eq("clave", c.k).maybeSingle();
     const inv = (op?.datos as { investigacion?: { senales?: { titulo: string; fecha?: string; fuente?: string }[]; actividad?: string } } | null)?.investigacion;
     const senales = [
-      ...c.hechos.map((h, i) => ({ id: `s${i + 1}`, texto: `Ha ganado el contrato: ${h}` })),
+      ...c.hechos.map((h, i) => ({ id: `s${i + 1}`, texto: oferta ? h : `Ha ganado el contrato: ${h}` })),
       ...(inv?.senales || []).map((x, i) => ({ id: `w${i + 1}`, texto: `${x.titulo}${x.fecha ? ` (${x.fecha})` : ""}${x.fuente ? `, según ${x.fuente}` : ""}` })),
       ...(inv?.actividad ? [{ id: "a1", texto: `Actividad de la empresa según su web: ${inv.actividad}` }] : []),
     ].slice(0, 8);
 
     let coste = 0;
-    const r = await redactarPresentacion({ empresa: c.empresa, senales, hechos, nombre: firma.nombre });
+    const r = await redactarPresentacion({ empresa: c.empresa, senales, hechos, nombre: firma.nombre, oferta });
     coste += r.coste;
     const cuerpoIA = sinTelefonos(r.datos.cuerpo);
     const problemas: string[] = [];
     if (/[\[\]{}]|XXX|<[a-z]/i.test(cuerpoIA + r.datos.asunto)) problemas.push("Contiene marcadores sin rellenar");
     const palabras = cuerpoIA.split(/\s+/).length;
     if (palabras < 60 || palabras > 260) problemas.push(`Longitud anómala (${palabras} palabras)`);
-    const rv = await revisarPresentacion({ empresa: c.empresa, asunto: r.datos.asunto, cuerpo: cuerpoIA, senales, hechos }).catch((e) => { coste += Number(e?.coste || 0); return null; });
+    const rv = await revisarPresentacion({ empresa: c.empresa, asunto: r.datos.asunto, cuerpo: cuerpoIA, senales, hechos, oferta }).catch((e) => { coste += Number(e?.coste || 0); return null; });
     if (rv) coste += rv.coste; else problemas.push("No se pudo hacer el segundo repaso");
     if (rv && !rv.datos.aprobado) problemas.push(...(rv.datos.problemas.length ? rv.datos.problemas : ["El repaso no lo aprobó"]));
     const aprobado = problemas.length === 0;
@@ -264,19 +271,19 @@ const AGENTES: Record<string, (ctx: Ctx, entrada: Record<string, unknown>, tarea
     const { error } = await srv.from("envios").insert({
       user_id: ctx.user_id, clave: c.k, empresa: c.empresa, empresa_clave: c.k, tipo: "presentacion", modo,
       para: c.email, fuente_correo: c.email_fuente, asunto: r.datos.asunto.slice(0, 160), cuerpo,
-      revision: { aprobado, problemas, hechos_usados: r.datos.hechos_usados, senal_usada: r.datos.senal_usada, senales, puntos: c.puntos },
+      revision: { aprobado, problemas, hechos_usados: r.datos.hechos_usados, senal_usada: r.datos.senal_usada, senales, puntos: c.puntos, tipo: c.tipo || "empresa", puesto: c.puesto, url: c.url },
       estado: aprobado ? "listo" : "bloqueado",
     });
     if (error) throw Object.assign(new Error(error.code === "23505" ? "Ya hay una presentación para esta empresa" : error.message), { coste });
     const ahora = new Date().toISOString();
     await srv.from("oportunidades").upsert({
-      user_id: ctx.user_id, clave: c.k, tipo: "empresa", titulo: c.empresa, organizacion: c.empresa, puntuacion: c.puntos,
+      user_id: ctx.user_id, clave: c.k, tipo: oferta ? "empleo" : "empresa", titulo: oferta ? `${c.puesto} · ${c.empresa}` : c.empresa, organizacion: c.empresa, puntuacion: c.puntos,
       explicacion: { motivos: c.motivos, sin_info: c.sin_info }, datos: { candidata: c, ...(inv ? { investigacion: inv } : {}) },
       estado: aprobado ? "aprobacion" : "borrador", agente: "comercial", senales: c.items, actualizado: ahora,
       siguiente: aprobado ? (modo === "real" ? "Se enviará en el próximo reparto" : "Ensayo: te llegará una copia a ti") : "Revisar el borrador (el repaso lo bloqueó)",
     }, { onConflict: "user_id,clave" });
     await evento(ctx, "comercial", aprobado ? "presentacion" : "bloqueo",
-      aprobado ? `${c.empresa}: presentación lista (${modo === "real" ? "envío real" : "ensayo"}) para ${c.email}` : `${c.empresa}: el repaso la bloqueó: ${problemas.join("; ")}`,
+      aprobado ? `${oferta ? `Candidatura «${c.puesto}» en ` : ""}${c.empresa}: lista (${modo === "real" ? "envío real" : "ensayo"}) para ${c.email}` : `${c.empresa}: el repaso la bloqueó: ${problemas.join("; ")}`,
       { problemas }, tarea_id);
     return { salida: { empresa: c.empresa, aprobado, modo }, coste };
   },

@@ -92,7 +92,7 @@ def tecnoempleo(cfg):
                 "titulo": limpio(it.findtext("title")),
                 "empresa": campo("Empresa"),
                 "ubicacion": ", ".join(x for x in (campo("Población"), campo("Provincia")) if x),
-                "descripcion": campo("Descripción")[:600],
+                "descripcion": campo("Descripción")[:6000],
                 "url": (it.findtext("link") or "").strip(),
                 "fecha": parsedate_to_datetime(fecha).date().isoformat() if fecha else "",
                 "salario": "",
@@ -113,7 +113,7 @@ def remotive(cfg):
             continue
         out.append({
             "fuente": "Remotive", "titulo": j["title"], "empresa": j.get("company_name", ""),
-            "ubicacion": "Remoto (" + loc + ")", "descripcion": limpio(j.get("description"))[:600],
+            "ubicacion": "Remoto (" + loc + ")", "descripcion": limpio(j.get("description"))[:6000],
             "url": j.get("url", ""), "fecha": (j.get("publication_date") or "")[:10], "salario": j.get("salary") or "",
         })
     return out
@@ -159,7 +159,7 @@ def jooble(cfg):
             for o in d.get("jobs", []):
                 out.append({
                     "fuente": "Jooble · " + (o.get("source") or "varios"), "titulo": limpio(o.get("title")), "empresa": o.get("company", ""),
-                    "ubicacion": o.get("location", ""), "descripcion": limpio(o.get("snippet"))[:600],
+                    "ubicacion": o.get("location", ""), "descripcion": limpio(o.get("snippet"))[:6000],
                     "url": o.get("link", ""), "fecha": (o.get("updated") or "")[:10], "salario": o.get("salary", ""),
                 })
     return out
@@ -181,7 +181,7 @@ def adzuna(cfg):
         for o in d.get("results", []):
             out.append({
                 "fuente": "Adzuna", "titulo": limpio(o.get("title")), "empresa": (o.get("company") or {}).get("display_name", ""),
-                "ubicacion": (o.get("location") or {}).get("display_name", ""), "descripcion": limpio(o.get("description"))[:600],
+                "ubicacion": (o.get("location") or {}).get("display_name", ""), "descripcion": limpio(o.get("description"))[:6000],
                 "url": o.get("redirect_url", ""), "fecha": (o.get("created") or "")[:10],
                 "salario": f"{o['salary_min']:,.0f}–{o['salary_max']:,.0f} €".replace(",", ".") if o.get("salary_min") and o.get("salary_max") else "",
             })
@@ -234,7 +234,7 @@ def eures(cfg):
             ms = j.get("creationDate") or j.get("lastModificationDate")
             out.append({"fuente": "EURES (servicios públicos de empleo)", "titulo": titulo_limpio(j.get("title", "")),
                         "empresa": ((j.get("employer") or {}).get("name") or "").strip(), "ubicacion": lugar,
-                        "descripcion": limpio(j.get("description"))[:600], "url": f"https://europa.eu/eures/portal/jv-se/jv-details/{j['id']}?lang=es",
+                        "descripcion": limpio(j.get("description"))[:6000], "url": f"https://europa.eu/eures/portal/jv-se/jv-details/{j['id']}?lang=es",
                         "fecha": datetime.fromtimestamp(ms / 1000, timezone.utc).date().isoformat() if ms else "", "salario": ""})
     return out
 
@@ -254,7 +254,7 @@ def himalayas(cfg):
                 sal = f"{j['minSalary']}-{j['maxSalary']} {j.get('currency') or ''}".strip() if j.get("minSalary") and j.get("maxSalary") else ""
                 paises = j.get("locationRestrictions") or []
                 out.append({"fuente": "Himalayas (remoto)", "titulo": j.get("title", ""), "empresa": j.get("companyName", ""),
-                            "ubicacion": "Remoto (abierto a España)" if "Spain" in paises else "Remoto (" + (", ".join(paises[:3]) if paises else "global") + ")", "descripcion": limpio(j.get("excerpt") or j.get("description"))[:600],
+                            "ubicacion": "Remoto (abierto a España)" if "Spain" in paises else "Remoto (" + (", ".join(paises[:3]) if paises else "global") + ")", "descripcion": limpio(j.get("excerpt") or j.get("description"))[:6000],
                             "url": j.get("applicationLink") or j.get("guid", ""),
                             "fecha": datetime.fromtimestamp(j["pubDate"], timezone.utc).date().isoformat() if j.get("pubDate") else "", "salario": sal})
     return out
@@ -268,7 +268,7 @@ def jobicy(cfg):
         aviso("Jobicy", ex)
         return []
     return [{"fuente": "Jobicy (remoto)", "titulo": limpio(j.get("jobTitle")), "empresa": j.get("companyName", ""), "ubicacion": "Remoto (" + (j.get("jobGeo") or "España") + ")",
-             "descripcion": limpio(j.get("jobExcerpt"))[:600], "url": j.get("url", ""), "fecha": (j.get("pubDate") or "")[:10], "salario": ""} for j in d.get("jobs", [])]
+             "descripcion": limpio(j.get("jobExcerpt"))[:6000], "url": j.get("url", ""), "fecha": (j.get("pubDate") or "")[:10], "salario": ""} for j in d.get("jobs", [])]
 
 
 ESPANA = re.compile(r"spain|espana|españa|\bes\b|madrid|barcelona|bilbao|getxo|valencia|sevilla|malaga|zaragoza|oviedo|gijon|aviles|santander|vigo|coruna|pamplona|"
@@ -312,7 +312,7 @@ def corporativos(cfg):
                     except Exception:
                         fecha = ""
                     out.append({"fuente": fuente, "titulo": (it.findtext("title") or "").strip(), "empresa": empresa, "ubicacion": " · ".join(dict.fromkeys(lugares)),
-                                "descripcion": limpio(it.findtext("description"))[:600], "url": (it.findtext("link") or "").strip(), "fecha": fecha, "salario": "", "_remoto": remoto})
+                                "descripcion": limpio(it.findtext("description"))[:6000], "url": (it.findtext("link") or "").strip(), "fecha": fecha, "salario": "", "_remoto": remoto})
             elif ats == "workable":
                 d = json.loads(get(f"https://apply.workable.com/api/v1/widget/accounts/{ident}"))
                 for j in d.get("jobs", []):
@@ -322,7 +322,7 @@ def corporativos(cfg):
                 d = json.loads(get(f"https://{ident}.recruitee.com/api/offers/"))
                 for j in d.get("offers", []):
                     out.append({"fuente": fuente, "titulo": j.get("title", ""), "empresa": empresa, "ubicacion": (j.get("location") or "") + (" · remoto" if j.get("remote") else ""),
-                                "descripcion": limpio(j.get("description"))[:600], "url": j.get("careers_url", ""), "fecha": (j.get("published_at") or "")[:10], "salario": "", "_remoto": bool(j.get("remote"))})
+                                "descripcion": limpio(j.get("description"))[:6000], "url": j.get("careers_url", ""), "fecha": (j.get("published_at") or "")[:10], "salario": "", "_remoto": bool(j.get("remote"))})
             elif ats == "personio":
                 raiz = ET.fromstring(get(f"https://{ident}.jobs.personio.de/xml?language=es"))
                 for pos in raiz.findall("position"):
@@ -346,13 +346,31 @@ def corporativos(cfg):
                     cat = j.get("categories") or {}
                     out.append({"fuente": fuente, "titulo": j.get("text", ""), "empresa": empresa,
                                 "ubicacion": cat.get("location", "") + (" · " + j.get("workplaceType", "") if j.get("workplaceType") else ""),
-                                "descripcion": limpio(j.get("descriptionPlain", ""))[:600], "url": j.get("hostedUrl", ""), "fecha": "", "salario": ""})
+                                "descripcion": limpio(j.get("descriptionPlain", ""))[:6000], "url": j.get("hostedUrl", ""), "fecha": "", "salario": ""})
         except Exception as ex:
             aviso("Portales " + p.get("empresa", "?"), ex)
     return [o for o in out if en_espana_o_remoto(o["ubicacion"], o.pop("_remoto", False))]
 
 
 FUENTES = [tecnoempleo, remotive, eures, himalayas, jobicy, infojobs, jooble, adzuna, alertas, corporativos]
+
+
+# ---------------------------------------------------------------- correo de candidatura
+
+RE_CORREO = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
+NO_CORREO = re.compile(r"no-?reply|noreply|donotreply|eures|tecnoempleo|himalayas|jobicy|infojobs|indeed|linkedin|example", re.I)
+
+
+def correo_candidatura(texto):
+    """Correo que la propia oferta da para enviar el CV («envía tu CV a …»). Si no lo da, vacío."""
+    for m in RE_CORREO.finditer(texto or ""):
+        correo = m.group(0).rstrip(".").lower()
+        cerca = norm(texto[max(0, m.start() - 160):m.start()])
+        if NO_CORREO.search(correo):
+            continue
+        if re.search(r"\bcv\b|curricul|candidatur|interesad|envi|remit|inscri|enviar", cerca):
+            return correo
+    return ""
 
 
 # ---------------------------------------------------------------- puntuación
@@ -450,6 +468,8 @@ def main():
                 continue
             o["solo_piloto"] = puntuar(o, cfg)[0] < cfg["puntuacion_minima"]  # solo encaja con perfiles del piloto
             clave = norm(o["titulo"] + "|" + o["empresa"])[:160]
+            o["correo"] = correo_candidatura(o.get("descripcion", ""))
+            o["descripcion"] = (o.get("descripcion") or "")[:600]
             o.update(clave=clave, puntuacion=p, encaje=", ".join(motivos), comunidad=comunidad(o))
             if clave in previas:
                 o["visto"] = previas[clave].get("visto", hoy.isoformat())
@@ -466,7 +486,7 @@ def main():
     (DATA / "empleos_nuevos.json").write_text(json.dumps(nuevas, ensure_ascii=False, indent=1), encoding="utf-8")
     web = BASE / "docs" / "data"
     web.mkdir(parents=True, exist_ok=True)
-    campos = ("clave", "puntuacion", "titulo", "empresa", "ubicacion", "fuente", "url", "fecha", "visto", "salario", "encaje", "comunidad", "solo_piloto")
+    campos = ("clave", "puntuacion", "titulo", "empresa", "ubicacion", "fuente", "url", "fecha", "visto", "salario", "encaje", "comunidad", "solo_piloto", "correo")
     (web / "empleos.json").write_text(json.dumps([{k: o.get(k, "") for k in campos} for o in vivas], ensure_ascii=False), encoding="utf-8")
     print(f"Revisadas {vistas} ofertas; {len(vivas)} encajan ({len(nuevas)} nuevas) -> data/empleos.json")
 

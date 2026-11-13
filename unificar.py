@@ -132,9 +132,18 @@ def descripciones():
         return {}
 
 
+def correos_oferta():
+    f = BASE / "data" / "empleos.json"
+    try:
+        return {o["clave"]: o.get("correo", "") for o in json.loads(f.read_text(encoding="utf-8")) if o.get("correo")}
+    except (OSError, ValueError):
+        return {}
+
+
 def desde_empleos(filas, consultada):
     out = []
     desc = descripciones()
+    correos = correos_oferta()
     for o in filas:
         tags = temas(o.get("encaje"))
         rol, resto = (tags[0], tags[1:]) if tags else ("", [])
@@ -156,6 +165,10 @@ def desde_empleos(filas, consultada):
                  {"campo": "Modalidad", "valor": mod, "origen": mod_origen or "desconocido"}]
         if o.get("salario"):
             datos.append({"campo": "Salario", "valor": o["salario"], "origen": "confirmado"})
+        correo = correos.get(o["clave"], "")
+        if correo:
+            datos.append({"campo": "Correo para candidaturas (indicado en la oferta)", "valor": correo, "origen": "confirmado"})
+            acc, acc_m = 0.9, ["la oferta indica un correo para enviar el CV"]
         out.append({
             "id": "emp:" + o["clave"], "origen": {"lista": "emp", "clave": o["clave"]}, "solo_piloto": bool(o.get("solo_piloto")),
             "tipo": "empleo", "subtipo": "oferta", "verificacion": "vacante_confirmada",
@@ -165,6 +178,7 @@ def desde_empleos(filas, consultada):
             "fechas": {"publicada": o.get("fecha") or o.get("visto"), "plazo": None, "consultada": o.get("visto") or consultada},
             "fuentes": [{"nombre": o.get("fuente", ""), "url": o.get("url", ""), "consultada": o.get("visto") or consultada}],
             "datos": datos, "etiquetas": tags, "descripcion": desc.get(o["clave"], ""),
+            "contacto": {"email": correo, "fuente": "oferta"} if correo else None,
             "criterios": {
                 "encaje": crit(enc, ([f"puesto: {rol}"] if rol else []) + [f"tema: {x}" for x in resto]),
                 "necesidad": crit(1.0, ["vacante publicada"]),

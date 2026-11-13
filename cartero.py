@@ -7,7 +7,7 @@ jornada de los agentes. Qué hace:
      Real: se envía a la empresa con tu CV adjunto, desde tu cuenta (queda en tus Enviados).
   3. Seguimiento único a los 10 días si no hay respuesta, en el mismo hilo.
   4. Mira en tu bandeja de entrada si alguna empresa ha respondido y lo marca.
-  5. Te manda un resumen con lo enviado, las respuestas y las ofertas del día para apuntarte.
+  5. Te manda un resumen solo si ha pasado algo: lo enviado, las respuestas y los avisos.
 
 Límites: solo envía desde la misma cuenta que firma los mensajes; como mucho lo que diga
 «max_envios» (3 al día por defecto); pausa entre envíos. Si falta algo, no envía y lo cuenta.
@@ -169,8 +169,8 @@ def main():
                 except Exception as x:
                     informe["errores"].append(f"No se ha podido revisar tu bandeja de entrada: {x}")
 
-            ofertas = ofertas_del_dia()
-            if any(informe.values()) or ofertas:
+            ofertas = []  # Rocío no quiere listas de ofertas: solo lo que RADAR ha hecho por ella
+            if any(informe.values()):
                 smtp.send_message(mensaje(yo, yo, resumen_asunto(informe, ofertas), resumen_texto(modo, informe, ofertas)))
         finally:
             smtp.quit()
