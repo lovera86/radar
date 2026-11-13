@@ -33,6 +33,7 @@ const RADAR_NUBE = (() => {
 let NUBE_SESION = null;
 let NUBE_ADMIN = false;
 let NUBE_PERFIL = null;
+let NUBE_COMPROBADA = false; // ya se sabe si hay sesión
 let NUBE_ESTADO = 'sin-cuenta'; // sin-cuenta · cargando · al-dia · guardando · sin-conexion
 const NUBE_PEND = new Set();
 let NUBE_TEMP = null;
@@ -114,7 +115,8 @@ async function nubeIniciar() {
   NUBE_SESION = data.session;
   RADAR_NUBE.auth.onAuthStateChange((ev, s) => { NUBE_SESION = s; });
   document.documentElement.classList.toggle('con-cuenta', Boolean(NUBE_SESION));
-  if (!NUBE_SESION) { nubeAviso('sin-cuenta'); return; }
+  NUBE_COMPROBADA = true;
+  if (!NUBE_SESION) { nubeAviso('sin-cuenta'); if (typeof VISTA !== 'undefined' && NUBE_PRIVADAS.includes(VISTA) && typeof pintar === 'function') pintar(); return; }
   nubeAviso('cargando');
   const uid = NUBE_SESION.user.id;
   let m = nubeMeta(); let recargar = false;
@@ -173,6 +175,21 @@ async function nubeIniciar() {
   sessionStorage.removeItem('radar-nube-recarga');
   if (!NUBE_PERFIL && !NUBE_ADMIN) nubeSinPerfil();
   document.dispatchEvent(new CustomEvent('radar-nube-lista'));
+}
+
+/* ---------- Zonas privadas: sin sesión no se enseñan ---------- */
+const NUBE_PRIVADAS = ['perfil', 'bandeja'];
+/* Si la vista es privada y no hay sesión, pinta la pantalla de entrada y devuelve true. */
+function nubePuerta(vista) {
+  if (!RADAR_NUBE || !NUBE_PRIVADAS.includes(vista) || NUBE_SESION) return false;
+  $('#res-n').textContent = '';
+  const c = el('section', 'nube-puerta');
+  if (!NUBE_COMPROBADA) { c.append(el('p', 'nota', 'Comprobando tu sesión…')); $('#rejilla').replaceChildren(c); return true; }
+  c.append(el('h2', null, vista === 'perfil' ? 'Entra para ver tu perfil' : 'Entra para ver tus oportunidades'),
+    el('p', 'bv-sub', 'Esta parte de RADAR es personal: tu perfil, tus oportunidades, tus agentes y tu configuración solo se ven con tu sesión iniciada.'),
+    nubeFormularioEntrar());
+  $('#rejilla').replaceChildren(c);
+  return true;
 }
 
 /* ---------- Entrar y salir ---------- */

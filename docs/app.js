@@ -523,10 +523,10 @@ function pintar() {
       enlace('https://www.tecnoempleo.com/ofertas-trabajo/?te=project+manager', 'Tecnoempleo', 'btn sec mini'));
   }
   if (VISTA === 'empresas') { $('#mejores').hidden = true; return pintarEmpresas(); }
-  if (VISTA === 'bandeja') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarBandeja(); }
+  if (VISTA === 'bandeja') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; if (typeof nubePuerta === 'function' && nubePuerta('bandeja')) return; return pintarBandeja(); }
   if (VISTA === 'radar') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarRadarDiario(); }
   if (VISTA === 'descubrir') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarDescubrir(); }
-  if (VISTA === 'perfil') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarPerfil(); }
+  if (VISTA === 'perfil') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; if (typeof nubePuerta === 'function' && nubePuerta('perfil')) return; return pintarPerfil(); }
   if (VISTA === 'guardados') { $('#mejores').hidden = true; $('#rejilla').hidden = false; $('#vista-mapa').hidden = true; return pintarGuardados(); }
   const lista = ordenar(D.ops.filter((o) => pasa(o)));
   const total = D.ops.filter((o) => pasa(o, false) || true).length;
