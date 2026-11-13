@@ -1211,7 +1211,7 @@ html[data-nube="sin-conexion"] .nube-estado { color: var(--warn); }
 
 /* ---------- RADAR 2.0 · Oportunidades (bandeja.js) ---------- */
 body[data-vista="bandeja"] .buscador-zona, body[data-vista="bandeja"] .res-ctl, body[data-vista="bandeja"] .res-cab { display: none; }
-.bj { display: grid; gap: 18px; }
+.bj { grid-column: 1 / -1; display: grid; gap: 18px; }
 .bj-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 12px; }
 .bj-kpi { display: grid; gap: 2px; text-align: left; padding: 14px 16px; border-radius: var(--r); border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; font: inherit; }
 .bj-kpi b { font: 700 26px/1.1 var(--display); font-variant-numeric: tabular-nums; }
@@ -1339,5 +1339,5 @@ body[data-vista="bandeja"] .buscador-zona, body[data-vista="bandeja"] .res-ctl, 
 .ag-detalle h4 { margin: 14px 0 6px; }
 
 /* Pantalla de entrada de las zonas privadas */
-.nube-puerta { max-width: 520px; margin: 32px auto; padding: 28px; border: 1px solid var(--linea, #dfe6e6); border-radius: 18px; background: var(--tarjeta, #fff); }
+.nube-puerta { grid-column: 1 / -1; width: 100%; box-sizing: border-box; max-width: 520px; margin: 32px auto; padding: 28px; border: 1px solid var(--linea, #dfe6e6); border-radius: 18px; background: var(--tarjeta, #fff); }
 .nube-puerta h2 { margin: 0 0 8px; }
