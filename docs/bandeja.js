@@ -149,10 +149,24 @@ let BJ_AGENTES_LEIDO = false;
 async function bjTraerDeAgentes() {
   if (BJ_AGENTES_LEIDO || typeof RADAR_NUBE === 'undefined' || !RADAR_NUBE || !NUBE_SESION) return 0;
   BJ_AGENTES_LEIDO = true;
-  const { data, error } = await RADAR_NUBE.from('oportunidades').select('clave,titulo,datos,puntuacion,explicacion,actualizado')
-    .eq('estado', 'validada').order('actualizado', { ascending: false }).limit(30);
+  const { data, error } = await RADAR_NUBE.from('oportunidades').select('clave,titulo,datos,puntuacion,explicacion,actualizado,estado')
+    .in('estado', ['validada', 'borrador', 'aprobacion', 'contactada', 'respuesta']).order('actualizado', { ascending: false }).limit(40);
   if (error || !data?.length) return 0;
   const datos = bjDatos();
+  // Estado del servidor → estado de la bandeja (envío automático de la fase 3)
+  const EST = { validada: 'validada', borrador: 'borrador', aprobacion: 'aprobacion', contactada: 'enviada', respuesta: 'respuesta' };
+  const orden = ['validada', 'borrador', 'aprobacion', 'enviada', 'respuesta'];
+  const avanzar = (op, r) => {
+    const nuevo = EST[r.estado];
+    if (orden.indexOf(nuevo) <= orden.indexOf(op.estado) || !orden.includes(op.estado)) return false;
+    op.estado = nuevo;
+    op.siguiente = { accion: nuevo === 'enviada' ? 'Esperar respuesta (seguimiento automático a los 10 días)' : nuevo === 'respuesta' ? 'Contestar y proponer una llamada' : 'Revisar el mensaje en Mi perfil → Agentes', fecha: hoyISO() };
+    bjEvento(op, nuevo, nuevo === 'enviada' ? 'Presentación enviada automáticamente con tu CV' : nuevo === 'respuesta' ? 'La empresa ha respondido: mira tu correo' : 'Presentación preparada por tus agentes');
+    op.actualizado = new Date().toISOString();
+    return true;
+  };
+  let cambios = 0;
+  data.forEach((r) => { const op = datos[r.clave]; if (op && op.origen === 'agentes' && avanzar(op, r)) cambios++; });
   const emp = new Map(empresasDetectadas().map((e) => [e.k, e]));
   let n = 0;
   data.forEach((r) => {
@@ -170,11 +184,12 @@ async function bjTraerDeAgentes() {
     if (r.datos?.investigacion && typeof iaAplicarInvestigacion === 'function') iaAplicarInvestigacion(op, r.datos.investigacion);
     op.estado = 'validada';
     op.siguiente = { accion: 'Revisar la propuesta de tus agentes', fecha: hoyISO() };
-    bjEvento(op, 'alta', `Propuesta por tu equipo de agentes (${r.puntuacion} puntos): investigada el ${fechaCorta(r.actualizado)}`);
+    bjEvento(op, 'alta', `Propuesta por tu equipo de agentes (${r.puntuacion} puntos) el ${fechaCorta(r.actualizado)}`);
+    avanzar(op, r);
     datos[r.clave] = op; n++;
   });
-  if (n) bjGuardar();
-  return n;
+  if (n || cambios) bjGuardar();
+  return n + cambios;
 }
 document.addEventListener('radar-nube-lista', () => {
   bjTraerDeAgentes().then((n) => { if (n && typeof VISTA !== 'undefined' && VISTA === 'bandeja') pintar(); });

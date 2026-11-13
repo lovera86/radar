@@ -1,7 +1,7 @@
 // Pruebas del núcleo del orquestador. Ejecutar:  npx tsx --test supabase/functions/radar-jornada/nucleo.test.ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cerrarJornada, claveBandeja, claveEmpresa, costeDe, deduplicar, elegirCandidatas, esPersona, madrid, planificar, puntuar, quedaPresupuesto, senalDesdeItem, tocaJornada, trasFallo, type Config, type ItemPuntuable } from "./nucleo.ts";
+import { cerrarJornada, claveBandeja, claveEmpresa, correoDeItem, costeDe, firmaTexto, modoEnvio, seguimientosDebidos, sinTelefonos, textoSeguimiento, deduplicar, elegirCandidatas, esPersona, madrid, planificar, puntuar, quedaPresupuesto, senalDesdeItem, tocaJornada, trasFallo, type Config, type ItemPuntuable } from "./nucleo.ts";
 
 const base: Config = { hora: 7, dias: [1, 2, 3, 4, 5], presupuesto_dia: 0.2, max_ia: 2, max_tareas: 60, duracion_max_min: 90, umbral: 65, agentes_off: [], pausada: false };
 
@@ -104,4 +104,37 @@ test("esPersona y claveBandeja (misma clave que la bandeja del navegador)", () =
 test("costeDe: tokens, caché y búsquedas", () => {
   assert.equal(costeDe([{ input_tokens: 20000, output_tokens: 2000, server_tool_use: { web_search_requests: 2 } }]), 0.08);
   assert.equal(costeDe([{ input_tokens: 10000 }, { input_tokens: 10000, cache_read_input_tokens: 50000 }]), 0.05);
+});
+
+test("modoEnvio: ensayo hasta su fecha, luego real; pausa y apagado mandan", () => {
+  const c = { ...base, envio_modo: "ensayo" as const, ensayo_hasta: "2026-11-16" };
+  assert.equal(modoEnvio(c, "2026-11-16"), "ensayo");
+  assert.equal(modoEnvio(c, "2026-11-17"), "real");
+  assert.equal(modoEnvio({ ...c, pausada: true }, "2026-11-17"), "apagado");
+  assert.equal(modoEnvio({ ...c, envio_modo: "apagado" }, "2026-11-17"), "apagado");
+  assert.equal(modoEnvio(base, "2026-11-17"), "apagado"); // sin la fase 3 instalada no se envía
+});
+
+test("correoDeItem: solo correos comprobados en la web oficial", () => {
+  const ok = adj("Topcad", "B27245091", 0.9, 1, { contacto: { email: "Topcad@topcad.com" }, fuentes: [{ nombre: "PLACSP", url: "https://x" }, { nombre: "Web oficial de la empresa", url: "https://topcad.com/contacto" }] });
+  ok.criterios!.acceso = { valor: 0.75, motivos: ["correo verificado en la web oficial de la empresa"] };
+  assert.deepEqual(correoDeItem(ok), { email: "topcad@topcad.com", fuente: "https://topcad.com/contacto" });
+  assert.equal(correoDeItem({ ...ok, fuentes: [{ nombre: "PLACSP", url: "https://x" }] }), null);
+  assert.equal(correoDeItem({ ...ok, contacto: { email: "no es un correo" } }), null);
+  const sinVerificar = { ...ok, criterios: { ...ok.criterios, acceso: { valor: 0.5, motivos: ["correo encontrado"] } } };
+  assert.equal(correoDeItem(sinVerificar), null);
+  const r = elegirCandidatas([ok], new Set(), 5, 0);
+  assert.equal(r.elegidas[0].email, "topcad@topcad.com");
+});
+
+test("sinTelefonos y firma: el teléfono solo en la firma", () => {
+  assert.equal(sinTelefonos("Llámeme al 612 345 678 o +34 612345678."), "Llámeme al  o .");
+  assert.equal(firmaTexto({ nombre: "Rocío", telefono: "600 000 000", email: "r@x.com" }), "Rocío\nTel. 600 000 000\nr@x.com");
+});
+
+test("seguimientosDebidos: uno solo, a los 10 días, sin respuesta y solo envíos reales", () => {
+  const e = (id: string, extra: object) => ({ id, tipo: "presentacion", modo: "real", estado: "enviado", enviado: "2026-11-01T09:00:00Z", empresa: "A", para: "a@a.com", asunto: "Hola", en_respuesta_a: null, ...extra });
+  const lista = [e("1", {}), e("2", { enviado: "2026-11-10T09:00:00Z" }), e("3", { estado: "respondido" }), e("4", { modo: "ensayo" }), e("5", {}), e("6", { tipo: "seguimiento", en_respuesta_a: "5" })];
+  assert.deepEqual(seguimientosDebidos(lista, new Date("2026-11-13T10:00:00Z")).map((x) => x.id), ["1"]);
+  assert.match(textoSeguimiento({ empresa: "Topcad" }, { nombre: "Rocío" }), /Topcad[\s\S]*Rocío$/);
 });

@@ -12,13 +12,15 @@
 // Nada de lo que hace esta función envía mensajes ni actúa fuera de RADAR.
 
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.45.4";
-import { cerrarJornada, COSTE_ESTIMADO_INVESTIGACION, deduplicar, elegirCandidatas, madrid, planificar, quedaPresupuesto, senalDesdeItem, tocaJornada, trasFallo, type Candidata, type Config, type ItemPuntuable } from "./nucleo.ts";
-import { investigarEmpresa } from "./ia.ts";
+import { cerrarJornada, COSTE_ESTIMADO_INVESTIGACION, deduplicar, elegirCandidatas, firmaTexto, madrid, modoEnvio, planificar, quedaPresupuesto, seguimientosDebidos, senalDesdeItem, sinTelefonos, textoSeguimiento, tocaJornada, trasFallo, type Candidata, type Config, type EnvioResumen, type ItemPuntuable } from "./nucleo.ts";
+import { investigarEmpresa, redactarPresentacion, revisarPresentacion } from "./ia.ts";
 
 const WEB = "https://lovera86.github.io/radar";
 const ORIGENES = ["https://lovera86.github.io", "http://localhost:8765"];
 const LIMITE_MS = 100_000;
-const AGENTES_IA = new Set(["investigador"]); // como mucho una llamada de IA por ejecución, y solo al principio
+const AGENTES_IA = new Set(["investigador", "comercial"]);
+const COSTE_ESTIMADO_REDACCION = 0.03;
+const ESTADOS_TRABAJADOS = new Set(["borrador", "aprobacion", "enviada", "respuesta", "seguimiento", "reunion", "descartada"]); // como mucho una llamada de IA por ejecución, y solo al principio
 const MARGEN_IA_MS = 20_000;
 
 const cors = (o: string | null) => ({
@@ -58,6 +60,43 @@ async function leerRecogida(): Promise<ItemPuntuable[]> {
   const items = await r.json();
   if (!Array.isArray(items)) throw new Error("La recogida diaria no tiene el formato esperado");
   return items;
+}
+
+/* Empresas que no deben recibir una presentación: descartadas, ya trabajadas en tu bandeja o ya contactadas. */
+async function noContactar(user_id: string): Promise<Set<string>> {
+  const no = new Set<string>();
+  const { data: est } = await srv.from("estado").select("valor").eq("user_id", user_id).eq("clave", "radar-v2").maybeSingle();
+  const v = (est?.valor || {}) as { bandeja?: Record<string, { estado?: string }>; excluidas?: Record<string, unknown> };
+  Object.keys(v.excluidas || {}).forEach((k) => no.add(k));
+  Object.entries(v.bandeja || {}).forEach(([k, o]) => { if (ESTADOS_TRABAJADOS.has(String(o?.estado))) no.add(k); });
+  const { data: env } = await srv.from("envios").select("empresa_clave").eq("user_id", user_id).eq("tipo", "presentacion").in("estado", ["listo", "enviado", "respondido"]);
+  (env || []).forEach((e) => no.add(e.empresa_clave));
+  return no;
+}
+
+/* Cuántas presentaciones más caben hoy (preparadas hoy + tareas del Comercial en cola). */
+async function cupoEnviosHoy(ctx: Ctx): Promise<number> {
+  const max = ctx.config.max_envios ?? 3;
+  const desde = new Date(Date.now() - 20 * 3600_000).toISOString();
+  const { count: hechos } = await srv.from("envios").select("id", { count: "exact", head: true })
+    .eq("user_id", ctx.user_id).eq("tipo", "presentacion").neq("estado", "cancelado").gte("creado", desde);
+  const { count: enCola } = await srv.from("tareas").select("id", { count: "exact", head: true })
+    .eq("user_id", ctx.user_id).eq("agente", "comercial").in("estado", ["pendiente", "en_curso"]);
+  return Math.max(0, max - (hechos || 0) - (enCola || 0));
+}
+
+async function encolarComercial(ctx: Ctx, cs: Candidata[], tarea_id?: string) {
+  if (!cs.length || ctx.config.agentes_off.includes("comercial") || modoEnvio(ctx.config, madrid(new Date()).fecha) === "apagado") return 0;
+  const cupo = await cupoEnviosHoy(ctx);
+  const elegidas = cs.slice(0, cupo);
+  if (!elegidas.length) return 0;
+  const { error } = await srv.from("tareas").upsert(elegidas.map((c, i) => ({
+    jornada_id: ctx.jornada.id, user_id: ctx.user_id, agente: "comercial", clave: `presentar:${c.k}`,
+    prioridad: 70 - i, entrada: c, max_intentos: 1,
+  })), { onConflict: "jornada_id,clave", ignoreDuplicates: true });
+  if (error) throw error;
+  await evento(ctx, "comercial", "plan", `Presentaciones a preparar: ${elegidas.map((c) => c.empresa).join(", ")}`, null, tarea_id);
+  return elegidas.length;
 }
 
 /* Lo que ya se ha gastado hoy en IA, sumando todas las jornadas del día (también las manuales). */
@@ -137,12 +176,17 @@ const AGENTES: Record<string, (ctx: Ctx, entrada: Record<string, unknown>, tarea
         if (e2) throw e2;
       }
     }
+    // A quién presentarse hoy: encaje alto y correo comprobado en la web oficial de la empresa.
+    const umbralEnvio = ctx.config.umbral_envio ?? 80;
+    const no = await noContactar(uid);
+    const paraEnviar = elegirCandidatas(items, no, 50, umbralEnvio).elegidas.filter((c) => c.email && c.email_fuente);
+    const enviar = await encolarComercial(ctx, paraEnviar, tarea_id);
     const lista = elegidas.map((c) => `${c.empresa} (${c.puntos})`).join(", ");
     await evento(ctx, "analista", "priorizacion", elegidas.length
       ? `${por_encima} empresas nuevas superan tu umbral de ${ctx.config.umbral}; elegidas hoy: ${lista}`
       : cupo === 0 ? "Hoy ya se ha cubierto el cupo de empresas investigadas" : `Ninguna empresa nueva supera tu umbral de ${ctx.config.umbral}`,
       { elegidas: elegidas.map((c) => ({ empresa: c.empresa, puntos: c.puntos, motivos: c.motivos })) }, tarea_id);
-    return { salida: { por_encima, elegidas: elegidas.map((c) => ({ k: c.k, empresa: c.empresa, puntos: c.puntos })) } };
+    return { salida: { por_encima, elegidas: elegidas.map((c) => ({ k: c.k, empresa: c.empresa, puntos: c.puntos })), presentaciones: enviar } };
   },
 
   // Investigador: busca en la web la empresa elegida (IA, dentro del presupuesto del día).
@@ -171,9 +215,70 @@ const AGENTES: Record<string, (ctx: Ctx, entrada: Record<string, unknown>, tarea
         verificado: inv.consultada, confianza: k.email ? "alta" : "media", agente: "investigador",
       }, { onConflict: "user_id,empresa_clave" });
     }
+    if (k.email && k.fuente_url && c.puntos >= (ctx.config.umbral_envio ?? 80) && !(await noContactar(ctx.user_id)).has(c.k)) {
+      await encolarComercial(ctx, [{ ...c, email: k.email.toLowerCase(), email_fuente: k.fuente_url }], tarea_id);
+    }
     const canal = k.email ? "correo publicado" : k.formulario ? "formulario" : k.pagina ? "página de contacto" : "sin canal publicado";
     await evento(ctx, "investigador", "investigacion", `${c.empresa}: ${inv.senales.length} señal${inv.senales.length === 1 ? "" : "es"} con fuente, ${canal} · ${coste.toFixed(3)} $`, { dudas: inv.dudas }, tarea_id);
     return { salida: { empresa: c.empresa, senales: inv.senales.length, canal }, coste };
+  },
+
+  // Comercial: redacta la presentación, un segundo repaso la revisa y, si la aprueba, queda lista
+  // para el cartero. Nunca envía nada por sí mismo.
+  async comercial(ctx, entrada, tarea_id) {
+    const c = entrada as unknown as Candidata;
+    const cfg = ctx.config;
+    const modo = modoEnvio(cfg, madrid(new Date()).fecha);
+    const omitir = async (motivo: string) => { await evento(ctx, "comercial", "aviso", `${c.empresa}: ${motivo}`, null, tarea_id); return { salida: { empresa: c.empresa }, omitida: motivo }; };
+    if (modo === "apagado") return omitir("el envío automático está apagado");
+    if (!c.email || !c.email_fuente) return omitir("no hay un correo publicado por la empresa");
+    if ((await noContactar(ctx.user_id)).has(c.k)) return omitir("ya se le escribió o la descartaste");
+    const hechos = (cfg.perfil_hechos || []).slice(0, 25);
+    const firma = cfg.firma || {};
+    if (hechos.length < 3 || !firma.nombre || !firma.email) return omitir("faltan tu perfil o tu firma: abre RADAR una vez con tu sesión y se copian solos");
+    if (modo === "real" && !cfg.cv_ruta) return omitir("falta el CV para adjuntar (Mi perfil → Agentes → CV para enviar)");
+    if (!quedaPresupuesto(cfg, await gastadoHoy(ctx.user_id), COSTE_ESTIMADO_REDACCION)) return omitir("sin presupuesto de IA hoy");
+
+    const { data: op } = await srv.from("oportunidades").select("datos").eq("user_id", ctx.user_id).eq("clave", c.k).maybeSingle();
+    const inv = (op?.datos as { investigacion?: { senales?: { titulo: string; fecha?: string; fuente?: string }[]; actividad?: string } } | null)?.investigacion;
+    const senales = [
+      ...c.hechos.map((h, i) => ({ id: `s${i + 1}`, texto: `Ha ganado el contrato: ${h}` })),
+      ...(inv?.senales || []).map((x, i) => ({ id: `w${i + 1}`, texto: `${x.titulo}${x.fecha ? ` (${x.fecha})` : ""}${x.fuente ? `, según ${x.fuente}` : ""}` })),
+      ...(inv?.actividad ? [{ id: "a1", texto: `Actividad de la empresa según su web: ${inv.actividad}` }] : []),
+    ].slice(0, 8);
+
+    let coste = 0;
+    const r = await redactarPresentacion({ empresa: c.empresa, senales, hechos, nombre: firma.nombre });
+    coste += r.coste;
+    const cuerpoIA = sinTelefonos(r.datos.cuerpo);
+    const problemas: string[] = [];
+    if (/[\[\]{}]|XXX|<[a-z]/i.test(cuerpoIA + r.datos.asunto)) problemas.push("Contiene marcadores sin rellenar");
+    const palabras = cuerpoIA.split(/\s+/).length;
+    if (palabras < 60 || palabras > 260) problemas.push(`Longitud anómala (${palabras} palabras)`);
+    const rv = await revisarPresentacion({ empresa: c.empresa, asunto: r.datos.asunto, cuerpo: cuerpoIA, senales, hechos }).catch((e) => { coste += Number(e?.coste || 0); return null; });
+    if (rv) coste += rv.coste; else problemas.push("No se pudo hacer el segundo repaso");
+    if (rv && !rv.datos.aprobado) problemas.push(...(rv.datos.problemas.length ? rv.datos.problemas : ["El repaso no lo aprobó"]));
+    const aprobado = problemas.length === 0;
+    const cuerpo = `${cuerpoIA}\n\nUn saludo,\n${firmaTexto(firma)}`;
+
+    const { error } = await srv.from("envios").insert({
+      user_id: ctx.user_id, clave: c.k, empresa: c.empresa, empresa_clave: c.k, tipo: "presentacion", modo,
+      para: c.email, fuente_correo: c.email_fuente, asunto: r.datos.asunto.slice(0, 160), cuerpo,
+      revision: { aprobado, problemas, hechos_usados: r.datos.hechos_usados, senal_usada: r.datos.senal_usada, senales, puntos: c.puntos },
+      estado: aprobado ? "listo" : "bloqueado",
+    });
+    if (error) throw Object.assign(new Error(error.code === "23505" ? "Ya hay una presentación para esta empresa" : error.message), { coste });
+    const ahora = new Date().toISOString();
+    await srv.from("oportunidades").upsert({
+      user_id: ctx.user_id, clave: c.k, tipo: "empresa", titulo: c.empresa, organizacion: c.empresa, puntuacion: c.puntos,
+      explicacion: { motivos: c.motivos, sin_info: c.sin_info }, datos: { candidata: c, ...(inv ? { investigacion: inv } : {}) },
+      estado: aprobado ? "aprobacion" : "borrador", agente: "comercial", senales: c.items, actualizado: ahora,
+      siguiente: aprobado ? (modo === "real" ? "Se enviará en el próximo reparto" : "Ensayo: te llegará una copia a ti") : "Revisar el borrador (el repaso lo bloqueó)",
+    }, { onConflict: "user_id,clave" });
+    await evento(ctx, "comercial", aprobado ? "presentacion" : "bloqueo",
+      aprobado ? `${c.empresa}: presentación lista (${modo === "real" ? "envío real" : "ensayo"}) para ${c.email}` : `${c.empresa}: el repaso la bloqueó: ${problemas.join("; ")}`,
+      { problemas }, tarea_id);
+    return { salida: { empresa: c.empresa, aprobado, modo }, coste };
   },
 };
 
@@ -255,6 +360,7 @@ async function consolidar(ctx: Ctx) {
   const inv = tareas.filter((t) => t.agente === "investigador" && t.estado === "hecha").map((t) => String((t.salida as Record<string, unknown>)?.empresa || ""));
   const resumen = {
     investigadas: inv.length, propuestas: inv,
+    presentaciones: tareas.filter((t) => t.agente === "comercial" && t.estado === "hecha" && (t.salida as Record<string, unknown>)?.aprobado).map((t) => String((t.salida as Record<string, unknown>)?.empresa || "")),
     tareas: { total: tareas.length, hechas: tareas.filter((t) => t.estado === "hecha").length, fallidas: tareas.filter((t) => t.estado === "fallida").length, omitidas: tareas.filter((t) => t.estado === "omitida").length },
     senales_nuevas: det?.nuevas ?? null, senales_conocidas: det?.ya_conocidas ?? null,
     errores: tareas.filter((t) => t.error).map((t) => `${t.agente}: ${t.error}`),
@@ -265,6 +371,64 @@ async function consolidar(ctx: Ctx) {
   if (estado !== "en_curso" && ctx.jornada.estado === "en_curso") {
     await evento(ctx, "director", "cierre", estado === "completada" ? "Jornada completada" : "Jornada terminada con errores", resumen);
   }
+}
+
+async function cartero(body: Record<string, unknown>) {
+  const ahora = new Date();
+  if (body.accion === "cola") {
+    const { data: cfgs } = await srv.from("config_jornada").select("*");
+    const usuarios = [];
+    for (const c of (cfgs || []) as (Config & { user_id: string })[]) {
+      const modo = modoEnvio(c, madrid(ahora).fecha);
+      if (modo === "apagado") continue;
+      // Lo que lleva más de 3 días esperando ya no se envía (la señal puede haber caducado).
+      await srv.from("envios").update({ estado: "cancelado", error: "Caducado: más de 3 días en cola" })
+        .eq("user_id", c.user_id).eq("estado", "listo").lt("creado", new Date(ahora.getTime() - 3 * 86400_000).toISOString());
+      const { data: listos } = await srv.from("envios").select("id,modo,empresa,para,asunto,cuerpo,fuente_correo")
+        .eq("user_id", c.user_id).eq("estado", "listo").eq("tipo", "presentacion").order("creado").limit(c.max_envios ?? 3);
+      const { data: todos } = await srv.from("envios").select("id,tipo,modo,estado,enviado,empresa,para,asunto,en_respuesta_a,message_id")
+        .eq("user_id", c.user_id).gte("creado", new Date(ahora.getTime() - 60 * 86400_000).toISOString());
+      const lista = (todos || []) as (EnvioResumen & { message_id: string | null })[];
+      let cv_url: string | null = null;
+      if (c.cv_ruta) {
+        const { data: u } = await srv.storage.from("cv").createSignedUrl(c.cv_ruta, 3600);
+        cv_url = u?.signedUrl ?? null;
+      }
+      usuarios.push({
+        user_id: c.user_id, modo, firma: c.firma || {}, cv_url, cv_nombre: c.cv_ruta ? c.cv_ruta.split("/").pop() : null,
+        envios: listos || [],
+        seguimientos: modo === "real" ? seguimientosDebidos(lista, ahora).map((e) => ({ ...e, cuerpo: textoSeguimiento(e, c.firma || {}) })) : [],
+        abiertos: lista.filter((e) => e.modo === "real" && e.estado === "enviado" && e.tipo === "presentacion").map((e) => ({ id: e.id, para: e.para, enviado: e.enviado, empresa: e.empresa })),
+        firma_texto: firmaTexto(c.firma || {}),
+      });
+    }
+    return { ok: true, usuarios };
+  }
+  const id = String(body.id || "");
+  const { data: env } = await srv.from("envios").select("id,user_id,clave,modo,tipo,empresa,para,asunto").eq("id", id).maybeSingle();
+  if (!env) return { error: "Envío no encontrado" };
+  if (body.accion === "marcar") {
+    const estado = body.estado === "enviado" ? "enviado" : "fallido";
+    await srv.from("envios").update({ estado, enviado: estado === "enviado" ? ahora.toISOString() : null, message_id: body.message_id ?? null, error: body.error ? String(body.error).slice(0, 500) : null }).eq("id", id);
+    if (estado === "enviado" && env.modo === "real") {
+      await srv.from("oportunidades").update({ estado: "contactada", siguiente: "Esperar respuesta (seguimiento automático a los 10 días)", actualizado: ahora.toISOString() }).eq("user_id", env.user_id).eq("clave", env.clave);
+    }
+    return { ok: true };
+  }
+  if (body.accion === "seguimiento") {
+    await srv.from("envios").insert({
+      user_id: env.user_id, clave: env.clave, empresa: env.empresa, empresa_clave: env.clave, tipo: "seguimiento", modo: "real",
+      para: env.para, fuente_correo: "seguimiento", asunto: String(body.asunto || `Re: ${env.asunto}`), cuerpo: String(body.cuerpo || ""),
+      estado: "enviado", enviado: ahora.toISOString(), en_respuesta_a: env.id, message_id: body.message_id ?? null,
+    });
+    return { ok: true };
+  }
+  if (body.accion === "respondido") {
+    await srv.from("envios").update({ estado: "respondido" }).eq("id", id);
+    await srv.from("oportunidades").update({ estado: "respuesta", siguiente: "Contestar y proponer una llamada", actualizado: ahora.toISOString() }).eq("user_id", env.user_id).eq("clave", env.clave);
+    return { ok: true };
+  }
+  return { error: "Acción desconocida" };
 }
 
 async function jornadasAbiertas(user_id?: string) {
@@ -301,6 +465,13 @@ Deno.serve(async (req) => {
         await procesar(j, inicio);
       }
       return responder({ ok: true, informe }, 200, o);
+    }
+
+    // ---- Cartero (GitHub Actions): recoge la cola y marca lo enviado ----
+    if (body.modo === "cartero") {
+      const { data: s } = await srv.from("ajustes_internos").select("valor").eq("clave", "cartero").maybeSingle();
+      if (!s?.valor || req.headers.get("x-radar-cartero") !== s.valor) return responder({ error: "No autorizado" }, 401, o);
+      return responder(await cartero(body), 200, o);
     }
 
     // ---- Llamada manual desde RADAR ----

@@ -4,7 +4,10 @@
 export type Config = {
   hora: number; dias: number[]; presupuesto_dia: number; max_ia: number; max_tareas: number;
   duracion_max_min: number; umbral: number; agentes_off: string[]; pausada: boolean;
+  envio_modo?: "apagado" | "ensayo" | "real"; ensayo_hasta?: string | null; max_envios?: number; umbral_envio?: number;
+  perfil_hechos?: { id: string; texto: string }[]; firma?: Firma; cv_ruta?: string | null;
 };
+export type Firma = { nombre?: string; email?: string; linkedin?: string; telefono?: string };
 export type TareaPlan = { agente: string; clave: string; prioridad: number; entrada: Record<string, unknown> };
 export type Tarea = { id: string; agente: string; clave: string; intentos: number; max_intentos: number; estado: string };
 
@@ -66,6 +69,7 @@ export function claveEmpresa(nombre: string, nif?: string): string {
 }
 
 type Item = {
+  contacto?: { email?: string; web?: string } | null;
   id: string; tipo: string; subtipo?: string; titulo: string;
   organizacion?: { nombre?: string; nif?: string }; cliente?: string;
   fechas?: { publicada?: string | null; detectada?: string | null; consultada?: string | null };
@@ -145,7 +149,7 @@ export function puntuar(it: ItemPuntuable): { puntos: number; motivos: { criteri
 }
 
 export type Candidata = {
-  k: string; empresa: string; nif: string; ciudad: string; puntos: number;
+  k: string; empresa: string; nif: string; ciudad: string; puntos: number; email?: string; email_fuente?: string;
   motivos: { criterio: string; valor: number; motivos: string[] }[]; sin_info: string[];
   hechos: string[]; fuentes: { nombre?: string; url?: string }[]; items: string[];
 };
@@ -163,8 +167,10 @@ export function elegirCandidatas(items: ItemPuntuable[], yaVistas: Set<string>, 
     const p = puntuar(it);
     const hecho = `${it.titulo.slice(0, 160)}${it.cliente ? ` (cliente: ${it.cliente})` : ""}${it.importe ? `, ${Math.round(it.importe).toLocaleString("es-ES")} €` : ""}${it.fechas?.publicada ? `, ${it.fechas.publicada}` : ""}`;
     const prev = porEmpresa.get(k);
+    const correo = correoDeItem(it);
     if (prev) {
       prev.hechos.push(hecho); prev.items.push(it.id);
+      if (!prev.email && correo) Object.assign(prev, { email: correo.email, email_fuente: correo.fuente });
       if (it.fuentes?.[0]) prev.fuentes.push(it.fuentes[0]);
       if (p.puntos > prev.puntos) Object.assign(prev, { puntos: p.puntos, motivos: p.motivos, sin_info: p.sin_info });
       continue;
@@ -172,6 +178,7 @@ export function elegirCandidatas(items: ItemPuntuable[], yaVistas: Set<string>, 
     porEmpresa.set(k, {
       k, empresa: it.organizacion.nombre, nif, ciudad: it.ciudad_empresa || it.ubicacion?.texto || "",
       puntos: p.puntos, motivos: p.motivos, sin_info: p.sin_info, hechos: [hecho], fuentes: it.fuentes?.[0] ? [it.fuentes[0]] : [], items: [it.id],
+      ...(correo ? { email: correo.email, email_fuente: correo.fuente } : {}),
     });
   }
   const encima = [...porEmpresa.values()].filter((c) => c.puntos >= umbral)
@@ -193,4 +200,56 @@ export function costeDe(usos: Uso[]): number {
       + (u.server_tool_use?.web_search_requests || 0) * PRECIO.busqueda;
   }
   return Math.round(c * 10000) / 10000;
+}
+
+// ---------------------------------------------------------------------------
+// Envíos (fase 3)
+// ---------------------------------------------------------------------------
+
+/* Modo de envío de hoy. El ensayo dura hasta su fecha; después se pasa solo a envío real. */
+export function modoEnvio(c: Config, hoy: string): "apagado" | "ensayo" | "real" {
+  if (c.pausada || !c.envio_modo || c.envio_modo === "apagado") return "apagado";
+  if (c.envio_modo === "real") return "real";
+  return c.ensayo_hasta && hoy > c.ensayo_hasta ? "real" : "ensayo";
+}
+
+const RE_CORREO = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+/* Correo de la empresa solo si RADAR lo comprobó en su web oficial (con la página como fuente). */
+export function correoDeItem(it: Item & { criterios?: Record<string, { motivos?: string[] }> }): { email: string; fuente: string } | null {
+  const email = String(it.contacto?.email || "").trim().toLowerCase();
+  if (!RE_CORREO.test(email)) return null;
+  const oficial = (it.fuentes || []).find((f) => /web oficial/i.test(f.nombre || "") && f.url);
+  const verificado = (it.criterios?.acceso?.motivos || []).some((m) => /verificad/i.test(m));
+  if (!oficial?.url || !verificado) return null;
+  return { email, fuente: oficial.url };
+}
+
+/* Quita teléfonos que la IA hubiera escrito: el teléfono solo va en la firma, que pone el código. */
+export function sinTelefonos(t: string): string {
+  return t.replace(/(\+34[\s.]?)?\b[6-9]\d{2}[\s.]?\d{3}[\s.]?\d{3}\b/g, "").replace(/[ \t]+\n/g, "\n").trim();
+}
+
+export function firmaTexto(f: Firma): string {
+  return [f.nombre, f.telefono ? `Tel. ${f.telefono}` : "", f.email, f.linkedin].filter(Boolean).join("\n");
+}
+
+export type EnvioResumen = { id: string; tipo: string; modo: string; estado: string; enviado: string | null; empresa: string; para: string; asunto: string; en_respuesta_a: string | null };
+/* Presentaciones reales sin respuesta tras 10 días y sin seguimiento: toca un único recordatorio. */
+export function seguimientosDebidos(envios: EnvioResumen[], ahora: Date, dias = 10): EnvioResumen[] {
+  const conSeguimiento = new Set(envios.filter((e) => e.tipo === "seguimiento").map((e) => e.en_respuesta_a));
+  return envios.filter((e) => e.tipo === "presentacion" && e.modo === "real" && e.estado === "enviado" && e.enviado
+    && ahora.getTime() - Date.parse(e.enviado) >= dias * 86400_000 && !conSeguimiento.has(e.id));
+}
+
+export function textoSeguimiento(e: { empresa: string }, f: Firma): string {
+  return [
+    "Buenos días:",
+    "",
+    `Les escribí hace unos días para presentarme por si en ${e.empresa} pudiera encajar mi perfil en gestión de proyectos. Les reenvío el mensaje por si se les pasó, con mi CV adjunto.`,
+    "",
+    "Si no es el momento, lo entiendo perfectamente. Muchas gracias por su tiempo.",
+    "",
+    "Un saludo,",
+    firmaTexto(f),
+  ].join("\n");
 }

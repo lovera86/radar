@@ -108,3 +108,75 @@ export async function investigarEmpresa(d: { empresa: string; ciudad?: string; h
   inv.modelo = MODELO;
   return { investigacion: inv, coste };
 }
+
+// ---------------------------------------------------------------------------
+// Comercial: presentación para una empresa, y un segundo repaso antes de enviarla
+// ---------------------------------------------------------------------------
+type Hecho = { id: string; texto: string };
+
+async function pedirJson<T>(system: string, user: string, schema: Record<string, unknown>, maxTokens = 3000): Promise<{ datos: T; coste: number }> {
+  const r = await anthropic.messages.create({
+    model: MODELO, max_tokens: maxTokens, system, messages: [{ role: "user", content: user }],
+    output_config: { effort: "low", format: { type: "json_schema", schema } },
+  });
+  const coste = costeDe([r.usage as Uso]);
+  if (r.stop_reason === "refusal") throw Object.assign(new Error("La IA no ha podido redactar este mensaje."), { coste });
+  if (r.stop_reason === "max_tokens") throw Object.assign(new Error("La respuesta de la IA se cortó."), { coste });
+  const texto = r.content.filter((b) => b.type === "text").map((b) => (b as Anthropic.TextBlock).text).join("");
+  try { return { datos: JSON.parse(texto) as T, coste }; } catch { throw Object.assign(new Error("La IA no devolvió el formato esperado."), { coste }); }
+}
+
+export async function redactarPresentacion(d: { empresa: string; senales: Hecho[]; hechos: Hecho[]; nombre: string }) {
+  if (!d.senales.length || !d.hechos.length) throw new Error("Faltan señales de la empresa o hechos del perfil para redactar.");
+  return await pedirJson<{ asunto: string; cuerpo: string; hechos_usados: string[]; senal_usada: string }>(
+    [
+      "Redactas en español el cuerpo de un correo breve (110-170 palabras) con el que una persona se presenta a una empresa concreta y adjunta su CV.",
+      "Reglas estrictas:",
+      "- Usa solo los hechos del perfil y las señales que se te dan. No inventes experiencia, cifras, títulos, resultados ni datos de la empresa.",
+      "- No digas ni insinúes que la empresa tiene una vacante o que necesita contratar: es un contacto proactivo.",
+      "- Empieza con «Buenos días:» y explica qué señal motiva el contacto (con su fecha si la hay). Sigue con 1-2 hechos del perfil que sean pertinentes para esa empresa. Termina proponiendo una llamada breve y diciendo que adjuntas el CV.",
+      "- Trato de usted. Tono profesional, directo y sin halagos exagerados.",
+      "- NO escribas despedida ni firma ni datos de contacto: se añaden después.",
+      "- El asunto: corto, concreto y sin palabras como «urgente» ni mayúsculas.",
+    ].join("\n"),
+    [
+      `Empresa: ${d.empresa}`,
+      `Persona que escribe: ${d.nombre}`,
+      "Señales de la empresa:", ...d.senales.map((x) => `[${x.id}] ${x.texto}`),
+      "Hechos del perfil:", ...d.hechos.map((x) => `[${x.id}] ${x.texto}`),
+    ].join("\n"),
+    {
+      type: "object", additionalProperties: false, required: ["asunto", "cuerpo", "hechos_usados", "senal_usada"],
+      properties: {
+        asunto: { type: "string" }, cuerpo: { type: "string" },
+        hechos_usados: { type: "array", items: { type: "string" }, description: "Identificadores de los hechos del perfil mencionados" },
+        senal_usada: { type: "string", description: "Identificador de la señal que motiva el contacto" },
+      },
+    },
+  );
+}
+
+/* Segundo repaso, independiente de quien redactó: si duda, no se envía. */
+export async function revisarPresentacion(d: { empresa: string; asunto: string; cuerpo: string; senales: Hecho[]; hechos: Hecho[] }) {
+  return await pedirJson<{ aprobado: boolean; problemas: string[] }>(
+    [
+      "Revisas, antes de que se envíe sin supervisión humana, un correo en el que una persona se presenta a una empresa. Eres estricto: ante la duda, no se aprueba.",
+      "Rechaza (aprobado = false) si ocurre cualquiera de estas cosas:",
+      "- Afirma algo del perfil que no está en los hechos dados (experiencia, cifras, títulos, resultados, herramientas).",
+      "- Afirma algo de la empresa que no está en las señales dadas.",
+      "- Dice o insinúa que la empresa tiene una vacante o necesita contratar.",
+      "- Tono inadecuado: halagos exagerados, presión, informalidad, errores de ortografía o gramática, o texto que suena a plantilla genérica.",
+      "- Contiene marcadores sin rellenar, corchetes, datos de contacto inventados o un nombre de destinatario que no se ha dado.",
+      "- Habla de otra empresa o mezcla datos.",
+      "Lista cada problema concreto. Si no hay ninguno, aprobado = true y problemas vacío.",
+    ].join("\n"),
+    [
+      `Empresa destinataria: ${d.empresa}`,
+      "Señales de la empresa:", ...d.senales.map((x) => `[${x.id}] ${x.texto}`),
+      "Hechos del perfil:", ...d.hechos.map((x) => `[${x.id}] ${x.texto}`),
+      "", `Asunto: ${d.asunto}`, "Cuerpo:", d.cuerpo,
+    ].join("\n"),
+    { type: "object", additionalProperties: false, required: ["aprobado", "problemas"], properties: { aprobado: { type: "boolean" }, problemas: { type: "array", items: { type: "string" } } } },
+    1500,
+  );
+}

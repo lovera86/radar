@@ -1341,3 +1341,11 @@ body[data-vista="bandeja"] .buscador-zona, body[data-vista="bandeja"] .res-ctl, 
 /* Pantalla de entrada de las zonas privadas */
 .nube-puerta { grid-column: 1 / -1; width: 100%; box-sizing: border-box; max-width: 520px; margin: 32px auto; padding: 28px; border: 1px solid var(--linea, #dfe6e6); border-radius: 18px; background: var(--tarjeta, #fff); }
 .nube-puerta h2 { margin: 0 0 8px; }
+
+/* Envío automático */
+.ag-luz.ensayo { background: #e0a100; box-shadow: 0 0 0 4px rgba(224, 161, 0, .2); }
+.ag-form { display: grid; gap: 12px; margin: 14px 0; }
+.ag-envios { display: grid; gap: 8px; }
+.ag-envio { border: 1px solid var(--line, #dfe6e6); border-radius: 10px; padding: 10px 12px; }
+.ag-envio summary { cursor: pointer; }
+.ag-texto { white-space: pre-wrap; font: inherit; background: var(--soft, #f4f7f7); padding: 12px; border-radius: 8px; }

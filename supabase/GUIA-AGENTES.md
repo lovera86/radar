@@ -70,3 +70,27 @@ npx tsx --test supabase/functions/radar-jornada/nucleo.test.ts
 Cubren el horario de Madrid (también con cambio de hora), cuándo toca la jornada, la
 planificación, los reintentos, el cierre, la deduplicación, la separación de hechos e
 hipótesis y el presupuesto.
+
+## Fase 3: envío automático
+
+**Flujo:** el Analista elige empresas con encaje ≥ «umbral de envío» (80) y un correo comprobado en su web
+oficial (o el Investigador lo encuentra) → el **Comercial** redacta con tus hechos del CV y un
+**segundo repaso** con IA lo aprueba o lo bloquea → el **cartero** (GitHub Actions, `cartero.py`,
+08:45 en invierno) lo envía desde tu Gmail con tu CV, hace un único seguimiento a los 10 días, detecta
+respuestas en tu bandeja de entrada y te manda un resumen con las ofertas del día para apuntarte.
+
+**Límites:** hasta `max_envios` (3) al día; una presentación por empresa (índice único); nunca a
+empresas descartadas o ya trabajadas en tu bandeja; ensayo de 3 días (los correos te llegan solo a ti)
+y después envío real automático; lo que lleva más de 3 días en cola caduca; solo envía si la cuenta de
+Gmail es la misma que firma; «Pausar» o «Apagar el envío» lo para todo.
+
+**Instalar (una vez):**
+1. SQL Editor → `supabase/006_envios.sql` → Run. Copia el valor que devuelve.
+2. GitHub → repositorio → Settings → Secrets and variables → Actions → New repository secret:
+   `RADAR_CARTERO` (el valor del paso 1), `ENVIO_EMAIL` (tu Gmail) y `ENVIO_APP_PASSWORD`
+   (una contraseña de aplicación nueva de Google: myaccount.google.com → Seguridad →
+   Contraseñas de aplicaciones). Nunca la pegues en ningún chat.
+3. RADAR → Mi perfil → Agentes → Envío automático: tu teléfono y el CV en PDF que se adjunta.
+4. Para probar ya: GitHub → Actions → «Cartero de RADAR» → Run workflow.
+
+Prueba local del cartero con Gmail simulado: no envía nada (ver `cartero.py`).

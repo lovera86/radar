@@ -1,5 +1,5 @@
 'use strict';
-/* RADAR · equipo de agentes (fase 2). Pestaña «Agentes» de Mi perfil, solo administración:
+/* RADAR · equipo de agentes (fase 3). Pestaña «Agentes» de Mi perfil, solo administración:
    configuración de la jornada diaria, pausa de emergencia, ejecución manual, equipo e historial.
    Los agentes trabajan en el servidor (función «radar-jornada») aunque el navegador esté cerrado. */
 
@@ -10,7 +10,7 @@ const AG_EQUIPO = [
   ['investigador', 'Investigador', 'Investiga en la web las empresas elegidas: señales con fuente, actividad y canal de contacto publicado. Usa IA dentro de tu presupuesto.', true],
   ['conector', 'Conector', 'Busca el contacto profesional adecuado, siempre con su fuente.', false],
   ['estratega', 'Estratega', 'Propone el enfoque: qué ofrecer, por qué ahora y el siguiente paso.', false],
-  ['comercial', 'Comercial', 'Prepara borradores de presentación y seguimiento. Nunca envía nada.', false],
+  ['comercial', 'Comercial', 'Redacta cada presentación con tus hechos reales; un segundo repaso con IA la bloquea si duda. Después la reparte el cartero.', true],
 ];
 const AG_DIAS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const AG_ESTADO = { planificada: 'Planificada', en_curso: 'En curso', completada: 'Completada', con_errores: 'Con errores', pausada: 'En pausa', cancelada: 'Cancelada' };
@@ -28,9 +28,12 @@ async function agLlamar(cuerpo) {
 
 function seccionAgentes(tarjeta) {
   if (!RADAR_NUBE || !NUBE_SESION || !NUBE_ADMIN) return;
-  const cont = tarjeta('Jornada diaria', 'Cada mañana el equipo trabaja solo en el servidor, aunque tengas el navegador cerrado. Nada se envía sin tu aprobación.');
+  const cont = tarjeta('Jornada diaria', 'Cada mañana el equipo trabaja solo en el servidor, aunque tengas el navegador cerrado.');
   const cuerpo = el('div', 'ag'); cuerpo.append(el('p', 'nota', 'Cargando…'));
   cont.append(cuerpo);
+  const envio = tarjeta('Envío automático', 'Tus agentes se presentan por ti a empresas con buen encaje y un correo publicado en su web, con tu CV. Te llega un resumen cada mañana y las respuestas, directamente a tu correo.');
+  const envCuerpo = el('div', 'ag'); envio.append(envCuerpo);
+  agEnvios(envCuerpo);
   const equipo = tarjeta('Equipo de agentes', 'Cada agente es un papel con sus instrucciones y límites. Se activan por fases.');
   const historial = tarjeta('Historial de jornadas', 'Qué se hizo, cuánto duró y cuánto costó cada jornada.');
   const hist = el('div', 'adm-tabla'); historial.append(hist);
@@ -163,4 +166,92 @@ async function agDetalle(j) {
   d.addEventListener('close', () => d.remove());
   document.body.append(d);
   d.showModal();
+}
+
+/* ---------- Envío automático (fase 3) ---------- */
+const AG_ENVIO_ESTADO = { listo: 'Listo para enviar', enviado: 'Enviado', bloqueado: 'Bloqueado por el repaso', fallido: 'Falló', cancelado: 'Cancelado', respondido: '★ Respondido' };
+
+/* Copia en el servidor tus hechos del CV y tu firma, para que el Comercial pueda escribir sin ti. */
+async function agSincronizarPerfil(c) {
+  if (typeof iaHechosPerfil !== 'function' || typeof CV === 'undefined') return c;
+  const hechos = iaHechosPerfil(null);
+  const firma = { ...(c.firma || {}), nombre: CV.nombre, email: CV.email, linkedin: CV.linkedin ? 'https://www.' + CV.linkedin.replace(/^https?:\/\/(www\.)?/, '') : '' };
+  if (JSON.stringify(hechos) === JSON.stringify(c.perfil_hechos) && JSON.stringify(firma) === JSON.stringify(c.firma)) return c;
+  const { data } = await RADAR_NUBE.from('config_jornada').update({ perfil_hechos: hechos, firma }).eq('user_id', c.user_id).select('*').single();
+  return data || c;
+}
+document.addEventListener('radar-nube-lista', async () => {
+  if (!NUBE_ADMIN) return;
+  const { data: c } = await RADAR_NUBE.from('config_jornada').select('*').eq('user_id', NUBE_SESION.user.id).maybeSingle();
+  if (c && 'perfil_hechos' in c) agSincronizarPerfil(c);
+});
+
+async function agEnvios(cuerpo) {
+  const uid = NUBE_SESION.user.id;
+  let { data: c, error } = await RADAR_NUBE.from('config_jornada').select('*').eq('user_id', uid).maybeSingle();
+  if (error || !c || !('envio_modo' in c)) { cuerpo.replaceChildren(el('p', 'bj-aviso', 'Falta activar el envío automático: ejecuta supabase/006_envios.sql en Supabase.')); return; }
+  c = await agSincronizarPerfil(c);
+  const hoy = hoyISO();
+  const modo = c.pausada || c.envio_modo === 'apagado' ? 'apagado' : c.envio_modo === 'real' || (c.ensayo_hasta && hoy > c.ensayo_hasta) ? 'real' : 'ensayo';
+  const msg = el('p', 'nube-msg'); msg.setAttribute('role', 'status');
+  const guardar = async (cambios, texto) => {
+    const { error: er } = await RADAR_NUBE.from('config_jornada').update(cambios).eq('user_id', uid);
+    msg.textContent = er ? 'No se ha podido guardar: ' + er.message : texto;
+    if (!er) agEnvios(cuerpo);
+  };
+
+  const est = el('div', 'ag-estado');
+  const txt = el('div');
+  txt.append(el('b', null, { apagado: c.pausada ? 'Apagado (RADAR está en pausa)' : 'Apagado', ensayo: `Ensayo hasta el ${fecha(c.ensayo_hasta)}: los correos te llegan solo a ti`, real: 'Envío real a empresas' }[modo]),
+    el('small', null, `Hasta ${c.max_envios} al día · solo encaje de ${c.umbral_envio} o más · solo correos publicados por la empresa · una presentación por empresa · seguimiento único a los 10 días`));
+  est.append(el('span', 'ag-luz ' + (modo === 'real' ? 'on' : modo === 'ensayo' ? 'ensayo' : 'off')), txt);
+  const acc = el('div', 'acciones');
+  if (modo !== 'apagado') acc.append(boton('Apagar el envío', 'btn sec', () => guardar({ envio_modo: 'apagado' }, '✓ Envío automático apagado')));
+  else if (!c.pausada) acc.append(boton('Encender (con 3 días de ensayo)', 'btn', () => {
+    const d = new Date(); d.setDate(d.getDate() + 3);
+    guardar({ envio_modo: 'ensayo', ensayo_hasta: d.toISOString().slice(0, 10) }, '✓ Encendido en ensayo');
+  }));
+  if (modo === 'ensayo') acc.append(boton('Terminar el ensayo y enviar de verdad', 'btn sec', () => {
+    if (confirm('A partir de ahora las presentaciones se enviarán a las empresas con tu nombre y tu CV. ¿Seguro?')) guardar({ envio_modo: 'real' }, '✓ Envío real activado');
+  }));
+
+  // Teléfono y CV (privados: solo los usa el cartero)
+  const f = el('form', 'ag-form');
+  const tl = el('label', 'ag-campo'); const tel = el('input'); tel.type = 'tel'; tel.id = 'ag-tel'; tel.value = c.firma?.telefono || ''; tel.placeholder = '+34 6XX XXX XXX';
+  tl.append(el('span', null, 'Teléfono para que te llamen'), tel, el('small', null, 'Va en la firma de cada presentación. Nunca se publica en la web.'));
+  const cl = el('label', 'ag-campo'); const cvIn = el('input'); cvIn.type = 'file'; cvIn.accept = 'application/pdf'; cvIn.id = 'ag-cv';
+  cl.append(el('span', null, 'CV que se adjunta (PDF)'), cvIn, el('small', null, c.cv_ruta ? `Actual: ${c.cv_ruta.split('/').pop()}. Puede llevar tu teléfono: se guarda en privado.` : 'Sin CV todavía: sin él no se envía nada de verdad. Puede llevar tu teléfono: se guarda en privado.'));
+  const ok = el('button', 'btn sec', 'Guardar teléfono y CV'); ok.type = 'submit';
+  f.append(tl, cl, ok);
+  f.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const cambios = { firma: { ...(c.firma || {}), telefono: tel.value.trim() } };
+    const arch = cvIn.files[0];
+    if (arch) {
+      if (arch.type !== 'application/pdf' || arch.size > 5e6) { msg.textContent = 'El CV debe ser un PDF de menos de 5 MB.'; return; }
+      const ruta = `${NUBE_SESION.user.email.toLowerCase()}/envio/${Date.now()}.pdf`;
+      const up = await RADAR_NUBE.storage.from('cv').upload(ruta, arch, { contentType: 'application/pdf' });
+      if (up.error) { msg.textContent = 'No se ha podido subir el CV: ' + up.error.message; return; }
+      cambios.cv_ruta = ruta;
+    }
+    guardar(cambios, '✓ Guardado');
+  });
+
+  // Historial de envíos
+  const { data: envs } = await RADAR_NUBE.from('envios').select('id,creado,enviado,empresa,para,modo,tipo,estado,asunto,cuerpo,fuente_correo,revision').order('creado', { ascending: false }).limit(30);
+  const lista = el('div', 'ag-envios');
+  if (!envs?.length) lista.append(el('p', 'nota', 'Todavía no hay presentaciones. Se preparan en la jornada de cada mañana y el cartero las reparte hacia las 9:00.'));
+  (envs || []).forEach((e) => {
+    const det = el('details', 'ag-envio');
+    const sum = el('summary');
+    sum.append(el('b', null, e.empresa), ` · ${e.tipo === 'seguimiento' ? 'seguimiento' : e.modo === 'ensayo' ? 'ensayo' : 'real'} · ${AG_ENVIO_ESTADO[e.estado] || e.estado} · ${fechaHora(e.enviado || e.creado)}`);
+    det.append(sum, el('p', 'nota', `Para: ${e.para}${e.fuente_correo?.startsWith('http') ? ' · publicado en ' + e.fuente_correo : ''}`), el('p', 'ag-asunto', 'Asunto: ' + e.asunto), el('pre', 'ag-texto', e.cuerpo));
+    if (e.revision?.problemas?.length) det.append(el('p', 'bj-aviso', 'El repaso lo bloqueó: ' + e.revision.problemas.join('; ')));
+    if (e.estado === 'listo') det.append(boton('No enviar este', 'btn sec mini', async () => {
+      const { error: er } = await RADAR_NUBE.from('envios').update({ estado: 'cancelado' }).eq('id', e.id);
+      if (er) alert(er.message); else agEnvios(cuerpo);
+    }));
+    lista.append(det);
+  });
+  cuerpo.replaceChildren(est, acc, msg, f, el('h4', null, 'Presentaciones'), lista);
 }
