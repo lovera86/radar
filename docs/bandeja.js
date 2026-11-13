@@ -142,6 +142,44 @@ function bjNueva(e) {
 }
 
 /* ---------- Vista ---------- */
+/* Propuestas del equipo de agentes: lo que el Analista eligió y el Investigador investigó por la
+   mañana (tabla «oportunidades» del servidor) entra en tu bandeja una sola vez. Lo que ya está en
+   la bandeja o descartaste no se vuelve a traer. */
+let BJ_AGENTES_LEIDO = false;
+async function bjTraerDeAgentes() {
+  if (BJ_AGENTES_LEIDO || typeof RADAR_NUBE === 'undefined' || !RADAR_NUBE || !NUBE_SESION) return 0;
+  BJ_AGENTES_LEIDO = true;
+  const { data, error } = await RADAR_NUBE.from('oportunidades').select('clave,titulo,datos,puntuacion,explicacion,actualizado')
+    .eq('estado', 'validada').order('actualizado', { ascending: false }).limit(30);
+  if (error || !data?.length) return 0;
+  const datos = bjDatos();
+  const emp = new Map(empresasDetectadas().map((e) => [e.k, e]));
+  let n = 0;
+  data.forEach((r) => {
+    if (datos[r.clave] || ST.excluidas[r.clave]) return;
+    const c = r.datos?.candidata || {};
+    const e = emp.get(r.clave);
+    const op = bjNueva(e || { k: r.clave, nombre: r.titulo, nif: c.nif, ciudad: c.ciudad, ganados: [], candidata: [], borme: [], contacto: null });
+    op.origen = 'agentes';
+    op.agentes = { puntos: r.puntuacion, motivos: r.explicacion?.motivos || [], fecha: r.actualizado };
+    if (!e) {
+      // La empresa ya no está en la recogida de hoy: sus hechos vienen de lo que guardó el Analista.
+      op.recalcular = true;
+      op.senales = (c.hechos || []).map((h, i) => ({ tipo: 'adjudicacion', titulo: 'Ha ganado ' + h, fuente: c.fuentes?.[i] || c.fuentes?.[0] || null, motivo: 'Al ganar un contrato tiene que organizar el equipo que lo ejecuta.' }));
+    }
+    if (r.datos?.investigacion && typeof iaAplicarInvestigacion === 'function') iaAplicarInvestigacion(op, r.datos.investigacion);
+    op.estado = 'validada';
+    op.siguiente = { accion: 'Revisar la propuesta de tus agentes', fecha: hoyISO() };
+    bjEvento(op, 'alta', `Propuesta por tu equipo de agentes (${r.puntuacion} puntos): investigada el ${fechaCorta(r.actualizado)}`);
+    datos[r.clave] = op; n++;
+  });
+  if (n) bjGuardar();
+  return n;
+}
+document.addEventListener('radar-nube-lista', () => {
+  bjTraerDeAgentes().then((n) => { if (n && typeof VISTA !== 'undefined' && VISTA === 'bandeja') pintar(); });
+});
+
 function pintarBandeja() {
   const datos = bjDatos();
   $('#res-n').textContent = '';
@@ -170,6 +208,7 @@ function pintarBandeja() {
   const fila = el('div', 'bj-tabs-fila'); fila.append(tabs, acc);
   cont.append(fila);
 
+  if (!BJ_AGENTES_LEIDO) bjTraerDeAgentes().then((n) => { if (n && VISTA === 'bandeja') pintar(); });
   if (BJ_PESTANA === 'nuevas') cont.append(bjVistaNuevas(detectadas));
   else cont.append(bjVistaBandeja(todas, accionHoy));
   if (typeof NUBE_SESION !== 'undefined' && !NUBE_SESION) cont.append(el('p', 'nota bj-nota', 'Sin cuenta, tu bandeja se guarda solo en este navegador. Entra con tu correo para tenerla también en el móvil.'));
@@ -264,7 +303,7 @@ function bjVistaBandeja(todas, accionHoy) {
   t.append(cab);
   lista.forEach((o) => {
     const f = el('div', 'bj-fila'); f.tabIndex = 0; f.setAttribute('role', 'button');
-    const emp = el('span', 'bj-c-emp'); emp.append(el('b', null, o.empresa), el('small', null, o.ciudad || ''));
+    const emp = el('span', 'bj-c-emp'); emp.append(el('b', null, o.empresa), el('small', null, [o.origen === 'agentes' ? 'Propuesta por tus agentes' : '', o.ciudad || ''].filter(Boolean).join(' · ')));
     const s = o.senales[0];
     f.append(emp, el('span', 'bj-c-senal', s ? s.titulo.slice(0, 90) + (s.titulo.length > 90 ? '…' : '') : 'Añadida a mano'), bjPillEncaje(o.encaje),
       el('span', 'bj-c-contacto ' + (o.contacto?.email || o.contacto?.formulario ? 'ok' : 'falta'), o.contacto?.email ? '✓ ' + (o.contacto.nombre || o.contacto.email) : o.contacto?.formulario ? '✓ Formulario web' : 'Pendiente'),
@@ -307,7 +346,7 @@ function bjPintarFicha(op, previa, e) {
   const cerrar = boton('Cerrar', 'enlace bj-cerrar', () => d.close());
   const cab = el('header', 'bj-f-cab');
   const tit = el('div');
-  tit.append(el('p', 'eyebrow', previa ? 'Oportunidad potencial · detectada por RADAR' : 'Oportunidad potencial'), el('h2', null, op.empresa));
+  tit.append(el('p', 'eyebrow', previa ? 'Oportunidad potencial · detectada por RADAR' : op.origen === 'agentes' ? 'Oportunidad potencial · propuesta por tus agentes' : 'Oportunidad potencial'), el('h2', null, op.empresa));
   if (op.ciudad) tit.append(el('p', 'nota', op.ciudad));
   const est = el('div', 'bj-f-est');
   est.append(bjPillEstado(op.estado), bjPillEncaje(op.encaje));
@@ -321,6 +360,14 @@ function bjPintarFicha(op, previa, e) {
       boton('No me interesa', 'btn sec', () => { ST.excluidas[op.k] = { empresa: op.empresa, f: new Date().toISOString(), motivo: 'No me interesa' }; bjGuardar(); d.close(); pintar(); }));
   } else bjAcciones(op, acc);
   cuerpo.append(acc);
+
+  // Por qué la eligió el Analista
+  if (op.agentes?.motivos?.length) {
+    const ba = bjBloque(cuerpo, `Por qué te la proponen tus agentes · ${op.agentes.puntos} puntos`, 'Puntuación de RADAR con sus criterios. No es una vacante: es una empresa con señales de actividad.');
+    const ula = el('ul', 'bj-senales');
+    op.agentes.motivos.forEach((m) => ula.append(el('li', null, `${m.criterio}: ${m.valor}/100${m.motivos?.length ? ' · ' + m.motivos.join(', ') : ''}`)));
+    ba.append(ula);
+  }
 
   // Por qué ahora
   const b1 = bjBloque(cuerpo, 'Por qué ahora', 'Hechos con su fuente. La necesidad de contratar es una hipótesis: no hay vacante publicada.');
@@ -626,7 +673,7 @@ function bjAnadirManual() {
 
 /* Encaje de una empresa añadida a mano: se recalcula con lo que se sabe de ella. */
 function bjRecalcularManual(op) {
-  if (op.origen !== 'manual') return;
+  if (op.origen !== 'manual' && !op.recalcular) return;
   op.encaje = bjEncaje({ k: op.k, nombre: op.empresa, ciudad: op.ciudad, ganados: [], candidata: [], contacto: op.contacto,
     borme: op.senales.map((s) => ({ objeto: `${s.titulo} ${s.resumen || ''} ${op.investigacion?.actividad || ''}`, fecha: s.fecha })) });
   if (!op.senales.length) op.encaje.dudas.unshift('Aún no tiene ninguna señal con fuente: pendiente de investigar.');

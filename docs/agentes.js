@@ -1,13 +1,13 @@
 'use strict';
-/* RADAR · equipo de agentes (fase 1). Pestaña «Agentes» de Mi perfil, solo administración:
+/* RADAR · equipo de agentes (fase 2). Pestaña «Agentes» de Mi perfil, solo administración:
    configuración de la jornada diaria, pausa de emergencia, ejecución manual, equipo e historial.
    Los agentes trabajan en el servidor (función «radar-jornada») aunque el navegador esté cerrado. */
 
 const AG_EQUIPO = [
   ['director', 'Director', 'Planifica la jornada, reparte tareas, vigila límites y escribe el informe.', true],
   ['detector', 'Detector', 'Revisa las fuentes de cada mañana y guarda las señales nuevas, sin repetir las que ya conoce.', true],
-  ['investigador', 'Investigador', 'Profundiza en las señales prioritarias y separa hechos de hipótesis.', false],
-  ['analista', 'Analista', 'Puntúa el encaje de forma explicable y descarta duplicados.', false],
+  ['analista', 'Analista', 'Puntúa las empresas con los criterios de RADAR y elige las que merece la pena investigar hoy, sin repetir. Sin IA.', true],
+  ['investigador', 'Investigador', 'Investiga en la web las empresas elegidas: señales con fuente, actividad y canal de contacto publicado. Usa IA dentro de tu presupuesto.', true],
   ['conector', 'Conector', 'Busca el contacto profesional adecuado, siempre con su fuente.', false],
   ['estratega', 'Estratega', 'Propone el enfoque: qué ofrecer, por qué ahora y el siguiente paso.', false],
   ['comercial', 'Comercial', 'Prepara borradores de presentación y seguimiento. Nunca envía nada.', false],
@@ -58,12 +58,14 @@ async function agPintar(cuerpo, equipo, hist) {
   const acc = el('div', 'acciones');
   const msg = el('p', 'nube-msg'); msg.setAttribute('role', 'status');
   const lanzar = boton('Lanzar jornada ahora', 'btn', async () => {
-    lanzar.disabled = true; msg.textContent = 'El equipo está trabajando… (puede tardar un minuto)';
+    lanzar.disabled = true; msg.textContent = 'El equipo está trabajando… Cada investigación con IA tarda alrededor de un minuto.';
     try {
       let r = await agLlamar({ accion: 'lanzar' });
       for (let i = 0; i < 5 && r.jornada?.estado === 'en_curso'; i++) r = await agLlamar({ accion: 'paso' });
       const s = r.jornada?.resumen || {};
-      msg.textContent = `${AG_ESTADO[r.jornada?.estado] || 'Hecho'}: ${s.senales_nuevas ?? 0} señales nuevas, ${s.senales_conocidas ?? 0} ya conocidas.`;
+      msg.textContent = `${AG_ESTADO[r.jornada?.estado] || 'Hecho'}: ${s.senales_nuevas ?? 0} señales nuevas, ${s.senales_conocidas ?? 0} ya conocidas`
+        + (s.investigadas ? `; ${s.investigadas} empresa${s.investigadas === 1 ? '' : 's'} investigada${s.investigadas === 1 ? '' : 's'} (${(s.propuestas || []).join(', ')}): las tienes en Oportunidades.` : '.');
+      if (typeof BJ_AGENTES_LEIDO !== 'undefined') BJ_AGENTES_LEIDO = false;
     } catch (e) { msg.textContent = e.message; }
     lanzar.disabled = false;
     agPintar(cuerpo, equipo, hist);
@@ -87,9 +89,9 @@ async function agPintar(cuerpo, equipo, hist) {
   const pres = el('input'); pres.type = 'number'; pres.min = '0'; pres.max = '5'; pres.step = '0.05'; pres.value = c.presupuesto_dia; pres.id = 'ag-pres';
   campo('Presupuesto de IA por jornada ($)', pres, '0,20 $ al día laborable ≈ 4,50 $ al mes.');
   const maxia = el('input'); maxia.type = 'number'; maxia.min = '0'; maxia.max = '20'; maxia.value = c.max_ia; maxia.id = 'ag-maxia';
-  campo('Oportunidades investigadas con IA por jornada', maxia, 'Se activa en la fase 2.');
+  campo('Empresas investigadas con IA por día', maxia, 'Cada investigación cuesta unos 0,05-0,10 $. Si se acaba el presupuesto del día, espera al siguiente.');
   const umbral = el('input'); umbral.type = 'number'; umbral.min = '0'; umbral.max = '100'; umbral.value = c.umbral; umbral.id = 'ag-umbral';
-  campo('Puntuación mínima para «validada»', umbral);
+  campo('Puntuación mínima para investigar una empresa', umbral, 'De 0 a 100, con los mismos criterios que ves en RADAR.');
   const guardar = el('button', 'btn sec', 'Guardar configuración'); guardar.type = 'submit';
   f.append(guardar);
   f.addEventListener('submit', async (e) => {
@@ -110,7 +112,7 @@ async function agPintar(cuerpo, equipo, hist) {
     const off = (c.agentes_off || []).includes(k);
     li.append(el('span', 'ag-luz ' + (activo && !off ? 'on' : 'off')));
     const t = el('div'); t.append(el('b', null, n), el('small', null, d)); li.append(t);
-    if (!activo) li.append(el('span', 'bj-estado', 'Fase 2'));
+    if (!activo) li.append(el('span', 'bj-estado', 'Próximamente'));
     else if (k !== 'director') {
       li.append(boton(off ? 'Activar' : 'Desactivar', 'enlace', async () => {
         const nuevo = off ? c.agentes_off.filter((x) => x !== k) : [...(c.agentes_off || []), k];
@@ -126,13 +128,13 @@ async function agPintar(cuerpo, equipo, hist) {
   // ---------- Historial ----------
   if (!js?.length) { hist.replaceChildren(el('p', 'nota', 'Sin jornadas todavía. Pulsa «Lanzar jornada ahora» para probar.')); return; }
   const t = el('table');
-  const cab = el('tr'); ['Inicio', 'Tipo', 'Estado', 'Duración', 'Señales nuevas', 'Coste', ''].forEach((x) => cab.append(el('th', null, x))); t.append(cab);
+  const cab = el('tr'); ['Inicio', 'Tipo', 'Estado', 'Duración', 'Señales nuevas', 'Investigadas', 'Coste', ''].forEach((x) => cab.append(el('th', null, x))); t.append(cab);
   js.forEach((j) => {
     const tr = el('tr');
     const dur = j.fin ? Math.max(1, Math.round((Date.parse(j.fin) - Date.parse(j.inicio)) / 1000)) + ' s' : '—';
     const ver = boton('Ver', 'enlace', () => agDetalle(j));
     tr.append(el('td', null, fechaHora(j.inicio)), el('td', null, j.origen === 'manual' ? 'Manual' : 'Programada'), el('td', null, AG_ESTADO[j.estado] || j.estado),
-      el('td', 'num', dur), el('td', 'num', String(j.resumen?.senales_nuevas ?? '—')), el('td', 'num', Number(j.coste || 0).toFixed(2) + ' $'));
+      el('td', 'num', dur), el('td', 'num', String(j.resumen?.senales_nuevas ?? '—')), el('td', 'num', String(j.resumen?.investigadas ?? '—')), el('td', 'num', Number(j.coste || 0).toFixed(3) + ' $'));
     const td = el('td'); td.append(ver); tr.append(td);
     t.append(tr);
   });

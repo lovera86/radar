@@ -12,11 +12,14 @@
 // Nada de lo que hace esta función envía mensajes ni actúa fuera de RADAR.
 
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.45.4";
-import { cerrarJornada, deduplicar, madrid, planificar, senalDesdeItem, tocaJornada, trasFallo, type Config } from "./nucleo.ts";
+import { cerrarJornada, COSTE_ESTIMADO_INVESTIGACION, deduplicar, elegirCandidatas, madrid, planificar, quedaPresupuesto, senalDesdeItem, tocaJornada, trasFallo, type Candidata, type Config, type ItemPuntuable } from "./nucleo.ts";
+import { investigarEmpresa } from "./ia.ts";
 
 const WEB = "https://lovera86.github.io/radar";
 const ORIGENES = ["https://lovera86.github.io", "http://localhost:8765"];
 const LIMITE_MS = 100_000;
+const AGENTES_IA = new Set(["investigador"]); // como mucho una llamada de IA por ejecución, y solo al principio
+const MARGEN_IA_MS = 20_000;
 
 const cors = (o: string | null) => ({
   "Access-Control-Allow-Origin": o && ORIGENES.includes(o) ? o : ORIGENES[0],
@@ -47,15 +50,29 @@ async function config(user_id: string): Promise<Config> {
 // ---------------------------------------------------------------------------
 // Agentes
 // ---------------------------------------------------------------------------
-type Resultado = { salida: Record<string, unknown>; coste?: number };
+type Resultado = { salida: Record<string, unknown>; coste?: number; omitida?: string };
+
+async function leerRecogida(): Promise<ItemPuntuable[]> {
+  const r = await fetch(`${WEB}/data/oportunidades.json?t=${Date.now()}`, { headers: { "User-Agent": "RADAR-agentes" } });
+  if (!r.ok) throw new Error(`No se ha podido leer la recogida diaria (HTTP ${r.status})`);
+  const items = await r.json();
+  if (!Array.isArray(items)) throw new Error("La recogida diaria no tiene el formato esperado");
+  return items;
+}
+
+/* Lo que ya se ha gastado hoy en IA, sumando todas las jornadas del día (también las manuales). */
+async function gastadoHoy(user_id: string): Promise<number> {
+  const { data: js } = await srv.from("jornadas").select("id").eq("user_id", user_id).eq("fecha", madrid(new Date()).fecha);
+  const ids = (js || []).map((j) => j.id);
+  if (!ids.length) return 0;
+  const { data: ts } = await srv.from("tareas").select("coste").in("jornada_id", ids);
+  return (ts || []).reduce((s, t) => s + Number(t.coste || 0), 0);
+}
 const AGENTES: Record<string, (ctx: Ctx, entrada: Record<string, unknown>, tarea_id: string) => Promise<Resultado>> = {
 
   // Detector: lee lo que la recogida diaria de RADAR ha publicado y guarda las señales nuevas.
   async detector(ctx, _entrada, tarea_id) {
-    const r = await fetch(`${WEB}/data/oportunidades.json?t=${Date.now()}`, { headers: { "User-Agent": "RADAR-agentes" } });
-    if (!r.ok) throw new Error(`No se ha podido leer la recogida diaria (HTTP ${r.status})`);
-    const items = await r.json();
-    if (!Array.isArray(items)) throw new Error("La recogida diaria no tiene el formato esperado");
+    const items = await leerRecogida();
     const senales = items.filter((it) => it?.id && it?.titulo).map(senalDesdeItem);
 
     const conocidas = new Set<string>();
@@ -79,6 +96,84 @@ const AGENTES: Record<string, (ctx: Ctx, entrada: Record<string, unknown>, tarea
     nuevas.forEach((s) => { porTipo[s.tipo] = (porTipo[s.tipo] || 0) + 1; });
     await evento(ctx, "detector", "deteccion", `Revisadas ${senales.length} señales: ${nuevas.length} nuevas y ${repetidas.length} ya conocidas`, { porTipo }, tarea_id);
     return { salida: { revisadas: senales.length, nuevas: nuevas.length, ya_conocidas: repetidas.length, por_tipo: porTipo } };
+  },
+
+  // Analista: puntúa las empresas con los criterios de RADAR y elige las que se investigan hoy.
+  // No usa IA. No repite empresas que ya están en tu bandeja, que descartaste o que ya se investigaron.
+  async analista(ctx, _entrada, tarea_id) {
+    const uid = ctx.user_id;
+    const items = await leerRecogida();
+    const yaVistas = new Set<string>();
+    const { data: ops } = await srv.from("oportunidades").select("clave").eq("user_id", uid);
+    (ops || []).forEach((o) => yaVistas.add(o.clave));
+    const { data: est } = await srv.from("estado").select("valor").eq("user_id", uid).eq("clave", "radar-v2").maybeSingle();
+    const v = (est?.valor || {}) as { bandeja?: Record<string, unknown>; excluidas?: Record<string, unknown> };
+    Object.keys(v.bandeja || {}).forEach((k) => yaVistas.add(k));
+    Object.keys(v.excluidas || {}).forEach((k) => yaVistas.add(k));
+
+    const desde = new Date(Date.now() - 20 * 3600_000).toISOString();
+    const { count: hoyYa } = await srv.from("oportunidades").select("clave", { count: "exact", head: true })
+      .eq("user_id", uid).in("agente", ["analista", "investigador"]).gte("creado", desde);
+    const cupo = Math.max(0, ctx.config.max_ia - (hoyYa || 0));
+    const { elegidas, por_encima } = elegirCandidatas(items, yaVistas, cupo, ctx.config.umbral);
+    const investigar = !ctx.config.agentes_off.includes("investigador");
+
+    if (elegidas.length) {
+      const ahora = new Date().toISOString();
+      const filas = elegidas.map((c) => ({
+        user_id: uid, clave: c.k, tipo: "empresa", titulo: c.empresa, organizacion: c.empresa,
+        datos: { candidata: c }, puntuacion: c.puntos, explicacion: { motivos: c.motivos, sin_info: c.sin_info },
+        estado: investigar ? "investigando" : "priorizada", agente: "analista", senales: c.items,
+        siguiente: investigar ? "La investiga el Investigador" : "Investigar la empresa", actualizado: ahora,
+      }));
+      const { error } = await srv.from("oportunidades").upsert(filas, { onConflict: "user_id,clave", ignoreDuplicates: true });
+      if (error) throw error;
+      if (investigar) {
+        const tareas = elegidas.map((c, i) => ({
+          jornada_id: ctx.jornada.id, user_id: uid, agente: "investigador", clave: `investigar:${c.k}`,
+          prioridad: 80 - i, entrada: c, max_intentos: 1, // la IA cuesta dinero: no se reintenta sola
+        }));
+        const { error: e2 } = await srv.from("tareas").upsert(tareas, { onConflict: "jornada_id,clave", ignoreDuplicates: true });
+        if (e2) throw e2;
+      }
+    }
+    const lista = elegidas.map((c) => `${c.empresa} (${c.puntos})`).join(", ");
+    await evento(ctx, "analista", "priorizacion", elegidas.length
+      ? `${por_encima} empresas nuevas superan tu umbral de ${ctx.config.umbral}; elegidas hoy: ${lista}`
+      : cupo === 0 ? "Hoy ya se ha cubierto el cupo de empresas investigadas" : `Ninguna empresa nueva supera tu umbral de ${ctx.config.umbral}`,
+      { elegidas: elegidas.map((c) => ({ empresa: c.empresa, puntos: c.puntos, motivos: c.motivos })) }, tarea_id);
+    return { salida: { por_encima, elegidas: elegidas.map((c) => ({ k: c.k, empresa: c.empresa, puntos: c.puntos })) } };
+  },
+
+  // Investigador: busca en la web la empresa elegida (IA, dentro del presupuesto del día).
+  async investigador(ctx, entrada, tarea_id) {
+    const c = entrada as unknown as Candidata;
+    const gastado = await gastadoHoy(ctx.user_id);
+    if (!quedaPresupuesto(ctx.config, gastado, COSTE_ESTIMADO_INVESTIGACION)) {
+      await srv.from("oportunidades").update({ estado: "priorizada", siguiente: "Investigar la empresa (sin presupuesto hoy)", actualizado: new Date().toISOString() }).eq("user_id", ctx.user_id).eq("clave", c.k);
+      await evento(ctx, "investigador", "limite", `Sin presupuesto para investigar ${c.empresa}: gastado hoy ${gastado.toFixed(3)} $ de ${Number(ctx.config.presupuesto_dia).toFixed(2)} $`, null, tarea_id);
+      return { salida: { empresa: c.empresa }, omitida: "Presupuesto del día agotado" };
+    }
+    const { investigacion: inv, coste } = await investigarEmpresa({ empresa: c.empresa, ciudad: c.ciudad, hechos: c.hechos });
+    const ahora = new Date().toISOString();
+    const { error } = await srv.from("oportunidades").update({
+      estado: "validada", agente: "investigador", datos: { candidata: c, investigacion: inv },
+      siguiente: "Revisar la propuesta y decidir si contactar", ultima_verificacion: ahora, actualizado: ahora,
+    }).eq("user_id", ctx.user_id).eq("clave", c.k);
+    if (error) throw Object.assign(new Error(error.message), { coste });
+    const k = inv.contacto;
+    const fuente = k.fuente_url || k.pagina || k.formulario || "";
+    if (fuente && (k.email || k.formulario || k.pagina)) {
+      const [nombre, ...cargo] = String(k.persona || "").split(",");
+      await srv.from("contactos").upsert({
+        user_id: ctx.user_id, empresa_clave: c.k, nombre: nombre?.trim() || null, cargo: cargo.join(",").trim() || null,
+        email: k.email || null, web: inv.web_oficial || null, formulario: k.formulario || null, fuente,
+        verificado: inv.consultada, confianza: k.email ? "alta" : "media", agente: "investigador",
+      }, { onConflict: "user_id,empresa_clave" });
+    }
+    const canal = k.email ? "correo publicado" : k.formulario ? "formulario" : k.pagina ? "página de contacto" : "sin canal publicado";
+    await evento(ctx, "investigador", "investigacion", `${c.empresa}: ${inv.senales.length} señal${inv.senales.length === 1 ? "" : "es"} con fuente, ${canal} · ${coste.toFixed(3)} $`, { dudas: inv.dudas }, tarea_id);
+    return { salida: { empresa: c.empresa, senales: inv.senales.length, canal }, coste };
   },
 };
 
@@ -115,7 +210,15 @@ async function procesar(j: Jornada, inicio: number) {
     await srv.from("tareas").update({ estado: "omitida", error: "Duración máxima de la jornada superada" }).eq("jornada_id", j.id).in("estado", ["pendiente", "en_curso"]);
     await evento(ctx, "director", "limite", `Se ha superado la duración máxima (${c.duracion_max_min} min): tareas pendientes omitidas`);
   }
+  let iaHecha = false;
   while (Date.now() - inicio < LIMITE_MS) {
+    // Una investigación tarda hasta ~1,5 min: solo se empieza al principio de la ejecución
+    // (la siguiente llamada programada, 5 minutos después, sigue con la próxima).
+    if (iaHecha || Date.now() - inicio > MARGEN_IA_MS) {
+      const { data: sig } = await srv.from("tareas").select("agente").eq("jornada_id", j.id).eq("estado", "pendiente")
+        .order("prioridad", { ascending: false }).order("creado").limit(1).maybeSingle();
+      if (sig && AGENTES_IA.has(sig.agente)) break;
+    }
     const { data: t, error } = await srv.rpc("reclamar_tarea", { p_jornada: j.id });
     if (error) throw error;
     if (!t?.id) break;
@@ -126,12 +229,17 @@ async function procesar(j: Jornada, inicio: number) {
         await srv.from("tareas").update({ estado: "omitida", terminada: new Date().toISOString(), error: "Agente desactivado" }).eq("id", t.id);
         continue;
       }
+      if (AGENTES_IA.has(t.agente)) iaHecha = true;
       const r = await ejecutar(ctx, t.entrada || {}, t.id);
-      await srv.from("tareas").update({ estado: "hecha", salida: r.salida, coste: r.coste ?? 0, terminada: new Date().toISOString(), error: null }).eq("id", t.id);
+      await srv.from("tareas").update({ estado: r.omitida ? "omitida" : "hecha", salida: r.salida, coste: r.coste ?? 0, terminada: new Date().toISOString(), error: r.omitida ?? null }).eq("id", t.id);
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
+      const coste = Number((e as { coste?: number })?.coste || 0); // lo gastado en IA cuenta aunque falle
       const f = trasFallo(t, msg);
-      await srv.from("tareas").update({ estado: f.estado, error: f.error, terminada: f.estado === "fallida" ? new Date().toISOString() : null }).eq("id", t.id);
+      await srv.from("tareas").update({ estado: f.estado, error: f.error, coste, terminada: f.estado === "fallida" ? new Date().toISOString() : null }).eq("id", t.id);
+      if (t.agente === "investigador" && f.estado === "fallida") {
+        await srv.from("oportunidades").update({ estado: "priorizada", siguiente: "Investigar la empresa (falló la investigación automática)" }).eq("user_id", ctx.user_id).eq("clave", String((t.entrada || {}).k || ""));
+      }
       await evento(ctx, t.agente, "error", `${f.estado === "fallida" ? "Falló definitivamente" : "Falló, se reintentará"}: ${f.error}`, null, t.id);
     }
   }
@@ -144,7 +252,9 @@ async function consolidar(ctx: Ctx) {
   const estado = cerrarJornada(tareas);
   const coste = tareas.reduce((s, t) => s + Number(t.coste || 0), 0);
   const det = tareas.find((t) => t.agente === "detector" && t.estado === "hecha")?.salida as Record<string, unknown> | undefined;
+  const inv = tareas.filter((t) => t.agente === "investigador" && t.estado === "hecha").map((t) => String((t.salida as Record<string, unknown>)?.empresa || ""));
   const resumen = {
+    investigadas: inv.length, propuestas: inv,
     tareas: { total: tareas.length, hechas: tareas.filter((t) => t.estado === "hecha").length, fallidas: tareas.filter((t) => t.estado === "fallida").length, omitidas: tareas.filter((t) => t.estado === "omitida").length },
     senales_nuevas: det?.nuevas ?? null, senales_conocidas: det?.ya_conocidas ?? null,
     errores: tareas.filter((t) => t.error).map((t) => `${t.agente}: ${t.error}`),

@@ -96,6 +96,20 @@ function iaBloqueInvestigacion(op, bloque) {
 
 /* Investiga la empresa en la web y guarda señales con fuente y la propuesta de contacto. */
 const IA_EN_CURSO = new Set();
+/* Añade a la oportunidad lo que ha encontrado una investigación (botón o agentes). Devuelve las señales nuevas. */
+function iaAplicarInvestigacion(op, inv) {
+  op.investigacion = inv;
+  let nuevas = 0;
+  (inv.senales || []).forEach((s) => {
+    if (op.senales.some((x) => x.fuente?.url === s.url)) return;
+    let host = ''; try { host = new URL(s.url).hostname.replace(/^www\./, ''); } catch (e) { host = s.fuente || 'web'; }
+    op.senales.push({ tipo: 'ia', fecha: s.fecha || inv.consultada, titulo: s.titulo, fuente: { nombre: s.fuente || host, url: s.url, consultada: inv.consultada }, motivo: s.motivo || 'Podría generar necesidad de perfiles.', resumen: s.resumen, ia: true });
+    nuevas++;
+  });
+  if (op.estado === 'detectada') op.estado = 'investigando';
+  if (typeof bjRecalcularManual === 'function') bjRecalcularManual(op);
+  return nuevas;
+}
 async function iaInvestigar(op) {
   if (IA_EN_CURSO.has(op.k)) return;
   IA_EN_CURSO.add(op.k);
@@ -104,16 +118,7 @@ async function iaInvestigar(op) {
     {
       const r = await iaLlamar({ accion: 'investigar', empresa: op.empresa, ciudad: op.ciudad, web: op.contacto?.web || '', senales: op.senales.filter((s) => !s.inferida).map((s) => `${s.titulo} (${s.fuente?.nombre || ''}, ${s.fecha || ''})`) });
       const inv2 = r.investigacion;
-      op.investigacion = inv2;
-      let nuevas = 0;
-      (inv2.senales || []).forEach((s) => {
-        if (op.senales.some((x) => x.fuente?.url === s.url)) return;
-        let host = ''; try { host = new URL(s.url).hostname.replace(/^www\./, ''); } catch (e) { host = s.fuente || 'web'; }
-        op.senales.push({ tipo: 'ia', fecha: s.fecha || inv2.consultada, titulo: s.titulo, fuente: { nombre: s.fuente || host, url: s.url, consultada: inv2.consultada }, motivo: s.motivo || 'Podría generar necesidad de perfiles.', resumen: s.resumen, ia: true });
-        nuevas++;
-      });
-      if (op.estado === 'detectada') op.estado = 'investigando';
-      if (typeof bjRecalcularManual === 'function') bjRecalcularManual(op);
+      const nuevas = iaAplicarInvestigacion(op, inv2);
       bjEvento(op, 'investigacion', `Investigación con IA: ${nuevas} señal${nuevas === 1 ? '' : 'es'} nueva${nuevas === 1 ? '' : 's'} con fuente; contacto ${inv2.contacto?.email || inv2.contacto?.formulario || inv2.contacto?.pagina ? 'propuesto' : 'no encontrado'}`);
     }
   } catch (e) { alert(e.message); }

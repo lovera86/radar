@@ -1,4 +1,4 @@
-# Equipo de agentes de RADAR: puesta en marcha y uso (fase 1)
+# Equipo de agentes de RADAR: puesta en marcha y uso (fases 1 y 2)
 
 ## Cómo funciona
 
@@ -13,9 +13,23 @@
   señales se identifican por la clave de su fuente), así que reintentar no duplica nada.
 - **Memoria compartida:** `senales`, `oportunidades`, `contactos` y `eventos`, en Supabase.
   Desde la web cada persona solo puede leer lo suyo.
-- **Fase 1:** trabajan el Director y el Detector. El Detector lee la recogida diaria de RADAR,
-  guarda las señales nuevas con su fuente, sus hechos y sus hipótesis, y no repite las que
-  ya conoce. Todavía no usa IA, así que no gasta nada.
+- **Detector** (sin IA): lee la recogida diaria de RADAR, guarda las señales nuevas con su fuente,
+  sus hechos y sus hipótesis, y no repite las que ya conoce.
+- **Analista** (sin IA): puntúa las empresas adjudicatarias con los criterios de RADAR (encaje 35 %,
+  zona 25 %, posible necesidad 15 %, canal de contacto 15 %, actualidad 10 %) y elige las mejores
+  por encima de tu umbral, como mucho «empresas investigadas con IA por día». Nunca repite empresas
+  que ya están en tu bandeja, que descartaste o que ya se investigaron, y nunca elige personas
+  físicas (NIF de autónomo).
+- **Investigador** (IA, Claude Sonnet 5.5 con búsqueda web, 2 búsquedas y 2 páginas como mucho):
+  investiga cada empresa elegida. Solo guarda URL que ha visitado de verdad y correos que aparecen
+  tal cual en una página leída. Antes de cada investigación comprueba el presupuesto del día
+  (sumando todas las jornadas del día); si no llega, la deja «priorizada» para otro día. Las tareas
+  con IA no se reintentan solas (cuestan dinero): se reintentan con el botón «Reintentar».
+  Cada ejecución hace como mucho una investigación y solo al principio, para no pasar del límite
+  de tiempo de la función; la siguiente llamada programada (5 minutos después) sigue con la próxima.
+- **Tu bandeja:** al abrir Oportunidades con tu sesión, las empresas investigadas entran como
+  «Validada · propuesta por tus agentes», con por qué se eligieron, sus señales con fuente y el
+  contacto propuesto. Nada se envía sin ti.
 
 ## Instalar (una vez)
 

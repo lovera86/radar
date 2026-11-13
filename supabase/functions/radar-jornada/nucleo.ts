@@ -38,10 +38,12 @@ export function tocaJornada(c: Config, ahora: Date, yaExisteHoy: boolean): { toc
   return { toca: true, motivo: "Hora de empezar" };
 }
 
-/* Plan de la jornada. Fase 1: el Detector. Las fases siguientes añaden el resto de agentes. */
+/* Plan de la jornada. El Detector revisa las fuentes y el Analista elige qué investigar;
+   el Analista añade a la cola las tareas del Investigador (una por empresa elegida). */
 export function planificar(c: Config): TareaPlan[] {
   const plan: TareaPlan[] = [
     { agente: "detector", clave: "detectar:radar", prioridad: 100, entrada: { fuente: "radar" } },
+    { agente: "analista", clave: "analizar:radar", prioridad: 90, entrada: {} },
   ];
   return plan.filter((t) => !c.agentes_off.includes(t.agente)).slice(0, c.max_tareas);
 }
@@ -108,4 +110,87 @@ export function deduplicar<T extends { clave: string }>(lista: T[], conocidas: S
 /* ¿Queda presupuesto para otra llamada de IA? */
 export function quedaPresupuesto(c: Config, gastado: number, estimado: number): boolean {
   return gastado + estimado <= Number(c.presupuesto_dia) + 1e-9;
+}
+
+// ---------------------------------------------------------------------------
+// Analista: puntuación explicable y elección de las empresas del día (sin IA)
+// ---------------------------------------------------------------------------
+type Criterio = { valor: number | null; motivos?: string[]; sin_info?: boolean };
+export type ItemPuntuable = Item & {
+  ubicacion?: { texto?: string; comunidad?: string }; importe?: number;
+  criterios?: Record<string, Criterio>; ciudad_empresa?: string;
+};
+export const PESOS: Record<string, number> = { encaje: 0.35, geografia: 0.25, necesidad: 0.15, acceso: 0.15, calidad: 0.1 };
+const NOMBRE_CRITERIO: Record<string, string> = { encaje: "Encaje con tu perfil", geografia: "Zona", necesidad: "Posible necesidad", acceso: "Canal de contacto", calidad: "Actualidad" };
+
+/* Misma clave que usa la bandeja en el navegador (empresasDetectadas): NIF o nombre normalizado. */
+export function claveBandeja(nombre: string, nif?: string): string {
+  return nif || nombre.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+/* Un NIF que empieza por número o por X, Y, Z es de una persona (autónomo): no se investiga a personas. */
+export const esPersona = (nif?: string) => Boolean(nif) && /^[0-9XYZ]/i.test(String(nif).trim());
+
+/* Puntuación 0-100 con su explicación: media ponderada de los criterios que tienen dato. */
+export function puntuar(it: ItemPuntuable): { puntos: number; motivos: { criterio: string; valor: number; motivos: string[] }[]; sin_info: string[] } {
+  let suma = 0; let pesos = 0;
+  const motivos: { criterio: string; valor: number; motivos: string[] }[] = []; const sin_info: string[] = [];
+  for (const [k, w] of Object.entries(PESOS)) {
+    const c = it.criterios?.[k];
+    if (!c || c.valor == null) { sin_info.push(NOMBRE_CRITERIO[k]); continue; }
+    suma += w * c.valor; pesos += w;
+    motivos.push({ criterio: NOMBRE_CRITERIO[k], valor: Math.round(100 * c.valor), motivos: c.motivos || [] });
+  }
+  return { puntos: pesos ? Math.round((100 * suma) / pesos) : 0, motivos, sin_info };
+}
+
+export type Candidata = {
+  k: string; empresa: string; nif: string; ciudad: string; puntos: number;
+  motivos: { criterio: string; valor: number; motivos: string[] }[]; sin_info: string[];
+  hechos: string[]; fuentes: { nombre?: string; url?: string }[]; items: string[];
+};
+
+/* Empresas adjudicatarias que merecen investigarse hoy: por encima del umbral, sin repetir
+   las que ya están en tu bandeja, descartadas o investigadas, y nunca personas físicas. */
+export function elegirCandidatas(items: ItemPuntuable[], yaVistas: Set<string>, max: number, umbral: number): { elegidas: Candidata[]; por_encima: number } {
+  const porEmpresa = new Map<string, Candidata>();
+  for (const it of items) {
+    if (it.subtipo !== "adjudicacion" || !it.organizacion?.nombre) continue;
+    const nif = it.organizacion.nif || "";
+    if (esPersona(nif)) continue;
+    const k = claveBandeja(it.organizacion.nombre, nif);
+    if (yaVistas.has(k)) continue;
+    const p = puntuar(it);
+    const hecho = `${it.titulo.slice(0, 160)}${it.cliente ? ` (cliente: ${it.cliente})` : ""}${it.importe ? `, ${Math.round(it.importe).toLocaleString("es-ES")} €` : ""}${it.fechas?.publicada ? `, ${it.fechas.publicada}` : ""}`;
+    const prev = porEmpresa.get(k);
+    if (prev) {
+      prev.hechos.push(hecho); prev.items.push(it.id);
+      if (it.fuentes?.[0]) prev.fuentes.push(it.fuentes[0]);
+      if (p.puntos > prev.puntos) Object.assign(prev, { puntos: p.puntos, motivos: p.motivos, sin_info: p.sin_info });
+      continue;
+    }
+    porEmpresa.set(k, {
+      k, empresa: it.organizacion.nombre, nif, ciudad: it.ciudad_empresa || it.ubicacion?.texto || "",
+      puntos: p.puntos, motivos: p.motivos, sin_info: p.sin_info, hechos: [hecho], fuentes: it.fuentes?.[0] ? [it.fuentes[0]] : [], items: [it.id],
+    });
+  }
+  const encima = [...porEmpresa.values()].filter((c) => c.puntos >= umbral)
+    .sort((a, b) => b.puntos - a.puntos || b.hechos.length - a.hechos.length || a.empresa.localeCompare(b.empresa));
+  return { elegidas: encima.slice(0, Math.max(0, max)), por_encima: encima.length };
+}
+
+// ---------------------------------------------------------------------------
+// Coste de una llamada de IA (precios de lista en dólares)
+// ---------------------------------------------------------------------------
+export const PRECIO = { entrada: 2 / 1e6, salida: 10 / 1e6, cache_escritura: 2.5 / 1e6, cache_lectura: 0.2 / 1e6, busqueda: 0.01 }; // Claude Sonnet 5.5
+export const COSTE_ESTIMADO_INVESTIGACION = 0.09;
+export type Uso = { input_tokens?: number | null; output_tokens?: number | null; cache_creation_input_tokens?: number | null; cache_read_input_tokens?: number | null; server_tool_use?: { web_search_requests?: number | null } | null };
+export function costeDe(usos: Uso[]): number {
+  let c = 0;
+  for (const u of usos) {
+    c += (u.input_tokens || 0) * PRECIO.entrada + (u.output_tokens || 0) * PRECIO.salida
+      + (u.cache_creation_input_tokens || 0) * PRECIO.cache_escritura + (u.cache_read_input_tokens || 0) * PRECIO.cache_lectura
+      + (u.server_tool_use?.web_search_requests || 0) * PRECIO.busqueda;
+  }
+  return Math.round(c * 10000) / 10000;
 }

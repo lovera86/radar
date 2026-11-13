@@ -1,7 +1,7 @@
 // Pruebas del núcleo del orquestador. Ejecutar:  npx tsx --test supabase/functions/radar-jornada/nucleo.test.ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cerrarJornada, claveEmpresa, deduplicar, madrid, planificar, quedaPresupuesto, senalDesdeItem, tocaJornada, trasFallo, type Config } from "./nucleo.ts";
+import { cerrarJornada, claveBandeja, claveEmpresa, costeDe, deduplicar, elegirCandidatas, esPersona, madrid, planificar, puntuar, quedaPresupuesto, senalDesdeItem, tocaJornada, trasFallo, type Config, type ItemPuntuable } from "./nucleo.ts";
 
 const base: Config = { hora: 7, dias: [1, 2, 3, 4, 5], presupuesto_dia: 0.2, max_ia: 2, max_tareas: 60, duracion_max_min: 90, umbral: 65, agentes_off: [], pausada: false };
 
@@ -22,9 +22,9 @@ test("tocaJornada: respeta hora, días, pausa y no repite", () => {
   assert.equal(tocaJornada(base, new Date("2026-11-12T12:00:00Z"), false).toca, false);   // 13:00: fuera de franja
 });
 
-test("planificar: el Detector, y nada si está desactivado", () => {
-  assert.deepEqual(planificar(base).map((t) => t.agente), ["detector"]);
-  assert.equal(planificar({ ...base, agentes_off: ["detector"] }).length, 0);
+test("planificar: Detector y Analista; se quitan los desactivados", () => {
+  assert.deepEqual(planificar(base).map((t) => t.agente), ["detector", "analista"]);
+  assert.deepEqual(planificar({ ...base, agentes_off: ["detector"] }).map((t) => t.agente), ["analista"]);
 });
 
 test("trasFallo: reintenta hasta el máximo", () => {
@@ -65,4 +65,43 @@ test("claveEmpresa sin NIF ignora la forma jurídica", () => {
 test("quedaPresupuesto", () => {
   assert.equal(quedaPresupuesto(base, 0.1, 0.1), true);
   assert.equal(quedaPresupuesto(base, 0.15, 0.1), false);
+});
+
+const adj = (nombre: string, nif: string, enc: number, geo: number, extra: Partial<ItemPuntuable> = {}): ItemPuntuable => ({
+  id: `adj:${nombre}:${enc}`, tipo: "proyecto", subtipo: "adjudicacion", titulo: `Contrato de ${nombre}`,
+  organizacion: { nombre, nif }, fechas: { publicada: "2026-11-01" }, fuentes: [{ nombre: "PLACSP", url: "https://contrataciondelestado.es/x" }],
+  criterios: { encaje: { valor: enc, motivos: ["tema: obra civil"] }, geografia: { valor: geo, motivos: ["en Asturias"] }, necesidad: { valor: 0.4 }, acceso: { valor: 0.75 }, calidad: { valor: 0.5 }, salario: { valor: null, sin_info: true } },
+  ...extra,
+});
+
+test("puntuar: media ponderada explicable, ignorando lo que no tiene dato", () => {
+  const p = puntuar(adj("A", "B1", 0.9, 1));
+  assert.equal(p.puntos, Math.round(100 * (0.35 * 0.9 + 0.25 * 1 + 0.15 * 0.4 + 0.15 * 0.75 + 0.1 * 0.5)));
+  assert.equal(p.motivos[0].criterio, "Encaje con tu perfil");
+  assert.equal(puntuar({ ...adj("A", "B1", 0.9, 1), criterios: { encaje: { valor: 0.8 } } }).puntos, 80);
+});
+
+test("elegirCandidatas: umbral, sin repetir, sin personas y como mucho el cupo", () => {
+  const items = [
+    adj("Alta SL", "B11111111", 0.9, 1), adj("Alta SL", "B11111111", 0.6, 1), // misma empresa: se agrupa
+    adj("Media SL", "B22222222", 0.75, 1), adj("Baja SL", "B33333333", 0.2, 0.2),
+    adj("Ya en bandeja SL", "B44444444", 0.9, 1), adj("SUAREZ FERNANDEZ, IVAN", "12345678Z", 0.9, 1),
+    { ...adj("Oferta", "B55555555", 0.9, 1), subtipo: "oferta" },
+  ];
+  const r = elegirCandidatas(items, new Set(["B44444444"]), 2, 65);
+  assert.deepEqual(r.elegidas.map((c) => c.empresa), ["Alta SL", "Media SL"]);
+  assert.equal(r.elegidas[0].hechos.length, 2);
+  assert.equal(r.por_encima, 2);
+  assert.equal(elegirCandidatas(items, new Set(), 0, 65).elegidas.length, 0);
+});
+
+test("esPersona y claveBandeja (misma clave que la bandeja del navegador)", () => {
+  assert.equal(esPersona("12345678Z"), true); assert.equal(esPersona("X1234567L"), true); assert.equal(esPersona("B27245091"), false);
+  assert.equal(claveBandeja("TOPCAD", "B27245091"), "B27245091");
+  assert.equal(claveBandeja("Grusamar Ingeniería, S.L.U."), "grusamaringenieriaslu");
+});
+
+test("costeDe: tokens, caché y búsquedas", () => {
+  assert.equal(costeDe([{ input_tokens: 20000, output_tokens: 2000, server_tool_use: { web_search_requests: 2 } }]), 0.08);
+  assert.equal(costeDe([{ input_tokens: 10000 }, { input_tokens: 10000, cache_read_input_tokens: 50000 }]), 0.05);
 });
