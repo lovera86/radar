@@ -1,138 +1,5 @@
 [
  {
-  "id": "20798240",
-  "expediente": "1870/26",
-  "estado": "PUB",
-  "titulo": "Suministro, fabricación, instalación y puesta en funcionamiento de un recurso museográfico basado en maqueta 3D y videomapping para el  Museo de la ciudad Luis de Morales",
-  "tipo": "1",
-  "cpv": [
-   "32323400",
-   "92521100",
-   "39162100",
-   "39133000"
-  ],
-  "region_nuts": "ES431",
-  "region": "Badajoz",
-  "organo": "Alcaldía del Ayuntamiento de Badajoz",
-  "importe": 72695.0,
-  "adjudicatario": "",
-  "nif": "",
-  "ciudad_empresa": "",
-  "fecha_adjudicacion": "",
-  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=QpI2j13vl8Qtm4eBPtV6eQ%3D%3D",
-  "actualizado": "2026-11-11T14:07:50.138+01:00",
-  "plazo": "2026-11-12",
-  "criterios": [],
-  "pide_pm": false,
-  "puntuacion": 58,
-  "motivos": [
-   "museograf",
-   "museo",
-   "CPV 32323400,92521100,39162100"
-  ]
- },
- {
-  "id": "20682088",
-  "expediente": "2026/ETSAE0921/00001411E",
-  "estado": "PUB",
-  "titulo": "Exposición temporal Real y Militar Orden de San Fernando",
-  "tipo": "2",
-  "cpv": [
-   "92521000"
-  ],
-  "region_nuts": "ES425",
-  "region": "Toledo",
-  "organo": "Dirección de Asuntos Económicos del Ejército",
-  "importe": 111570.25,
-  "adjudicatario": "",
-  "nif": "",
-  "ciudad_empresa": "",
-  "fecha_adjudicacion": "",
-  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=VAKDw3DaLbucTfjQf3USOg%3D%3D",
-  "actualizado": "2026-10-23T09:48:17.791+02:00",
-  "plazo": "2026-11-12",
-  "criterios": [],
-  "pide_pm": false,
-  "puntuacion": 47,
-  "motivos": [
-   "exposicion",
-   "CPV 92521000"
-  ]
- },
- {
-  "id": "20762065",
-  "expediente": "CONTR 2026 0000288498",
-  "estado": "PUB",
-  "titulo": "Servicios Exposición temporal \"Manuel Rivera\" (3 lotes)",
-  "tipo": "2",
-  "cpv": [
-   "60000000",
-   "92521100",
-   "45255400",
-   "39154000"
-  ],
-  "region_nuts": "ES614",
-  "region": "",
-  "organo": "Patronato de la Alhambra y Generalife",
-  "importe": 380433.53,
-  "adjudicatario": "",
-  "nif": "",
-  "ciudad_empresa": "",
-  "fecha_adjudicacion": "",
-  "url": "https://www.juntadeandalucia.es/haciendayadministracionpublica/apl/pdc_sirec/perfiles-licitaciones/detalle-licitacion.jsf?idExpediente=1014891",
-  "actualizado": "2026-10-22T11:42:04.498+02:00",
-  "plazo": "2026-11-12",
-  "criterios": [],
-  "pide_pm": false,
-  "puntuacion": 52,
-  "motivos": [
-   "exposicion",
-   "CPV 60000000,92521100,45255400"
-  ]
- },
- {
-  "id": "19806601",
-  "expediente": "PA-SARA-LIC/2026/000010",
-  "estado": "PUB",
-  "titulo": "Obras de remodelación antiguo IES Valliniello (Avilés) para la creación de un espacio para la innovación y la investigación industrial denominado Manzana del Talento y el emprendimiento industrial cofinanciado por el Fondo de Transición Justa (FTJ).",
-  "tipo": "3",
-  "cpv": [
-   "45000000",
-   "45213150",
-   "45210000",
-   "45214620",
-   "45213000",
-   "45200000"
-  ],
-  "region_nuts": "ES120",
-  "region": "",
-  "organo": "Agencia de Ciencia, Competitividad Empresarial e Innovación Asturiana",
-  "importe": 5134027.86,
-  "adjudicatario": "",
-  "nif": "",
-  "ciudad_empresa": "",
-  "fecha_adjudicacion": "",
-  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=nCZYzecA0iQzjChw4z%2FXvw%3D%3D",
-  "actualizado": "2026-11-11T14:05:56.386+01:00",
-  "plazo": "2026-11-12",
-  "criterios": [
-   {
-    "texto": "Experiencia del Jefe de obra",
-    "peso": 15.0
-   },
-   {
-    "texto": "Experiencia del Encargado de obra",
-    "peso": 15.0
-   }
-  ],
-  "pide_pm": false,
-  "puntuacion": 52,
-  "motivos": [
-   "innovacion",
-   "ES12"
-  ]
- },
- {
   "id": "20570866",
   "expediente": "1216/2026",
   "estado": "PUB",
@@ -437,7 +304,7 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=97ONV6Ys9U9rSd8H4b2soA%3D%3D",
-  "actualizado": "2026-11-03T13:55:51.081+01:00",
+  "actualizado": "2026-11-12T09:30:56.773+01:00",
   "plazo": "2026-11-18",
   "criterios": [],
   "pide_pm": false,
@@ -542,6 +409,34 @@
   ]
  },
  {
+  "id": "20896573",
+  "expediente": "C-4547",
+  "estado": "PUB",
+  "titulo": "Suministro de astilla forestal para el periodo de pruebas de la central de biomasa de la pereda",
+  "tipo": "1",
+  "cpv": [
+   "09111400"
+  ],
+  "region_nuts": "ES12",
+  "region": "Principado de Asturias",
+  "organo": "Hulleras del Norte S.A.",
+  "importe": 1176000.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Ik5p%2BN29DTZVYjgxA4nMUw%3D%3D",
+  "actualizado": "2026-11-12T19:45:51.021+01:00",
+  "plazo": "2026-11-19",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "forestal",
+   "Principado de Asturias"
+  ]
+ },
+ {
   "id": "20845744",
   "expediente": "26F.2.1.0083",
   "estado": "PUB",
@@ -625,7 +520,7 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=njVuqbQ4HUoS7pcxhTeWOg%3D%3D",
-  "actualizado": "2026-11-05T10:32:24.604+01:00",
+  "actualizado": "2026-11-12T11:42:20.143+01:00",
   "plazo": "2026-11-20",
   "criterios": [],
   "pide_pm": false,
@@ -813,7 +708,7 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=VVGzt7zpwW1VYjgxA4nMUw%3D%3D",
-  "actualizado": "2026-10-23T11:00:56.378+02:00",
+  "actualizado": "2026-11-12T13:34:06.640+01:00",
   "plazo": "2026-11-23",
   "criterios": [],
   "pide_pm": false,
@@ -1012,6 +907,174 @@
   ]
  },
  {
+  "id": "20896621",
+  "expediente": "DEMA-2026-048",
+  "estado": "PUB",
+  "titulo": "Asistencia técnica para actualización del marco legislativo para la regulación transfronteriza del comercio de bienes por Agencias Reguladoras Fronterizas (ARF) distintas de la aduana, en colaboración con el Ministerio de Industria, Inversión y Comercio de Jamaica (MIIC)",
+  "tipo": "2",
+  "cpv": [
+   "73220000",
+   "71356200",
+   "72224000",
+   "75130000"
+  ],
+  "region_nuts": "",
+  "region": "",
+  "organo": "Dirección de la Fundación para la Internacionalización de las Administraciones Públicas",
+  "importe": 165702.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=62mw4TtZ5yy9Hd5zqvq9cg%3D%3D",
+  "actualizado": "2026-11-12T16:21:41.219+01:00",
+  "plazo": "2026-11-27",
+  "criterios": [
+   {
+    "texto": "CO2: Experiencia adicional del perfil 1 Experto/a legal nº1",
+    "peso": 5.0
+   },
+   {
+    "texto": "CO3: Experiencia adicional del perfil 1 Experto/a legal nº2",
+    "peso": 5.0
+   },
+   {
+    "texto": "CO4: Experiencia adicional del perfil 1 Experto/a legal nº3",
+    "peso": 5.0
+   },
+   {
+    "texto": "CO5: Experiencia adicional del perfil 2 Gestor/a proyecto",
+    "peso": 5.0
+   }
+  ],
+  "pide_pm": true,
+  "puntuacion": 45,
+  "motivos": [
+   "CPV 73220000,71356200,72224000",
+   "puntúa el jefe de proyecto"
+  ]
+ },
+ {
+  "id": "20896684",
+  "expediente": "CON/2026/70",
+  "estado": "PUB",
+  "titulo": "Contratación del servicio de redacción del proyecto de obras, estudio/ estudio básico de seguridad y salud, dirección facultativa de obras y coordinación de seguridad y salud para la renovación de la red de abastecimiento de aguas de Samartín de Podes, en el término municipal de Gozón",
+  "tipo": "2",
+  "cpv": [
+   "71000000",
+   "71317200",
+   "71242000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Gozón",
+  "importe": 15702.48,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=Bf6nDiguh7gZDGvgaZEVxQ%3D%3D",
+  "actualizado": "2026-11-12T14:44:57.872+01:00",
+  "plazo": "2026-11-27",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 45,
+  "motivos": [
+   "direccion facultativa",
+   "redaccion del proyecto",
+   "coordinacion",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20896735",
+  "expediente": "161/2026",
+  "estado": "PUB",
+  "titulo": "Contrato de servicios de asistencia técnica en materia de arquitectura y urbanismo (Oficina 2030 de apoyo al asentamiento sostenible)",
+  "tipo": "2",
+  "cpv": [
+   "71200000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Alcaldía del Ayuntamiento de Villanueva de Oscos",
+  "importe": 38016.53,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=tEbvvLXYvjPkY6rls5tG9A%3D%3D",
+  "actualizado": "2026-11-12T14:16:21.772+01:00",
+  "plazo": "2026-11-27",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 40,
+  "motivos": [
+   "asistencia tecnica",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "20897110",
+  "expediente": "LI80MU26",
+  "estado": "PUB",
+  "titulo": "Contratación de los servicios didácticos del Museo de Arte Contemporáneo de Castilla y León.",
+  "tipo": "2",
+  "cpv": [
+   "92521000"
+  ],
+  "region_nuts": "ES413",
+  "region": "León",
+  "organo": "Fundación Siglo para el Turismo y las Artes de Castilla y León",
+  "importe": 71536.69,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=eLeApWZdiHKcTfjQf3USOg%3D%3D",
+  "actualizado": "2026-11-12T10:57:22.211+01:00",
+  "plazo": "2026-11-27",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 48,
+  "motivos": [
+   "museo",
+   "CPV 92521000",
+   "León"
+  ]
+ },
+ {
+  "id": "20897258",
+  "expediente": "212/2026",
+  "estado": "PUB",
+  "titulo": "Ejecución integral de las actuaciones necesarias para la musealización del Centro de Visitantes del Ara Monumental Romana de San Jorge, situado en el Palacio de los Vizcondes de Biota, mediante el suministro, fabricación, producción, transporte, montaje, instalación, integración, configuración, puesta en funcionamiento, pruebas y formación de los elementos previstos en la memoria técnica.",
+  "tipo": "2",
+  "cpv": [
+   "92521100",
+   "32322000",
+   "39154000",
+   "45255400"
+  ],
+  "region_nuts": "ES243",
+  "region": "Zaragoza",
+  "organo": "Alcalde del Ayuntamiento de Biota",
+  "importe": 39939.0,
+  "adjudicatario": "",
+  "nif": "",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=qCFLBAlu9NqHCIsjvJ3rhQ%3D%3D",
+  "actualizado": "2026-11-12T09:40:37.359+01:00",
+  "plazo": "2026-11-27",
+  "criterios": [],
+  "pide_pm": false,
+  "puntuacion": 70,
+  "motivos": [
+   "musealiz",
+   "CPV 92521100,32322000,39154000"
+  ]
+ },
+ {
   "id": "20788179",
   "expediente": "C4301/2026/000019",
   "estado": "PUB",
@@ -1029,7 +1092,7 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=BRHS9ZPha1BSYrkJkLlFdw%3D%3D",
-  "actualizado": "2026-10-27T11:33:47.838+01:00",
+  "actualizado": "2026-11-12T14:24:46.913+01:00",
   "plazo": "2026-11-30",
   "criterios": [],
   "pide_pm": false,
@@ -1226,7 +1289,7 @@
   "ciudad_empresa": "",
   "fecha_adjudicacion": "",
   "url": "https://www.contratacion.euskadi.eus/webkpe00-kpeperfi/es/contenidos/anuncio_contratacion/expjaso753108/es_doc/index.html",
-  "actualizado": "2026-11-02T11:11:21.942+01:00",
+  "actualizado": "2026-11-12T17:11:18.605+01:00",
   "plazo": "2026-12-09",
   "criterios": [],
   "pide_pm": false,

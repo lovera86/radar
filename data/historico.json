@@ -2493,5 +2493,204 @@
   "motivos": [
    "CPV 79952000,79950000,72224000"
   ]
+ },
+ {
+  "id": "20305349",
+  "expediente": "2026000572",
+  "estado": "ADJ",
+  "titulo": "Contrato de servicios para el estudio geotécnico, la redacción del Proyecto básico y de ejecución, Dirección facultativa de obra y Coordinación de Seguridad y Salud de las obras del nuevo Tribunal de Instancia de Grado.",
+  "tipo": "2",
+  "cpv": [
+   "71247000",
+   "71310000",
+   "71000000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Consejería de Hacienda, Justicia y Asuntos Europeos del Principado de Asturias",
+  "importe": 150000.0,
+  "adjudicatario": "QUIROS PRESA SL",
+  "nif": "B21868146",
+  "ciudad_empresa": "MANSILLA MAYOR",
+  "fecha_adjudicacion": "2026-11-11",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=yiBLOfNe0k87u6%2B%2FR7DUoA%3D%3D",
+  "actualizado": "2026-11-12T13:19:13.635+01:00",
+  "plazo": "2026-09-02",
+  "criterios": [
+   {
+    "texto": "Experiencia adicional en trabajos similares",
+    "peso": 10.0
+   }
+  ],
+  "clave": "2026000572|B21868146",
+  "puntuacion": 70,
+  "motivos": [
+   "direccion facultativa",
+   "redaccion del proyecto",
+   "coordinacion",
+   "Asturias"
+  ]
+ },
+ {
+  "id": "19935219",
+  "expediente": "07-7-2.01-0011/2026",
+  "estado": "ADJ",
+  "titulo": "Servicio de documentación, protocolo de control y gestión de ingresos, manipulación y embalaje, reorganización y almacenamiento de colecciones asignadas al servicio de Museos y Exposiciones de La Rioja.",
+  "tipo": "2",
+  "cpv": [
+   "63121000",
+   "92521210",
+   "92521000",
+   "79956000",
+   "92500000"
+  ],
+  "region_nuts": "ES230",
+  "region": "",
+  "organo": "Servicio de Museos y Exposiciones de La Rioja, Dirección General de Cultura, Consejería de Cultura, Turismo, Deporte y Juventud",
+  "importe": 59008.0,
+  "adjudicatario": "ARQUEOGUTI SL",
+  "nif": "B56680465",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.larioja.org/contratacion-publica/es/licitaciones/consulta-expedientes?homepage=?p_colateral%3D07-7-2.01-0011%2F2026%26p_dia_ini%3D09%26p_mes_ini%3D11%26p_ano_ini%3D2026%26p_dia_fin%3D09%26p_mes_fin%3D11%26p_ano_fin%3D2026%26p_todas%3DN",
+  "actualizado": "2026-11-12T10:27:47.099+01:00",
+  "plazo": "2026-07-27",
+  "criterios": [],
+  "clave": "07-7-2.01-0011/2026|B56680465",
+  "puntuacion": 62,
+  "motivos": [
+   "museo",
+   "exposicion",
+   "exposiciones",
+   "CPV 63121000,92521210,92521000"
+  ]
+ },
+ {
+  "id": "19357510",
+  "expediente": "2026/7006",
+  "estado": "ADJ",
+  "titulo": "Servicios de apoyo y asistencia técnica de carácter informático a las Unidades Provinciales de Informática de la Gerencia Informática de la Seguridad Social",
+  "tipo": "2",
+  "cpv": [
+   "72000000",
+   "72253000",
+   "72100000",
+   "72224000",
+   "72600000",
+   "72250000",
+   "72246000",
+   "72220000"
+  ],
+  "region_nuts": "ES300",
+  "region": "Madrid",
+  "organo": "Gerencia de Informática de la Seguridad Social",
+  "importe": 1644097.5,
+  "adjudicatario": "SUMINISTROS, IMPORTACIONES Y MANTENIMIENTOS ELECTRÓNICOS, S.A.U. (SERMICRO)",
+  "nif": "A78032315",
+  "ciudad_empresa": "MADRID",
+  "fecha_adjudicacion": "2026-11-11",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=1yQuM3BBhT3mnwcj%2BxbdTg%3D%3D",
+  "actualizado": "2026-11-12T12:24:44.367+01:00",
+  "plazo": "2026-09-01",
+  "criterios": [],
+  "clave": "2026/7006|A78032315",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 72000000,72253000,72100000"
+  ]
+ },
+ {
+  "id": "20603358",
+  "expediente": "2026000956",
+  "estado": "ADJ",
+  "titulo": "Servicio de organización, coordinación, ejecución y seguimiento del programa \"Mujeres en Red\", dirigido a mujeres mayores de 55 años en concejos rurales asturianos de menos de 50.000 habitantes",
+  "tipo": "2",
+  "cpv": [
+   "79952100"
+  ],
+  "region_nuts": "ES120",
+  "region": "",
+  "organo": "Consejería de Presidencia, Reto Demográfico, Igualdad y Turismo del Principado de Asturias",
+  "importe": 23190.78,
+  "adjudicatario": "SUAREZ*FERNANDEZ,IVAN",
+  "nif": "***7641**",
+  "ciudad_empresa": "GIJON",
+  "fecha_adjudicacion": "2026-11-11",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=7soQdRQLS9gkJPJS%2BPS9vg%3D%3D",
+  "actualizado": "2026-11-12T08:03:37.131+01:00",
+  "plazo": "2026-10-27",
+  "criterios": [
+   {
+    "texto": "Experiencia adicional del equipo mínimo adscrito al contrato",
+    "peso": 33.0
+   },
+   {
+    "texto": "Adscripción de un técnico adicional al equipo mínimo exigido",
+    "peso": 20.0
+   }
+  ],
+  "clave": "2026000956|***7641**",
+  "puntuacion": 40,
+  "motivos": [
+   "coordinacion",
+   "CPV 79952100",
+   "ES12"
+  ]
+ },
+ {
+  "id": "15727554",
+  "expediente": "CONTR 2024 0000769277",
+  "estado": "RES",
+  "titulo": "auxiliares cada 2024",
+  "tipo": "2",
+  "cpv": [
+   "92521000"
+  ],
+  "region_nuts": "ES617",
+  "region": "",
+  "organo": "Delegación Territorial de Turismo, Cultura y Deporte en Málaga",
+  "importe": 327663.98,
+  "adjudicatario": "DIMOBA SERVICIOS S.L.U.",
+  "nif": "B04307120",
+  "ciudad_empresa": "",
+  "fecha_adjudicacion": "",
+  "url": "https://www.juntadeandalucia.es/haciendayadministracionpublica/apl/pdc_sirec/perfiles-licitaciones/detalle-licitacion.jsf?idExpediente=726399",
+  "actualizado": "2026-11-12T14:41:14.187+01:00",
+  "plazo": "2024-10-11",
+  "criterios": [],
+  "clave": "CONTR 2024 0000769277|B04307120",
+  "puntuacion": 40,
+  "motivos": [
+   "CPV 92521000"
+  ]
+ },
+ {
+  "id": "19918698",
+  "expediente": "C/133/2026",
+  "estado": "ADJ",
+  "titulo": "La prestación de un servicio integral de evolución, actualización tecnológica, soporte especializado y desarrollo de nuevas funcionalidades de la plataforma CORE de Asturex y de los sistemas vinculados a la misma.",
+  "tipo": "2",
+  "cpv": [
+   "72000000",
+   "72200000"
+  ],
+  "region_nuts": "ES120",
+  "region": "Asturias",
+  "organo": "Direccion General de la Sociedad de Promoción Exterior del Principado de Asturias, S.A. (ASTUREX)",
+  "importe": 52744.0,
+  "adjudicatario": "BYTACORA SOLUCIONES INFORMATICAS, S.L.",
+  "nif": "B74251604",
+  "ciudad_empresa": "Viella",
+  "fecha_adjudicacion": "2026-11-12",
+  "url": "https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&idEvl=dq%2BMqV9z%2FBvN3k3tjedSGw%3D%3D",
+  "actualizado": "2026-11-12T18:00:00.746+01:00",
+  "plazo": "2026-07-15",
+  "criterios": [],
+  "clave": "C/133/2026|B74251604",
+  "puntuacion": 33,
+  "motivos": [
+   "plataforma",
+   "Asturias"
+  ]
  }
 ]

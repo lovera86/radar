@@ -412,5 +412,31 @@
    "software"
   ],
   "conocida": false
+ },
+ {
+  "empresa": "NEURENTIC, SOCIEDAD LIMITADA",
+  "provincia": "Araba/Álava",
+  "comunidad": "País Vasco",
+  "fecha": "2026-11-12",
+  "municipio": "Vitoria-Gasteiz",
+  "fuente": {
+   "nombre": "BORME",
+   "url": "https://www.boe.es/borme/dias/2026/11/12/pdfs/BORME-A-2026-217-01.pdf",
+   "consultada": "2026-11-13",
+   "asiento": "505158"
+  },
+  "id": "borme:505158",
+  "tipo": "constitucion",
+  "categoria": "crecimiento",
+  "titulo": "Empresa nueva de tu sector",
+  "objeto": "a- El desarrollo, diseño, programación, explotación, comercialización, distribución y prestación de servicios relacionados con programas informáticos, aplicaciones, plataformas digitales y soluciones tecnológicas basadas, entre otras, en inteligencia artificial, automatización y tecnologías de la in.",
+  "cnae": "",
+  "capital": "3.000,00",
+  "puntuacion": 30,
+  "motivos": [
+   "inteligencia artificial",
+   "software"
+  ],
+  "conocida": false
  }
 ]
