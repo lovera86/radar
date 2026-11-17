@@ -229,7 +229,7 @@ def eures(cfg):
             if j.get("id") in vistos:
                 continue
             vistos.add(j.get("id"))
-            codigos = [c for v in (j.get("locationMap") or {}).values() for c in v]
+            codigos = [c for v in (j.get("locationMap") or {}).values() for c in (v or []) if isinstance(c, str)]
             lugar = next((NUTS[c[:4]] for c in codigos if c[:4] in NUTS), "España")
             ms = j.get("creationDate") or j.get("lastModificationDate")
             out.append({"fuente": "EURES (servicios públicos de empleo)", "titulo": titulo_limpio(j.get("title", "")),
@@ -442,7 +442,11 @@ def main():
                "eures": "EURES (SEPE y servicios públicos de empleo)", "himalayas": "Himalayas (remoto)", "jobicy": "Jobicy (remoto)"}
     CLAVES = {"infojobs": ("INFOJOBS_ID", "INFOJOBS_SECRET"), "jooble": ("JOOBLE_KEY",), "adzuna": ("ADZUNA_ID", "ADZUNA_KEY"), "alertas": ("ALERTAS_EMAIL", "ALERTAS_APP_PASSWORD")}
     for fuente in FUENTES:
-        lote = fuente(cfg)
+        try:
+            lote = fuente(cfg)
+        except Exception as ex:  # una fuente rota no debe parar las demás
+            aviso(fuente.__name__, ex)
+            lote = []
         vistas += len(lote)
         print(f"{fuente.__name__}: {len(lote)} ofertas", flush=True)
         n = fuente.__name__
